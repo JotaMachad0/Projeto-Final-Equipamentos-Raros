@@ -4,16 +4,18 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -28,7 +30,7 @@ public class UserEntity {
     private Boolean emailConfirmed;
 
     @Builder
-    public UserEntity(Integer id, String name, String email, String password, Boolean emailConfirmed) {
+    public User(Long id, String name, String email, String password, Boolean emailConfirmed) {
         this.id = id;
         this.name = name;
         this.email = email;
