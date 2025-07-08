@@ -24,4 +24,10 @@ public class UserController {
         var response = productService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

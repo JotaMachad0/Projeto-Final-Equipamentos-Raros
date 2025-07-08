@@ -4,6 +4,7 @@ import br.com.raroacademy.demo.domain.DTO.UserRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.UserResponseDTO;
 import br.com.raroacademy.demo.domain.entity.UserEntity;
 import br.com.raroacademy.demo.domain.repository.UserRepository;
+import br.com.raroacademy.demo.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,12 @@ public class UserService {
                 .email(user.getEmail())
                 .emailConfirmed(user.getEmailConfirmed())
                 .build();
+    }
+
+    public void delete(Integer id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id));
+
+        userRepository.delete(user);
     }
 }
