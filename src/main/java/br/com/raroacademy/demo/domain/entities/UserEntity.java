@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.entity;
+package br.com.raroacademy.demo.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Builder;

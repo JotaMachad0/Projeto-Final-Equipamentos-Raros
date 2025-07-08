@@ -1,9 +1,10 @@
 package br.com.raroacademy.demo.service;
 
-import br.com.raroacademy.demo.domain.DTO.UserRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.UserResponseDTO;
-import br.com.raroacademy.demo.domain.entity.UserEntity;
-import br.com.raroacademy.demo.domain.repository.UserRepository;
+import br.com.raroacademy.demo.domain.DTO.user.MapperUser;
+import br.com.raroacademy.demo.domain.DTO.user.UserRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.user.UserResponseDTO;
+import br.com.raroacademy.demo.domain.entities.UserEntity;
+import br.com.raroacademy.demo.repository.UserRepository;
 import br.com.raroacademy.demo.exception.BusinessException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.exception.UserNotFoundException;
@@ -21,83 +22,41 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final MapperUser mapperUser;
 
     public UserResponseDTO create(UserRequestDTO request) {
-        UserEntity user = UserEntity.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(request.password())
-                .emailConfirmed(false)
-                .build();
-
+        var user = mapperUser.toUser(request);
         UserEntity savedUser = userRepository.save(user);
-
-        return mapperToUserResponseDTO(savedUser);
+        return mapperUser.toUserResponseDTO(savedUser);
     }
 
-
     public UserResponseDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(this::mapperToUserResponseDTO)
+        var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+        return mapperUser.toUserResponseDTO(user);
     }
 
     @Transactional
     public UserResponseDTO update(Long id, @Valid UserRequestDTO request) {
-        UserEntity existing = userRepository.findById(id)
+        var existing = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
         if (!existing.getEmail().equals(request.email()) &&
                 userRepository.existsByEmail(request.email())) {
             throw new BusinessException("E-mail já está em uso por outro usuário");
         }
-
-        UserEntity updated = applyUpdates(existing, request);
-
-        return mapperToUserResponseDTO(userRepository.save(updated));
-    }
-
-    public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(this::mapperToUserResponseDTO)
-                .toList();
-    }
-
-    private UserEntity mapperToUser(UserRequestDTO request) {
-        return UserEntity.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(request.password())
-                .emailConfirmed(false)
-                .build();
-    }
-
-    private UserResponseDTO mapperToUserResponseDTO(UserEntity user) {
-        return UserResponseDTO.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .emailConfirmed(user.getEmailConfirmed())
-                .build();
-    }
-
-    private UserEntity applyUpdates(UserEntity existing, UserRequestDTO request) {
-        return UserEntity.builder()
-                .id(existing.getId())
-                .name(request.name())
-                .email(request.email())
-                .password(request.password())
-                .emailConfirmed(
-                        existing.getEmail().equals(request.email()) && Boolean.TRUE.equals(existing.getEmailConfirmed())
-                )
-                .build();
+        var updated = mapperUser.toApplyUpdates(existing, request);
+        return mapperUser.toUserResponseDTO(userRepository.save(updated));
     }
 
     public void delete(Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id));
-
         userRepository.delete(user);
+    }
+
+    public List<UserResponseDTO> getAllUsers() {
+        var userList = userRepository.findAll();
+        return mapperUser.toUserList(userList);
     }
 }

@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.DTO;
+package br.com.raroacademy.demo.domain.DTO.user;
 
 import lombok.Builder;
 
