@@ -13,7 +13,7 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -28,7 +28,7 @@ public class UserEntity {
     private Boolean emailConfirmed;
 
     @Builder
-    public UserEntity(Integer id, String name, String email, String password, Boolean emailConfirmed) {
+    public UserEntity(Long id, String name, String email, String password, Boolean emailConfirmed) {
         this.id = id;
         this.name = name;
         this.email = email;

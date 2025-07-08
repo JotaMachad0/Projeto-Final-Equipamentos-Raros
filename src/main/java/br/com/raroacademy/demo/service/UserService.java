@@ -38,7 +38,7 @@ public class UserService {
                 .build();
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id));
 

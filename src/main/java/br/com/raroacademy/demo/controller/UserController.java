@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class UserController {
 
-    public final UserService productService;
+    public final UserService userService;
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Validated @RequestBody UserRequestDTO request) {
-        var response = productService.create(request);
+        var response = userService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        productService.delete(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
