@@ -1,0 +1,12 @@
+CREATE TABLE addresses (
+    id BIGINT PRIMARY KEY,
+    street VARCHAR(255),
+    number VARCHAR(50),
+    complement VARCHAR(255),
+    neighborhood VARCHAR(100),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    zip_code VARCHAR(20),
+    country VARCHAR(100),
+    via_cep_response JSON
+);
