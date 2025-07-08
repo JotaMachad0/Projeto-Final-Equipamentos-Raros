@@ -2,7 +2,7 @@ package br.com.raroacademy.demo.service;
 
 import br.com.raroacademy.demo.domain.DTO.UserRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.UserResponseDTO;
-import br.com.raroacademy.demo.domain.entity.User;
+import br.com.raroacademy.demo.domain.entity.UserEntity;
 import br.com.raroacademy.demo.domain.repository.UserRepository;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import jakarta.validation.Valid;
@@ -21,8 +21,17 @@ public class UserService {
         return mapperToUserResponseDTO(userSaved);
     }
 
-    private User mapperToUser(UserRequestDTO request) {
-        return User.builder()
+    public UserResponseDTO update(Long id, @Valid UserRequestDTO request) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        var updatedUser = mapperToUpdateUser(user);
+
+        return mapperToUserResponseDTO(userRepository.save(updatedUser));
+    }
+
+    private UserEntity mapperToUser(UserRequestDTO request) {
+        return UserEntity.builder()
                 .name(request.name())
                 .email(request.email())
                 .password(request.password())
@@ -30,7 +39,7 @@ public class UserService {
                 .build();
     }
 
-    private UserResponseDTO mapperToUserResponseDTO(User user) {
+    private UserResponseDTO mapperToUserResponseDTO(UserEntity user) {
         return UserResponseDTO.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -39,14 +48,10 @@ public class UserService {
                 .build();
     }
 
-    public UserResponseDTO update(Long id, @Valid UserRequestDTO request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
-
-        user.setName(request.name());
-        user.setEmail(request.email());
-
-        User updated = userRepository.save(user);
-        return UserResponseDTO.fromEntity(updated);
+    private UserEntity mapperToUpdateUser(UserEntity user) {
+        return UserEntity.builder()
+                .name(user.getName())
+                .password(user.getPassword())
+                .build();
     }
 }

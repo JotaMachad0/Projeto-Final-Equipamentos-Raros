@@ -7,11 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +29,7 @@ public class User {
     private Boolean emailConfirmed;
 
     @Builder
-    public User(Long id, String name, String email, String password, Boolean emailConfirmed) {
+    public UserEntity(Long id, String name, String email, String password, Boolean emailConfirmed) {
         this.id = id;
         this.name = name;
         this.email = email;
