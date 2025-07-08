@@ -6,6 +6,7 @@ import br.com.raroacademy.demo.domain.entity.UserEntity;
 import br.com.raroacademy.demo.domain.repository.UserRepository;
 import br.com.raroacademy.demo.exception.BusinessException;
 import br.com.raroacademy.demo.exception.NotFoundException;
+import br.com.raroacademy.demo.exception.UserNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -91,5 +92,12 @@ public class UserService {
                         existing.getEmail().equals(request.email()) && Boolean.TRUE.equals(existing.getEmailConfirmed())
                 )
                 .build();
+    }
+
+    public void delete(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id));
+
+        userRepository.delete(user);
     }
 }
