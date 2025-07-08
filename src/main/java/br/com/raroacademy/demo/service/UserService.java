@@ -4,11 +4,13 @@ import br.com.raroacademy.demo.domain.DTO.UserRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.UserResponseDTO;
 import br.com.raroacademy.demo.domain.entity.UserEntity;
 import br.com.raroacademy.demo.domain.repository.UserRepository;
+import br.com.raroacademy.demo.exception.BusinessException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -39,13 +41,19 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
     }
 
+    @Transactional
     public UserResponseDTO update(Long id, @Valid UserRequestDTO request) {
-        UserEntity user = userRepository.findById(id)
+        UserEntity existing = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-        var updatedUser = mapperToUpdateUser(user);
+        if (!existing.getEmail().equals(request.email()) &&
+                userRepository.existsByEmail(request.email())) {
+            throw new BusinessException("E-mail já está em uso por outro usuário");
+        }
 
-        return mapperToUserResponseDTO(userRepository.save(updatedUser));
+        UserEntity updated = applyUpdates(existing, request);
+
+        return mapperToUserResponseDTO(userRepository.save(updated));
     }
 
     public List<UserResponseDTO> getAllUsers() {
@@ -66,17 +74,22 @@ public class UserService {
 
     private UserResponseDTO mapperToUserResponseDTO(UserEntity user) {
         return UserResponseDTO.builder()
-                .id(Long.valueOf(user.getId()))
+                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .emailConfirmed(user.getEmailConfirmed())
                 .build();
     }
 
-    private UserEntity mapperToUpdateUser(UserEntity user) {
+    private UserEntity applyUpdates(UserEntity existing, UserRequestDTO request) {
         return UserEntity.builder()
-                .name(user.getName())
-                .password(user.getPassword())
+                .id(existing.getId())
+                .name(request.name())
+                .email(request.email())
+                .password(request.password())
+                .emailConfirmed(
+                        existing.getEmail().equals(request.email()) && Boolean.TRUE.equals(existing.getEmailConfirmed())
+                )
                 .build();
     }
 }
