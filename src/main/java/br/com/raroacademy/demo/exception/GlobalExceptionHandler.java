@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) Invalido(s)", result)
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) inválido(s)", result)
                 );
     }
 
@@ -34,8 +34,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.CONFLICT, "Email ja existe.")
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, "E-mail já existe")
                 );
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorMessage> notFoundException(NotFoundException ex,
+                                                          HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
