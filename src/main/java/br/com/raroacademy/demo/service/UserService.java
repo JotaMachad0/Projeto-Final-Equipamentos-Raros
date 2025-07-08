@@ -6,19 +6,37 @@ import br.com.raroacademy.demo.domain.entity.UserEntity;
 import br.com.raroacademy.demo.domain.repository.UserRepository;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-@AllArgsConstructor
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
 
     public UserResponseDTO create(UserRequestDTO request) {
-        var user = mapperToUser(request);
-        var userSaved = userRepository.save(user);
-        return mapperToUserResponseDTO(userSaved);
+        UserEntity user = UserEntity.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(request.password())
+                .emailConfirmed(false)
+                .build();
+
+        UserEntity savedUser = userRepository.save(user);
+
+        return mapperToUserResponseDTO(savedUser);
+    }
+
+
+    public UserResponseDTO getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(this::mapperToUserResponseDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
     }
 
     public UserResponseDTO update(Long id, @Valid UserRequestDTO request) {
@@ -28,6 +46,13 @@ public class UserService {
         var updatedUser = mapperToUpdateUser(user);
 
         return mapperToUserResponseDTO(userRepository.save(updatedUser));
+    }
+
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::mapperToUserResponseDTO)
+                .toList();
     }
 
     private UserEntity mapperToUser(UserRequestDTO request) {
@@ -41,7 +66,7 @@ public class UserService {
 
     private UserResponseDTO mapperToUserResponseDTO(UserEntity user) {
         return UserResponseDTO.builder()
-                .id(user.getId())
+                .id(Long.valueOf(user.getId()))
                 .name(user.getName())
                 .email(user.getEmail())
                 .emailConfirmed(user.getEmailConfirmed())
