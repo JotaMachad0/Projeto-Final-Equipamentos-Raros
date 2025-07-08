@@ -1,7 +1,7 @@
 package br.com.raroacademy.demo.controller;
 
-import br.com.raroacademy.demo.domain.DTO.UserRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.UserResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.user.UserRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.user.UserResponseDTO;
 import br.com.raroacademy.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -26,14 +24,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        var users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable Long id) {
         var user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
@@ -48,5 +40,11 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        var users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 }
