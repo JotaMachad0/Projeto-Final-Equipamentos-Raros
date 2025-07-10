@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -58,4 +59,24 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorMessage> handleIllegalArgumentException(IllegalArgumentException ex,
+                                                                       HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidFormatException(InvalidFormatException ex,
+                                                                     HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST,
+                        "Data inválida. O formato correto é: yyyy-MM-dd (exemplo: 2025-12-31)"));
+    }
 }
