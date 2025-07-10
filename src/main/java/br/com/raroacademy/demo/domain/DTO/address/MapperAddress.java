@@ -1,11 +1,13 @@
 package br.com.raroacademy.demo.domain.DTO.address;
 
+import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
-import br.com.raroacademy.demo.viaCep.ViaCepResponseDTO;
+
 
 public class MapperAddress {
 
-    public static AddressEntity toEntity(AddressRequestDTO dto, ViaCepResponseDTO viaCep) {
+    public static AddressEntity toEntity(CollaboratorRequestDTO dto, ViaCepResponseDTO viaCep) {
         return AddressEntity.builder()
                 .street(viaCep.getStreet())
                 .neighborhood(viaCep.getNeighborhood())

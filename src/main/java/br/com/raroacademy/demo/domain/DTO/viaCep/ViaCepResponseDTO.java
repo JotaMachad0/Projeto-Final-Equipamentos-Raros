@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.viaCep;
+package br.com.raroacademy.demo.domain.DTO.viaCep;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

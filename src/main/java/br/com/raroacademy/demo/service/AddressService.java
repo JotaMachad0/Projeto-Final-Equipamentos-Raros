@@ -1,12 +1,13 @@
 package br.com.raroacademy.demo.service;
 
-import br.com.raroacademy.demo.domain.DTO.address.AddressRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.address.AddressResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.address.MapperAddress;
+import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.viaCep.ViaCepClient;
-import br.com.raroacademy.demo.viaCep.ViaCepResponseDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class AddressService {
     @Autowired
     private ViaCepClient viaCepClient;
 
-    public AddressResponseDTO save(AddressRequestDTO dto) {
+    public AddressResponseDTO save(CollaboratorRequestDTO dto) {
         ViaCepResponseDTO viaCep = viaCepClient.buscarEnderecoPorCep(dto.getCep());
         AddressEntity entity = MapperAddress.toEntity(dto, viaCep);
         AddressEntity saved = repository.save(entity);
@@ -40,5 +41,12 @@ public class AddressService {
                 .stream()
                 .map(MapperAddress::toDTO)
                 .toList();
+    }
+
+    public void deleteById(Long id) {
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Endereço não encontrado para o ID: " + id);
+        }
+        repository.deleteById(id);
     }
 }
