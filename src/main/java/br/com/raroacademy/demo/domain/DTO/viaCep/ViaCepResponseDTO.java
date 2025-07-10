@@ -9,14 +9,14 @@ public class ViaCepResponseDTO {
     private String cep;
 
     @JsonProperty("logradouro")
-    private String rua;
+    private String street;
 
     @JsonProperty("bairro")
-    private String bairro;
+    private String neighborhood;
 
     @JsonProperty("localidade")
-    private String cidade;
+    private String city;
 
     @JsonProperty("uf")
-    private String estado;
+    private String state;
 }

@@ -7,14 +7,14 @@ public class MapperAddress {
 
     public static AddressEntity toEntity(AddressRequestDTO dto, ViaCepResponseDTO viaCep) {
         return AddressEntity.builder()
-                .street(viaCep.getRua())
-                .bairro(viaCep.getBairro())
-                .cidade(viaCep.getCidade())
-                .estado(viaCep.getEstado())
+                .street(viaCep.getStreet())
+                .neighborhood(viaCep.getNeighborhood())
+                .city(viaCep.getCity())
+                .state(viaCep.getState())
                 .cep(dto.getCep())
-                .numero(dto.getNumero())
-                .complemento(dto.getComplemento())
-                .pais("Brasil")
+                .number(dto.getNumber())
+                .complement(dto.getComplement())
+                .country("Brasil")
                 .respostaViaCepJson(viaCep.toString())
                 .build();
     }
@@ -22,14 +22,14 @@ public class MapperAddress {
     public static AddressResponseDTO toDTO(AddressEntity entity) {
         return AddressResponseDTO.builder()
                 .id(entity.getId())
-                .rua(entity.getRua())
-                .bairro(entity.getBairro())
-                .cidade(entity.getCidade())
-                .estado(entity.getEstado())
+                .street(entity.getStreet())
+                .neighborhood(entity.getNeighborhood())
+                .city(entity.getCity())
+                .state(entity.getState())
                 .cep(entity.getCep())
-                .numero(entity.getNumero())
-                .complemento(entity.getComplemento())
-                .pais(entity.getPais())
+                .number(entity.getNumber())
+                .complement(entity.getComplement())
+                .country(entity.getCountry())
                 .build();
     }
 }
