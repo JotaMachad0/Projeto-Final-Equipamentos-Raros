@@ -12,7 +12,7 @@ public class AddressRequestDTO {
     private String cep;
 
     @NotBlank(message = "Número é obrigatório")
-    private String numero;
+    private String number;
 
-    private String complemento;
+    private String complement;
 }

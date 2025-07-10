@@ -7,7 +7,7 @@ public class MapperAddress {
 
     public static AddressEntity toEntity(AddressRequestDTO dto, ViaCepResponseDTO viaCep) {
         return AddressEntity.builder()
-                .rua(viaCep.getRua())
+                .street(viaCep.getRua())
                 .bairro(viaCep.getBairro())
                 .cidade(viaCep.getCidade())
                 .estado(viaCep.getEstado())

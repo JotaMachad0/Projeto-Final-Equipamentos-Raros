@@ -8,12 +8,12 @@ import lombok.Data;
 public class AddressResponseDTO {
 
     private Long id;
-    private String rua;
-    private String numero;
-    private String complemento;
-    private String bairro;
-    private String cidade;
-    private String estado;
+    private String street;
+    private String number;
+    private String complement;
+    private String neighborhood;
+    private String city;
+    private String state;
     private String cep;
-    private String pais;
+    private String country;
 }
