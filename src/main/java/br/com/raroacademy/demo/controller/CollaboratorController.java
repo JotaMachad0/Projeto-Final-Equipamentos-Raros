@@ -32,12 +32,12 @@ public class CollaboratorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CollaboratorResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid CollaboratorRequestDTO dto) {
+    public ResponseEntity<CollaboratorResponseDTO> updateCollaborator(@PathVariable Long id, @RequestBody @Valid CollaboratorRequestDTO dto) {
         return ResponseEntity.ok(collaboratorService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCollaborator(@PathVariable Long id) {
         collaboratorService.delete(id);
         return ResponseEntity.noContent().build();
     }
