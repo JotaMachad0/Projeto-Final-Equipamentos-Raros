@@ -24,13 +24,9 @@ import java.util.stream.Collectors;
 public class CollaboratorService {
 
     private CollaboratorRepository collaboratorRepository;
-
     private MapperCollaborator mapperCollaborator;
-
     private MapperAddress mapperAddress;
-
     private AddressRepository addressRepository;
-
     private ViaCepClient viaCepClient;
 
     public CollaboratorResponseDTO save(CollaboratorRequestDTO request) {
@@ -46,6 +42,7 @@ public class CollaboratorService {
         if (viaCep.getCep() == null) {
             throw new InvalidCepException("CEP invalido!");
         }
+
         var addressEntity = mapperAddress.toEntity(request, viaCep);
         var addressSaved = addressRepository.save(addressEntity);
 
@@ -58,15 +55,61 @@ public class CollaboratorService {
     public CollaboratorResponseDTO getById(Long id) {
         CollaboratorEntity collabboratorEntity = collaboratorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Colaborador não encontrado"));
+
         AddressEntity addressEntity = addressRepository.findById(collabboratorEntity.getAddressId())
                 .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+
         var address = mapperAddress.toDTO(addressEntity);
         return mapperCollaborator.toResponse(collabboratorEntity, address);
     }
 
     public List<CollaboratorResponseDTO> getAll() {
         return collaboratorRepository.findAll().stream()
-                .map(mapperCollaborator::toResponse)
+                .map(collaborator -> {
+                    AddressEntity address = addressRepository.findById(collaborator.getAddressId())
+                            .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+                    return mapperCollaborator.toResponse(collaborator, mapperAddress.toDTO(address));
+                })
                 .collect(Collectors.toList());
+    }
+
+    public CollaboratorResponseDTO update(Long id, CollaboratorRequestDTO dto) {
+        CollaboratorEntity existing = collaboratorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Colaborador não encontrado"));
+
+        AddressEntity address = addressRepository.findById(existing.getAddressId())
+                .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+
+        var viaCep = viaCepClient.buscarEnderecoPorCep(dto.getCep());
+        if (viaCep.getCep() == null) {
+            throw new InvalidCepException("CEP invalido!");
+        }
+
+        address.setCep(viaCep.getCep());
+        address.setStreet(viaCep.getStreet());
+        address.setNeighborhood(viaCep.getNeighborhood());
+        address.setCity(viaCep.getCity());
+        address.setState(viaCep.getState());
+        address.setNumber(dto.getNumber());
+        address.setComplement(dto.getComplement());
+
+        addressRepository.save(address);
+
+        // Atualiza dados do colaborador
+        existing.setName(dto.getName());
+        existing.setEmail(dto.getEmail());
+        existing.setPhone(dto.getPhone());
+        existing.setContractStartDate(dto.getContractStartDate());
+        existing.setContractEndDate(dto.getContractEndDate());
+
+        CollaboratorEntity updated = collaboratorRepository.save(existing);
+        return mapperCollaborator.toResponse(updated, mapperAddress.toDTO(address));
+    }
+
+    public void delete(Long id) {
+        if (!collaboratorRepository.existsById(id)) {
+            throw new NotFoundException("Colaborador não encontrado");
+        }
+        collaboratorRepository.deleteById(id);
     }
 }

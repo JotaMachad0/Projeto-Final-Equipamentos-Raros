@@ -30,4 +30,15 @@ public class CollaboratorController {
     public ResponseEntity<List<CollaboratorResponseDTO>> getAllCollaborators() {
         return ResponseEntity.ok(collaboratorService.getAll());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CollaboratorResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid CollaboratorRequestDTO dto) {
+        return ResponseEntity.ok(collaboratorService.update(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        collaboratorService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
