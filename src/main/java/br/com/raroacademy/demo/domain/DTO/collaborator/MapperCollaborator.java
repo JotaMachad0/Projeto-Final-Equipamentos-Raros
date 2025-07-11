@@ -1,12 +1,13 @@
 package br.com.raroacademy.demo.domain.DTO.collaborator;
 
+import br.com.raroacademy.demo.domain.DTO.address.AddressResponseDTO;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MapperCollaborator {
 
-    public static CollaboratorEntity toEntity(CollaboratorRequestDTO dto, Long addressId) {
+    public CollaboratorEntity toEntity(CollaboratorRequestDTO dto, Long addressId) {
         return CollaboratorEntity.builder()
                 .name(dto.getName())
                 .cpf(dto.getCpf())
@@ -18,14 +19,26 @@ public class MapperCollaborator {
                 .build();
     }
 
-    public static CollaboratorResponseDTO toResponse(CollaboratorEntity entity) {
+    public CollaboratorResponseDTO toResponse(CollaboratorEntity entity, AddressResponseDTO addressResponseDto) {
         return CollaboratorResponseDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .cpf(entity.getCpf())
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
-                .addressId(entity.getAddressId())
+                .contractStartDate(entity.getContractStartDate())
+                .contractEndDate(entity.getContractEndDate())
+                .address(addressResponseDto)
+                .build();
+    }
+
+    public CollaboratorResponseDTO toResponse(CollaboratorEntity entity) {
+        return CollaboratorResponseDTO.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .cpf(entity.getCpf())
+                .email(entity.getEmail())
+                .phone(entity.getPhone())
                 .contractStartDate(entity.getContractStartDate())
                 .contractEndDate(entity.getContractEndDate())
                 .build();

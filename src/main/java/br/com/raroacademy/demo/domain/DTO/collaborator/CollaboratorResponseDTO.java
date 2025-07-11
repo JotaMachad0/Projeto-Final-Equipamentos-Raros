@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.collaborator;
 
+import br.com.raroacademy.demo.domain.DTO.address.AddressResponseDTO;
 import lombok.Builder;
 import lombok.Getter;
 import java.time.LocalDate;
@@ -12,7 +13,9 @@ public class CollaboratorResponseDTO {
     private String cpf;
     private String email;
     private String phone;
-    private Long addressId;
     private LocalDate contractStartDate;
     private LocalDate contractEndDate;
+
+
+    private AddressResponseDTO address;
 }

@@ -8,38 +8,39 @@ import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.viaCep.ViaCepClient;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AddressService {
 
-    @Autowired
     private AddressRepository repository;
 
-    @Autowired
     private ViaCepClient viaCepClient;
+
+    private MapperAddress mapperAddress;
 
     public AddressResponseDTO save(CollaboratorRequestDTO dto) {
         ViaCepResponseDTO viaCep = viaCepClient.buscarEnderecoPorCep(dto.getCep());
-        AddressEntity entity = MapperAddress.toEntity(dto, viaCep);
+        AddressEntity entity = mapperAddress.toEntity(dto, viaCep);
         AddressEntity saved = repository.save(entity);
-        return MapperAddress.toDTO(saved);
+        return mapperAddress.toDTO(saved);
     }
 
     public AddressResponseDTO findById(Long id) {
         Optional<AddressEntity> address = repository.findById(id);
-        return address.map(MapperAddress::toDTO)
+        return address.map(mapperAddress::toDTO)
                 .orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
     }
 
     public List<AddressResponseDTO> findAll() {
         return repository.findAll()
                 .stream()
-                .map(MapperAddress::toDTO)
+                .map(mapperAddress::toDTO)
                 .toList();
     }
 

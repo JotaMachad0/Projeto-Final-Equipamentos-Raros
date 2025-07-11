@@ -3,11 +3,12 @@ package br.com.raroacademy.demo.domain.DTO.address;
 import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class MapperAddress {
 
-    public static AddressEntity toEntity(CollaboratorRequestDTO dto, ViaCepResponseDTO viaCep) {
+    public AddressEntity toEntity(CollaboratorRequestDTO dto, ViaCepResponseDTO viaCep) {
         return AddressEntity.builder()
                 .street(viaCep.getStreet())
                 .neighborhood(viaCep.getNeighborhood())
@@ -21,7 +22,7 @@ public class MapperAddress {
                 .build();
     }
 
-    public static AddressResponseDTO toDTO(AddressEntity entity) {
+    public AddressResponseDTO toDTO(AddressEntity entity) {
         return AddressResponseDTO.builder()
                 .id(entity.getId())
                 .street(entity.getStreet())
