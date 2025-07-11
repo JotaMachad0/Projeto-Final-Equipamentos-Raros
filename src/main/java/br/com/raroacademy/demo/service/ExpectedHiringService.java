@@ -3,7 +3,6 @@ package br.com.raroacademy.demo.service;
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.MapperExpectedHiring;
-import br.com.raroacademy.demo.exception.BusinessException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.ExpectedHiringRepository;
 import jakarta.validation.Valid;
@@ -23,18 +22,6 @@ public class ExpectedHiringService {
 
     @Transactional
     public ExpectedHiringResponseDTO create(@Valid ExpectedHiringRequestDTO request) {
-        boolean alreadyExists = expectedHiringRepository
-                .existsByExpectedHireDateAndPositionIgnoreCaseAndEquipmentRequirementsIgnoreCaseAndRegion(
-                        request.expectedHireDate(),
-                        request.position(),
-                        request.equipmentRequirements(),
-                        request.region()
-                );
-
-        if (alreadyExists) {
-            throw new BusinessException("Já existe uma previsão de contratação com os mesmos dados");
-        }
-
         var expectedHiring = mapperExpectedHiring.toExpectedHiring(request);
         var saved = expectedHiringRepository.save(expectedHiring);
         return mapperExpectedHiring.toExpectedHiringResponseDTO(saved);
@@ -53,19 +40,6 @@ public class ExpectedHiringService {
                 .orElseThrow(() -> new NotFoundException("Previsão de contratação não encontrada"));
 
         var updated = mapperExpectedHiring.toApplyUpdates(existing, request);
-
-        boolean alreadyExists = expectedHiringRepository
-                .existsByExpectedHireDateAndPositionIgnoreCaseAndEquipmentRequirementsIgnoreCaseAndRegionAndIdNot(
-                        request.expectedHireDate(),
-                        request.position(),
-                        request.equipmentRequirements(),
-                        request.region(),
-                        id
-                );
-
-        if (alreadyExists) {
-            throw new BusinessException("Já existe uma previsão de contratação com os mesmos dados");
-        }
 
         if (existing.equals(updated)) {
             return mapperExpectedHiring.toExpectedHiringResponseDTO(existing);

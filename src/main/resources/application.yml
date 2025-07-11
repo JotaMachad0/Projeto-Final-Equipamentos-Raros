@@ -10,8 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
@@ -21,4 +20,5 @@ spring:
     baseline-on-migrate: true
     user: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+
 
