@@ -79,4 +79,34 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST,
                         "Data inválida. O formato correto é: yyyy-MM-dd (exemplo: 2025-12-31)"));
     }
+    @ExceptionHandler(UsedEmailException.class)
+    public ResponseEntity<ErrorMessage> handleUsedEmailException(UsedEmailException ex,
+                                                                HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsedCpfException.class)
+    public ResponseEntity<ErrorMessage> handleUsedCpfException(UsedCpfException ex,
+                                                                 HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidCepException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidCepException(InvalidCepException ex,
+                                                               HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
+    }
+
 }
