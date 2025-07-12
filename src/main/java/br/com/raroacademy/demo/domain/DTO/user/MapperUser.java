@@ -26,7 +26,7 @@ public class MapperUser {
                 .build();
     }
 
-    public UserEntity toApplyUpdates(UserEntity existing, UserRequestDTO request) {
+    public UserEntity toUpdateUser(UserEntity existing, UserRequestDTO request) {
         return UserEntity.builder()
                 .id(existing.getId())
                 .name(request.name())
