@@ -1,7 +1,10 @@
 package br.com.raroacademy.demo.controller;
 
+import br.com.raroacademy.demo.commons.annotations.ApiController;
+import br.com.raroacademy.demo.commons.annotations.OpenApiController;
 import br.com.raroacademy.demo.domain.DTO.user.UserRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.UserResponseDTO;
+import br.com.raroacademy.demo.domain.annotations.user.*;
 import br.com.raroacademy.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -12,37 +15,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@OpenApiController(name = "Users")
+@ApiController(path = "/users")
 @AllArgsConstructor
 public class UserController {
 
     public final UserService userService;
 
-    @PostMapping
+    @CreateUserEndpoint
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO request) {
         var response = userService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{id}")
+    @GetUserEndpoint
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable Long id) {
         var user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO request) {
+    @UpdateUserEndpoint
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserRequestDTO request
+    ) {
         var response = userService.update(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteUserEndpoint
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
+    @GetAllUserEndpoint
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         var users = userService.getAllUsers();
         return ResponseEntity.ok(users);
