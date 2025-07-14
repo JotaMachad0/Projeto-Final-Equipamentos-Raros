@@ -53,21 +53,21 @@ public class CollaboratorService {
     }
 
     public CollaboratorResponseDTO getById(Long id) {
-        CollaboratorEntity collabboratorEntity = collaboratorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Colaborador não encontrado"));
+        CollaboratorEntity collaboratorEntity = collaboratorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(getMessage("collaborator.not-found")));
 
-        AddressEntity addressEntity = addressRepository.findById(collabboratorEntity.getAddressId())
-                .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+        AddressEntity addressEntity = addressRepository.findById(collaboratorEntity.getAddressId())
+                .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
 
         var address = mapperAddress.toDTO(addressEntity);
-        return mapperCollaborator.toResponse(collabboratorEntity, address);
+        return mapperCollaborator.toResponse(collaboratorEntity, address);
     }
 
     public List<CollaboratorResponseDTO> getAll() {
         return collaboratorRepository.findAll().stream()
                 .map(collaborator -> {
                     AddressEntity address = addressRepository.findById(collaborator.getAddressId())
-                            .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+                            .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
                     return mapperCollaborator.toResponse(collaborator, mapperAddress.toDTO(address));
                 })
                 .collect(Collectors.toList());
@@ -75,14 +75,14 @@ public class CollaboratorService {
 
     public CollaboratorResponseDTO update(Long id, CollaboratorRequestDTO dto) {
         CollaboratorEntity existing = collaboratorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Colaborador não encontrado"));
+                .orElseThrow(() -> new NotFoundException(getMessage("collaborator.not-found")));
 
         AddressEntity address = addressRepository.findById(existing.getAddressId())
-                .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+                .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
 
         var viaCep = viaCepClient.buscarEnderecoPorCep(dto.getCep());
         if (viaCep.getCep() == null) {
-            throw new InvalidCepException("CEP invalido!");
+            throw new InvalidCepException(getMessage("address.cep.invalid"));
         }
 
         address.setCep(viaCep.getCep());
@@ -95,7 +95,6 @@ public class CollaboratorService {
 
         addressRepository.save(address);
 
-        // Atualiza dados do colaborador
         existing.setName(dto.getName());
         existing.setEmail(dto.getEmail());
         existing.setPhone(dto.getPhone());
@@ -108,7 +107,7 @@ public class CollaboratorService {
 
     public void delete(Long id) {
         if (!collaboratorRepository.existsById(id)) {
-            throw new NotFoundException("Colaborador não encontrado");
+            throw new NotFoundException(getMessage("collaborator.not-found"));
         }
         collaboratorRepository.deleteById(id);
     }
