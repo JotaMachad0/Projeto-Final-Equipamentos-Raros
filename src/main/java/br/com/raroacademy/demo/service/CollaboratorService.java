@@ -14,33 +14,42 @@ import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
 import br.com.raroacademy.demo.viaCep.ViaCepClient;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CollaboratorService {
 
-    private CollaboratorRepository collaboratorRepository;
-    private MapperCollaborator mapperCollaborator;
-    private MapperAddress mapperAddress;
-    private AddressRepository addressRepository;
-    private ViaCepClient viaCepClient;
+    private final CollaboratorRepository collaboratorRepository;
+    private final MapperCollaborator mapperCollaborator;
+    private final MapperAddress mapperAddress;
+    private final AddressRepository addressRepository;
+    private final ViaCepClient viaCepClient;
+    private final MessageSource messageSource;
+
+    private String getMessage(String code) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(code, null, locale);
+    }
 
     public CollaboratorResponseDTO save(CollaboratorRequestDTO request) {
         if (collaboratorRepository.existsByCpf(request.getCpf())) {
-            throw new UsedCpfException("CPF já cadastrado");
+            throw new UsedCpfException(getMessage("collaborator.cpf.already-exists"));
         }
 
         if (collaboratorRepository.existsByEmail(request.getEmail())) {
-            throw new UsedEmailException("E-mail já cadastrado");
+            throw new UsedEmailException(getMessage("collaborator.email.already-exists"));
         }
 
         var viaCep = viaCepClient.buscarEnderecoPorCep(request.getCep());
         if (viaCep.getCep() == null) {
-            throw new InvalidCepException("CEP invalido!");
+            throw new InvalidCepException(getMessage("address.cep.invalid"));
         }
 
         var addressEntity = mapperAddress.toEntity(request, viaCep);
