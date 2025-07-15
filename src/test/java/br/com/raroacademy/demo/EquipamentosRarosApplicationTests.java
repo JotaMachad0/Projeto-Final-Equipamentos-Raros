@@ -9,5 +9,4 @@ class EquipamentosRarosApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

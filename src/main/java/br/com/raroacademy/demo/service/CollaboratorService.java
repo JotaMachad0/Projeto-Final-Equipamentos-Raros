@@ -12,7 +12,7 @@ import br.com.raroacademy.demo.exception.UsedCpfException;
 import br.com.raroacademy.demo.exception.UsedEmailException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
-import br.com.raroacademy.demo.viaCep.ViaCepClient;
+import br.com.raroacademy.demo.client.ViaCepClient;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

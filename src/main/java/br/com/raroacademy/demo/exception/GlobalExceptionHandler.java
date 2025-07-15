@@ -104,4 +104,14 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorMessage> handleUnauthorizedException(UnauthorizedException ex,
+                                                                  HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNAUTHORIZED, ex.getMessage()));
+    }
+
 }

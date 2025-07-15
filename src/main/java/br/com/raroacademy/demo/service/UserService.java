@@ -1,10 +1,11 @@
 package br.com.raroacademy.demo.service;
 
+import br.com.raroacademy.demo.commons.email.EmailBody;
 import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.user.MapperUser;
+import br.com.raroacademy.demo.domain.DTO.user.SendEmailRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.UserRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.UserResponseDTO;
-import br.com.raroacademy.demo.domain.entities.UserEntity;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -22,10 +23,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final MapperUser mapperUser;
     private final I18nUtil i18n;
+    private final EmailBody emailBody;
+    private final CodeService codesService;
 
     public UserResponseDTO create(UserRequestDTO request) {
         var user = mapperUser.toUser(request);
-        UserEntity savedUser = userRepository.save(user);
+        var savedUser = userRepository.save(user);
         return mapperUser.toUserResponseDTO(savedUser);
     }
 
@@ -57,5 +60,19 @@ public class UserService {
     public List<UserResponseDTO> getAllUsers() {
         var userList = userRepository.findAll();
         return mapperUser.toUserList(userList);
+    }
+
+    public void sendEmailResetPassword(SendEmailRequestDTO request) {
+        var user = userRepository.findByEmail(request.email());
+        if (user == null) {
+            throw new NotFoundException(i18n.getMessage("user.does.not.have.with.email"));
+        }
+
+        var tokenResetPassword = codesService.addUserAndToken(user);
+        try {
+            emailBody.sendEmail(user.getEmail(), tokenResetPassword);
+        } catch (Exception e) {
+            throw new RuntimeException(i18n.getMessage("error.sending.email"));
+        }
     }
 }

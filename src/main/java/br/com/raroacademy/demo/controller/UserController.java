@@ -2,6 +2,7 @@ package br.com.raroacademy.demo.controller;
 
 import br.com.raroacademy.demo.commons.annotations.ApiController;
 import br.com.raroacademy.demo.commons.annotations.OpenApiController;
+import br.com.raroacademy.demo.domain.DTO.user.SendEmailRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.UserRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.UserResponseDTO;
 import br.com.raroacademy.demo.domain.annotations.user.*;
@@ -53,5 +54,11 @@ public class UserController {
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         var users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @SendEmailResetEndpoint
+    public ResponseEntity<Void> sendEmailResetPassword(@Valid @RequestBody SendEmailRequestDTO request ){
+        userService.sendEmailResetPassword(request);
+        return ResponseEntity.ok().build();
     }
 }
