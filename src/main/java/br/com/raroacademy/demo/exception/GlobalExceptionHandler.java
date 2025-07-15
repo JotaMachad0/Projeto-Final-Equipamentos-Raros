@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +32,8 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorMessage> dataIntegrityViolationException(DataIntegrityViolationException ex,
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessage> dataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException ex,
                                                                         HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
@@ -74,22 +73,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST,
                         "Data inválida. O formato correto é: yyyy-MM-dd (exemplo: 2025-12-31)"));
     }
-    @ExceptionHandler(UsedEmailException.class)
-    public ResponseEntity<ErrorMessage> handleUsedEmailException(UsedEmailException ex,
-                                                                HttpServletRequest request) {
-        log.error("Api error - ", ex);
-        return ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
-    }
-
-    @ExceptionHandler(UsedCpfException.class)
-    public ResponseEntity<ErrorMessage> handleUsedCpfException(UsedCpfException ex,
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessage> handleUsedEmailException(DataIntegrityViolationException ex,
                                                                  HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
     }
@@ -99,7 +88,7 @@ public class GlobalExceptionHandler {
                                                                HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
     }
