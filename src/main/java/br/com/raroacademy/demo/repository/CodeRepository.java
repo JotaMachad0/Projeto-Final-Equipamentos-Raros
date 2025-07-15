@@ -1,15 +1,11 @@
 package br.com.raroacademy.demo.repository;
 
+import br.com.raroacademy.demo.domain.entities.CodeEntity;
 import br.com.raroacademy.demo.domain.entities.UserEntity;
-import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    boolean existsByEmail(String email);
-
-    UserEntity findByEmail(String email);
+public interface CodeRepository extends JpaRepository<CodeEntity, Long> {
+    CodeEntity findByUser(UserEntity user);
 }

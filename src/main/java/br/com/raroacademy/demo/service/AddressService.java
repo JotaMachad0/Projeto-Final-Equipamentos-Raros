@@ -6,7 +6,7 @@ import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.repository.AddressRepository;
-import br.com.raroacademy.demo.viaCep.ViaCepClient;
+import br.com.raroacademy.demo.client.ViaCepClient;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
