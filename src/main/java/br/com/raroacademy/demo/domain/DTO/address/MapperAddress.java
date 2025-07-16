@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class MapperAddress {
 
     public AddressEntity toEntity(CollaboratorRequestDTO dto, ViaCepResponseDTO viaCep) {
+        String jsonParaTeste = "{\"cep\": \"01001-000\", \"logradouro\": \"Praça da Sé\", \"complemento\": \"lado ímpar\", \"bairro\": \"Sé\", \"localidade\": \"São Paulo\", \"uf\": \"SP\"}";
         return AddressEntity.builder()
                 .street(viaCep.getStreet())
                 .neighborhood(viaCep.getNeighborhood())
@@ -18,7 +19,7 @@ public class MapperAddress {
                 .number(dto.getNumber())
                 .complement(dto.getComplement())
                 .country("Brasil")
-                .respostaViaCepJson(viaCep.toString())
+                .respostaViaCepJson(jsonParaTeste)
                 .build();
     }
 

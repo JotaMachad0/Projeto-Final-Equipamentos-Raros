@@ -8,39 +8,47 @@ import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
 import br.com.raroacademy.demo.exception.InvalidCepException;
 import br.com.raroacademy.demo.exception.NotFoundException;
-import br.com.raroacademy.demo.exception.UsedCpfException;
-import br.com.raroacademy.demo.exception.UsedEmailException;
+import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
 import br.com.raroacademy.demo.client.ViaCepClient;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CollaboratorService {
 
-    private CollaboratorRepository collaboratorRepository;
-    private MapperCollaborator mapperCollaborator;
-    private MapperAddress mapperAddress;
-    private AddressRepository addressRepository;
-    private ViaCepClient viaCepClient;
+    private final CollaboratorRepository collaboratorRepository;
+    private final MapperCollaborator mapperCollaborator;
+    private final MapperAddress mapperAddress;
+    private final AddressRepository addressRepository;
+    private final ViaCepClient viaCepClient;
+    private final MessageSource messageSource;
+
+    private String getMessage(String code) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(code, null, locale);
+    }
 
     public CollaboratorResponseDTO save(CollaboratorRequestDTO request) {
         if (collaboratorRepository.existsByCpf(request.getCpf())) {
-            throw new UsedCpfException("CPF já cadastrado");
+            throw new DataIntegrityViolationException(getMessage("collaborator.cpf.already-exists"));
         }
 
         if (collaboratorRepository.existsByEmail(request.getEmail())) {
-            throw new UsedEmailException("E-mail já cadastrado");
+            throw new DataIntegrityViolationException(getMessage("collaborator.email.already-exists"));
         }
 
         var viaCep = viaCepClient.buscarEnderecoPorCep(request.getCep());
         if (viaCep.getCep() == null) {
-            throw new InvalidCepException("CEP invalido!");
+            throw new InvalidCepException(getMessage("address.cep.invalid"));
         }
 
         var addressEntity = mapperAddress.toEntity(request, viaCep);
@@ -53,21 +61,21 @@ public class CollaboratorService {
     }
 
     public CollaboratorResponseDTO getById(Long id) {
-        CollaboratorEntity collabboratorEntity = collaboratorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Colaborador não encontrado"));
+        CollaboratorEntity collaboratorEntity = collaboratorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(getMessage("collaborator.not-found")));
 
-        AddressEntity addressEntity = addressRepository.findById(collabboratorEntity.getAddressId())
-                .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+        AddressEntity addressEntity = addressRepository.findById(collaboratorEntity.getAddressId())
+                .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
 
         var address = mapperAddress.toDTO(addressEntity);
-        return mapperCollaborator.toResponse(collabboratorEntity, address);
+        return mapperCollaborator.toResponse(collaboratorEntity, address);
     }
 
     public List<CollaboratorResponseDTO> getAll() {
         return collaboratorRepository.findAll().stream()
                 .map(collaborator -> {
                     AddressEntity address = addressRepository.findById(collaborator.getAddressId())
-                            .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+                            .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
                     return mapperCollaborator.toResponse(collaborator, mapperAddress.toDTO(address));
                 })
                 .collect(Collectors.toList());
@@ -75,14 +83,14 @@ public class CollaboratorService {
 
     public CollaboratorResponseDTO update(Long id, CollaboratorRequestDTO dto) {
         CollaboratorEntity existing = collaboratorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Colaborador não encontrado"));
+                .orElseThrow(() -> new NotFoundException(getMessage("collaborator.not-found")));
 
         AddressEntity address = addressRepository.findById(existing.getAddressId())
-                .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+                .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
 
         var viaCep = viaCepClient.buscarEnderecoPorCep(dto.getCep());
         if (viaCep.getCep() == null) {
-            throw new InvalidCepException("CEP invalido!");
+            throw new InvalidCepException(getMessage("address.cep.invalid"));
         }
 
         address.setCep(viaCep.getCep());
@@ -95,7 +103,6 @@ public class CollaboratorService {
 
         addressRepository.save(address);
 
-        // Atualiza dados do colaborador
         existing.setName(dto.getName());
         existing.setEmail(dto.getEmail());
         existing.setPhone(dto.getPhone());
@@ -108,7 +115,7 @@ public class CollaboratorService {
 
     public void delete(Long id) {
         if (!collaboratorRepository.existsById(id)) {
-            throw new NotFoundException("Colaborador não encontrado");
+            throw new NotFoundException(getMessage("collaborator.not-found"));
         }
         collaboratorRepository.deleteById(id);
     }
