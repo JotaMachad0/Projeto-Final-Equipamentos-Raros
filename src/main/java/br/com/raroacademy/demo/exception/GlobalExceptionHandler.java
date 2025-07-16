@@ -33,14 +33,15 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorMessage> dataIntegrityViolationException(DataIntegrityViolationException ex,
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessage> dataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException ex,
                                                                         HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()));
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, i18n.getMessage("user.email.already.exists"))
+                );
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -72,23 +73,12 @@ public class GlobalExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, i18n.getMessage("invalid.date.format")));
     }
-
-    @ExceptionHandler(UsedEmailException.class)
-    public ResponseEntity<ErrorMessage> handleUsedEmailException(UsedEmailException ex,
-                                                                HttpServletRequest request) {
-        log.error("Api error - ", ex);
-        return ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
-    }
-
-    @ExceptionHandler(UsedCpfException.class)
-    public ResponseEntity<ErrorMessage> handleUsedCpfException(UsedCpfException ex,
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessage> handleUsedEmailException(DataIntegrityViolationException ex,
                                                                  HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
     }
@@ -98,9 +88,19 @@ public class GlobalExceptionHandler {
                                                                HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY) // Status 422
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorMessage> handleUnauthorizedException(UnauthorizedException ex,
+                                                                  HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNAUTHORIZED, ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidStatusException.class)
