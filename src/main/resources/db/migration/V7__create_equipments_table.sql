@@ -1,4 +1,4 @@
-CREATE TABLE equipment (
+CREATE TABLE equipments (
 
     id BIGINT PRIMARY KEY,
     type VARCHAR(100) NOT NULL,
