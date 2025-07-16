@@ -11,7 +11,7 @@ import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
-import br.com.raroacademy.demo.viaCep.ViaCepClient;
+import br.com.raroacademy.demo.client.ViaCepClient;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;

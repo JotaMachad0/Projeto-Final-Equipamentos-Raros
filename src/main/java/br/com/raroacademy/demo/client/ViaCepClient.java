@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.viaCep;
+package br.com.raroacademy.demo.client;
 
 import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;

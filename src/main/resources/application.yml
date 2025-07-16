@@ -1,6 +1,17 @@
 spring:
   application:
     name: equipamentos-raros
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 587
+    username: bc3b602d07dc99
+    password: daf0cc35b40b0c
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
