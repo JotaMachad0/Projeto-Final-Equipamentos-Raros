@@ -6,20 +6,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface ExpectedHiringRepository extends JpaRepository<ExpectedHiringEntity, Long> {
-    boolean existsByExpectedHireDateAndPositionIgnoreCaseAndEquipmentRequirementsIgnoreCaseAndRegion(
+    Optional<ExpectedHiringEntity> findByExpectedHireDateAndPositionIgnoreCaseAndRegion(
             LocalDate expectedHireDate,
             String position,
-            String equipmentRequirements,
             Region region
     );
 
-    boolean existsByExpectedHireDateAndPositionIgnoreCaseAndEquipmentRequirementsIgnoreCaseAndRegionAndIdNot(
+    Optional<ExpectedHiringEntity> findByExpectedHireDateAndPositionIgnoreCaseAndRegionAndIdNot(
             LocalDate expectedHireDate,
             String position,
-            String equipmentRequirements,
             Region region,
             Long id
     );

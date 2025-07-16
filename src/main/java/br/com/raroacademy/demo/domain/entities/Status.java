@@ -2,16 +2,15 @@ package br.com.raroacademy.demo.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Region {
-    Centro_Oeste("Centro-Oeste"),
-    Nordeste("Nordeste"),
-    Norte("Norte"),
-    Sudeste("Sudeste"),
-    Sul("Sul");
+public enum Status {
+    Criada("Criada"),
+    Processada("Processada"),
+    Concluída("Concluída"),
+    Vencida("Vencida");
 
     private final String label;
 
-    Region(String label) {
+    Status(String label) {
         this.label = label;
     }
 

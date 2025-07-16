@@ -40,8 +40,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.CONFLICT, i18n.getMessage("user.email.already.exists"))
-                );
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -54,8 +53,8 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorMessage> handleIllegalArgumentException(IllegalArgumentException ex,
+    @ExceptionHandler(InvalidArgumentException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidArgumentException(InvalidArgumentException ex,
                                                                        HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
@@ -71,9 +70,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST,
-                        "Data inválida. O formato correto é: yyyy-MM-dd (exemplo: 2025-12-31)"));
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, i18n.getMessage("invalid.date.format")));
     }
+
     @ExceptionHandler(UsedEmailException.class)
     public ResponseEntity<ErrorMessage> handleUsedEmailException(UsedEmailException ex,
                                                                 HttpServletRequest request) {
@@ -104,4 +103,24 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
     }
 
+    @ExceptionHandler(InvalidStatusException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidStatusException(InvalidStatusException ex,
+                                                                  HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ExpectedHiringAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> handleBusinessException(
+            ExpectedHiringAlreadyExistsException ex, HttpServletRequest request
+    ) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessageKey()));
+    }
 }
