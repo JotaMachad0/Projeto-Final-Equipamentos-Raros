@@ -1,32 +1,34 @@
 package br.com.raroacademy.demo.controller;
 
+import br.com.raroacademy.demo.commons.annotations.ApiController;
+import br.com.raroacademy.demo.commons.annotations.OpenApiController;
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentResponseDTO;
 import br.com.raroacademy.demo.domain.annotations.equipment.CreateEquipmentEndpoint;
 import br.com.raroacademy.demo.domain.annotations.equipment.GetAllEquipmentsEndpoint;
 import br.com.raroacademy.demo.service.EquipmentService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/equipments")
+@OpenApiController(name = "Equipments")
+@ApiController(path = "/equipments")
+@AllArgsConstructor
 public class EquipmentController {
 
     private final EquipmentService service;
 
-    public EquipmentController(EquipmentService service) {
-        this.service = service;
-    }
-
     @CreateEquipmentEndpoint
-    public EquipmentResponseDTO create(@RequestBody @Valid EquipmentRequestDTO dto) {
-        return service.create(dto);
+    public ResponseEntity<EquipmentResponseDTO> create(@RequestBody @Valid EquipmentRequestDTO dto) {
+        return ResponseEntity.ok(service.create(dto));
     }
 
     @GetAllEquipmentsEndpoint
-    public List<EquipmentResponseDTO> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<EquipmentResponseDTO>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
