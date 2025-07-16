@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Getter
+@Setter
 @RequiredArgsConstructor
 @Entity
 @EqualsAndHashCode
@@ -29,13 +30,18 @@ public class ExpectedHiringEntity {
     @Column(name = "region", nullable = false)
     private Region region;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
     @Builder
     public ExpectedHiringEntity(Long id, LocalDate expectedHireDate, String position,
-                                String equipmentRequirements, Region region) {
+                                String equipmentRequirements, Region region, Status status) {
         this.id = id;
         this.expectedHireDate = expectedHireDate;
         this.position = position;
         this.equipmentRequirements = equipmentRequirements;
         this.region = region;
+        this.status = status;
     }
 }
