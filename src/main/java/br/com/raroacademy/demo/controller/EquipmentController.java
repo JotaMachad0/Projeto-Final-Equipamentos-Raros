@@ -20,13 +20,11 @@ public class EquipmentController {
         this.service = service;
     }
 
-    @PostMapping
     @CreateEquipmentEndpoint
     public EquipmentResponseDTO create(@RequestBody @Valid EquipmentRequestDTO dto) {
         return service.create(dto);
     }
 
-    @GetMapping
     @GetAllEquipmentsEndpoint
     public List<EquipmentResponseDTO> getAll() {
         return service.getAll();
