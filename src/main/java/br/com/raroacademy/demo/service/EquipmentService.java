@@ -1,34 +1,61 @@
 package br.com.raroacademy.demo.service;
 
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
+import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentRepository;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EquipmentService {
 
-    private final EquipmentRepository repository;
-
-    public EquipmentService(EquipmentRepository repository) {
-        this.repository = repository;
-    }
+    private final EquipmentRepository equipmentRepository;
+    private final MapperEquipment mapperEquipment;
+    private final I18nUtil i18n;
 
     public EquipmentResponseDTO create(EquipmentRequestDTO dto) {
-        EquipmentEntity entity = MapperEquipment.toEntity(dto);
-        repository.save(entity);
-        return MapperEquipment.toDTO(entity);
+        EquipmentEntity entity = mapperEquipment.toEntity(dto);
+        equipmentRepository.save(entity);
+        return mapperEquipment.toDTO(entity);
     }
 
     public List<EquipmentResponseDTO> getAll() {
-        return repository.findAll()
+        return equipmentRepository.findAll()
                 .stream()
-                .map(MapperEquipment::toDTO)
+                .map(mapperEquipment::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public EquipmentResponseDTO update(Long id, @Valid EquipmentRequestDTO request) {
+        var existingEquipment = equipmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
+
+        if (!existingEquipment.getSerialNumber().equals(request.getSerialNumber()) &&
+                equipmentRepository.existsBySerialNumber(request.getSerialNumber())) {
+            throw new DataIntegrityViolationException(i18n.getMessage("equipment.serialNumber.already.exists"));
+        }
+
+        var updatedEquipment = mapperEquipment.toUpdateEquipment(existingEquipment, request);
+        var savedEquipment = equipmentRepository.save(updatedEquipment);
+
+        return mapperEquipment.toDTO(savedEquipment);
+    }
+
+    public void delete(Long id) {
+        var user = equipmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
+        equipmentRepository.delete(user);
     }
 }

@@ -1,10 +1,12 @@
 package br.com.raroacademy.demo.domain.DTO.equipment;
 
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MapperEquipment {
 
-    public static EquipmentEntity toEntity(EquipmentRequestDTO dto) {
+    public EquipmentEntity toEntity(EquipmentRequestDTO dto) {
         return EquipmentEntity.builder()
                 .id(dto.getId())
                 .type(dto.getType())
@@ -18,7 +20,7 @@ public class MapperEquipment {
                 .build();
     }
 
-    public static EquipmentResponseDTO toDTO(EquipmentEntity entity) {
+    public EquipmentResponseDTO toDTO(EquipmentEntity entity) {
         return EquipmentResponseDTO.builder()
                 .id(entity.getId())
                 .type(entity.getType())
@@ -30,5 +32,17 @@ public class MapperEquipment {
                 .usageTimeMonths(entity.getUsageTimeMonths())
                 .status(entity.getStatus())
                 .build();
+    }
+
+    public EquipmentEntity toUpdateEquipment(EquipmentEntity entity, EquipmentRequestDTO request) {
+        entity.setType(request.getType());
+        entity.setSerialNumber(request.getSerialNumber());
+        entity.setBrand(request.getBrand());
+        entity.setModel(request.getModel());
+        entity.setSpecs(request.getSpecs());
+        entity.setAcquisitionDate(request.getAcquisitionDate());
+        entity.setUsageTimeMonths(request.getUsageTimeMonths());
+        entity.setStatus(request.getStatus());
+        return entity;
     }
 }
