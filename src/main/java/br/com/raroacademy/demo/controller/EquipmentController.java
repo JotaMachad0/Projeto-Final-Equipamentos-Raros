@@ -28,6 +28,12 @@ public class EquipmentController {
         return ResponseEntity.ok(equipmentService.create(dto));
     }
 
+    @GetEquipmentEndpoint
+    public ResponseEntity<EquipmentResponseDTO> getEquipment(@PathVariable Long id) {
+        var equipment = equipmentService.getEquipmentById(id);
+        return ResponseEntity.ok(equipment);
+    }
+
     @GetAllEquipmentsEndpoint
     public ResponseEntity<List<EquipmentResponseDTO>> getAll() {
         return ResponseEntity.ok(equipmentService.getAll());

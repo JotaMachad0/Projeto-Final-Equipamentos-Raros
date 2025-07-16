@@ -37,6 +37,12 @@ public class EquipmentService {
                 .collect(Collectors.toList());
     }
 
+    public EquipmentResponseDTO getEquipmentById(Long id) {
+        var equipment = equipmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
+        return mapperEquipment.toDTO(equipment);
+    }
+
     @Transactional
     public EquipmentResponseDTO update(Long id, @Valid EquipmentRequestDTO request) {
         var existingEquipment = equipmentRepository.findById(id)
@@ -54,8 +60,8 @@ public class EquipmentService {
     }
 
     public void delete(Long id) {
-        var user = equipmentRepository.findById(id)
+        var equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
-        equipmentRepository.delete(user);
+        equipmentRepository.delete(equipment);
     }
 }
