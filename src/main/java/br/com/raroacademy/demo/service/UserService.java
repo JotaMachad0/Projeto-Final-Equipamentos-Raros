@@ -28,8 +28,12 @@ public class UserService {
 
     public UserResponseDTO create(UserRequestDTO request) {
         var user = mapperUser.toUser(request);
-        var savedUser = userRepository.save(user);
-        return mapperUser.toUserResponseDTO(savedUser);
+        try {
+            var savedUser = userRepository.save(user);
+            return mapperUser.toUserResponseDTO(savedUser);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException(i18n.getMessage("user.email.already.exists"));
+        }
     }
 
     public UserResponseDTO getUserById(Long id) {
