@@ -23,16 +23,14 @@ public class EquipmentController {
     private final EquipmentService equipmentService;
 
 
-    @PostMapping
     @CreateEquipmentEndpoint
-    public EquipmentResponseDTO create(@RequestBody @Valid EquipmentRequestDTO dto) {
-        return equipmentService.create(dto);
+    public ResponseEntity<EquipmentResponseDTO> create(@RequestBody @Valid EquipmentRequestDTO dto) {
+        return ResponseEntity.ok(equipmentService.create(dto));
     }
 
-    @GetMapping
     @GetAllEquipmentsEndpoint
-    public List<EquipmentResponseDTO> getAll() {
-        return equipmentService.getAll();
+    public ResponseEntity<List<EquipmentResponseDTO>> getAll() {
+        return ResponseEntity.ok(equipmentService.getAll());
     }
 
     @UpdateEquipmentEndpoint
