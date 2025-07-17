@@ -44,3 +44,12 @@ springdoc:
     tagsSorter: alpha
     operationsSorter: method
     doc-expansion: none
+
+feign:
+  client:
+    default:
+      connectiimeout: 5000
+      readtimeout: 5000
+      LoggerLevel: basic
+  viaCep:
+    url: https://viacep.com.br/ws
