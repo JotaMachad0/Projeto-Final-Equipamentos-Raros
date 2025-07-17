@@ -1,29 +1,29 @@
 package br.com.raroacademy.demo.domain.DTO.stock.parameters;
 
-import br.com.raroacademy.demo.domain.entities.StockParameter;
+import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
+import br.com.raroacademy.demo.domain.entities.StockParameterEntity;
 
 public class MapperStockParameter {
 
-    public static StockParameter toEntity(StockParameterRequestDTO dto) {
-        return StockParameter.builder()
-                .equipmentType(dto.getEquipmentType())
+    public static StockParameterEntity toEntity(StockParameterRequestDTO dto, EquipmentEntity equipment) {
+        return StockParameterEntity.builder()
+                .equipment(equipment)
                 .minStock(dto.getMinStock())
                 .avgRestockTimeDays(dto.getAvgRestockTimeDays())
                 .avgStockConsumptionTimeDays(dto.getAvgStockConsumptionTimeDays())
-                .avgDeliveryTimeDays(dto.getAvgDeliveryTimeDays())
-                .avgDefectiveRate(Float.valueOf(dto.getAvgDefectiveRate()))
+                .avgDefectiveRate(dto.getAvgDefectiveRate())
                 .build();
     }
 
-    public static StockParameterResponseDTO toResponseDTO(StockParameter entity) {
-        return new StockParameterResponseDTO(
-                entity.getId(),
-                entity.getEquipmentType(),
-                entity.getMinStock(),
-                entity.getAvgRestockTimeDays(),
-                entity.getAvgStockConsumptionTimeDays(),
-                entity.getAvgDeliveryTimeDays(),
-                entity.getAvgDefectiveRate()
-        );
+    public static StockParameterResponseDTO toResponseDTO(StockParameterEntity entity) {
+        return StockParameterResponseDTO.builder()
+                .id(entity.getId())
+                .equipmentId(entity.getEquipment().getId())
+                .minStock(entity.getMinStock())
+                .avgRestockTimeDays(entity.getAvgRestockTimeDays())
+                .avgStockConsumptionTimeDays(entity.getAvgStockConsumptionTimeDays())
+                .avgDeliveryTimeDays(entity.getAvgDeliveryTimeDays())
+                .avgDefectiveRate(entity.getAvgDefectiveRate())
+                .build();
     }
 }

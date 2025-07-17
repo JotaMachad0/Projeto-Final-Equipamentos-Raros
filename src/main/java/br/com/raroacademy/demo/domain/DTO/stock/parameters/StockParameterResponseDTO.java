@@ -12,8 +12,8 @@ public class StockParameterResponseDTO {
     @Schema(description = "ID do parâmetro", example = "1")
     private Long id;
 
-    @Schema(description = "Tipo de equipamento", example = "Notebook")
-    private String equipmentType;
+    @Schema(description = "ID do equipamento", example = "1")
+    private Long equipmentId;
 
     @Schema(description = "Estoque mínimo recomendado", example = "10")
     private Integer minStock;

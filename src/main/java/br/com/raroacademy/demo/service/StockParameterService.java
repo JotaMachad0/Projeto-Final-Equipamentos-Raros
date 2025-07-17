@@ -2,12 +2,12 @@ package br.com.raroacademy.demo.service;
 
 import br.com.raroacademy.demo.domain.DTO.stock.parameters.StockParameterRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.stock.parameters.StockParameterResponseDTO;
-import br.com.raroacademy.demo.domain.entities.StockParameter;
 import br.com.raroacademy.demo.domain.DTO.stock.parameters.MapperStockParameter;
+import br.com.raroacademy.demo.domain.entities.StockParameterEntity;
+import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.StockParameterRepository;
-import br.com.raroacademy.demo.service.CollaboratorService;
-import br.com.raroacademy.demo.utils.RegionUtils;
+import br.com.raroacademy.demo.repository.EquipmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +19,20 @@ import java.util.stream.Collectors;
 public class StockParameterService {
 
     private final StockParameterRepository repository;
-    private final CollaboratorService collaboratorService;
+    private final EquipmentRepository equipmentRepository;
+
+    private static final int DEFAULT_DELIVERY_DAYS = 3; // SEDEX médio nacional
 
     public StockParameterResponseDTO create(StockParameterRequestDTO request) {
-        var entity = MapperStockParameter.toEntity(request);
-        return MapperStockParameter.toResponseDTO(repository.save(entity));
+        EquipmentEntity equipment = equipmentRepository.findById(request.getEquipmentId())
+                .orElseThrow(() -> new NotFoundException("Equipment not found with id: " + request.getEquipmentId()));
+
+        // Define valor padrão para avgDeliveryTimeDays
+        StockParameterEntity entity = MapperStockParameter.toEntity(request, equipment);
+        entity.setAvgDeliveryTimeDays(DEFAULT_DELIVERY_DAYS);
+
+        StockParameterEntity saved = repository.save(entity);
+        return MapperStockParameter.toResponseDTO(saved);
     }
 
     public List<StockParameterResponseDTO> findAll() {
@@ -34,35 +43,31 @@ public class StockParameterService {
     }
 
     public StockParameterResponseDTO findById(Long id) {
-        var entity = repository.findById(id)
+        StockParameterEntity entity = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("StockParameter not found with id: " + id));
         return MapperStockParameter.toResponseDTO(entity);
     }
 
     public StockParameterResponseDTO update(Long id, StockParameterRequestDTO request) {
-        var existing = repository.findById(id)
+        StockParameterEntity existing = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("StockParameter not found with id: " + id));
 
-        existing.setEquipmentType(request.getEquipmentType());
+        EquipmentEntity equipment = equipmentRepository.findById(request.getEquipmentId())
+                .orElseThrow(() -> new NotFoundException("Equipment not found with id: " + request.getEquipmentId()));
+
+        existing.setEquipment(equipment);
         existing.setMinStock(request.getMinStock());
         existing.setAvgRestockTimeDays(request.getAvgRestockTimeDays());
         existing.setAvgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays());
         existing.setAvgDefectiveRate(request.getAvgDefectiveRate());
+        existing.setAvgDeliveryTimeDays(DEFAULT_DELIVERY_DAYS); // Mantém valor padrão
 
-        var collaborator = collaboratorService.getAnyCollaboratorWithValidCep()
-                .orElseThrow(() -> new NotFoundException("No collaborator with valid CEP found"));
-
-        String cep = collaborator.getAddress().getCep();
-        String region = RegionUtils.getRegionFromCep(cep);
-        int deliveryTime = RegionUtils.getDeliveryTimeByRegion(region);
-
-        existing.setAvgDeliveryTimeDays(deliveryTime);
-
-        return MapperStockParameter.toResponseDTO(repository.save(existing));
+        StockParameterEntity updated = repository.save(existing);
+        return MapperStockParameter.toResponseDTO(updated);
     }
 
     public void delete(Long id) {
-        var existing = repository.findById(id)
+        StockParameterEntity existing = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("StockParameter not found with id: " + id));
         repository.delete(existing);
     }

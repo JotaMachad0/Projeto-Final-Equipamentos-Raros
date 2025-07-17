@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -121,16 +120,4 @@ public class CollaboratorService {
         collaboratorRepository.deleteById(id);
     }
 
-    public Optional<CollaboratorEntity> getAnyCollaboratorWithValidCep() {
-        return collaboratorRepository.findAll().stream()
-                .filter(collaborator -> {
-                    Long addressId = collaborator.getAddressId();
-                    if (addressId == null) return false;
-
-                    return addressRepository.findById(addressId)
-                            .map(address -> address.getCep() != null && !address.getCep().isBlank())
-                            .orElse(false);
-                })
-                .findFirst();
-    }
 }

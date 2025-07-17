@@ -10,14 +10,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StockParameter {
+public class StockParameterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "equipment_type", nullable = false)
-    private String equipmentType;
 
     @Column(name = "min_stock", nullable = false)
     private Integer minStock;
@@ -33,4 +30,8 @@ public class StockParameter {
 
     @Column(name = "avg_defective_rate", nullable = false)
     private Float avgDefectiveRate;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipment_id", nullable = false)
+    private EquipmentEntity equipment;
 }

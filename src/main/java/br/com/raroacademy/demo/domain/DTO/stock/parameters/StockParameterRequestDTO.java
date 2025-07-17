@@ -10,9 +10,9 @@ import lombok.Setter;
 @Schema(name = "StockParameterRequestDTO", description = "DTO para criação de parâmetros de estoque")
 public class StockParameterRequestDTO {
 
-    @NotBlank
-    @Schema(description = "Tipo de equipamento", example = "Notebook")
-    private String equipmentType;
+    @NotNull
+    @Schema(description = "ID do equipamento", example = "1")
+    private Long equipmentId;
 
     @NotNull
     @Schema(description = "Estoque mínimo recomendado", example = "10")
@@ -25,10 +25,6 @@ public class StockParameterRequestDTO {
     @NotNull
     @Schema(description = "Tempo médio de consumo do estoque (em dias)", example = "15")
     private Integer avgStockConsumptionTimeDays;
-
-    @NotNull
-    @Schema(description = "Tempo médio de entrega (em dias)", example = "3")
-    private Integer avgDeliveryTimeDays;
 
     @NotNull
     @Schema(description = "Taxa média de equipamentos com defeito", example = "0.05")
