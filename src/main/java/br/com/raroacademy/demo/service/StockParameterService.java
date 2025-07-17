@@ -21,13 +21,12 @@ public class StockParameterService {
     private final StockParameterRepository repository;
     private final EquipmentRepository equipmentRepository;
 
-    private static final int DEFAULT_DELIVERY_DAYS = 3; // SEDEX médio nacional
+    private static final int DEFAULT_DELIVERY_DAYS = 3;
 
     public StockParameterResponseDTO create(StockParameterRequestDTO request) {
         EquipmentEntity equipment = equipmentRepository.findById(request.getEquipmentId())
                 .orElseThrow(() -> new NotFoundException("Equipment not found with id: " + request.getEquipmentId()));
 
-        // Define valor padrão para avgDeliveryTimeDays
         StockParameterEntity entity = MapperStockParameter.toEntity(request, equipment);
         entity.setAvgDeliveryTimeDays(DEFAULT_DELIVERY_DAYS);
 
@@ -60,7 +59,7 @@ public class StockParameterService {
         existing.setAvgRestockTimeDays(request.getAvgRestockTimeDays());
         existing.setAvgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays());
         existing.setAvgDefectiveRate(request.getAvgDefectiveRate());
-        existing.setAvgDeliveryTimeDays(DEFAULT_DELIVERY_DAYS); // Mantém valor padrão
+        existing.setAvgDeliveryTimeDays(DEFAULT_DELIVERY_DAYS);
 
         StockParameterEntity updated = repository.save(existing);
         return MapperStockParameter.toResponseDTO(updated);
