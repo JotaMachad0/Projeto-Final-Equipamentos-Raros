@@ -30,7 +30,7 @@ public class EquipmentController {
 
     @GetEquipmentEndpoint
     public ResponseEntity<EquipmentResponseDTO> getEquipment(@PathVariable Long id) {
-        var equipment = equipmentService.getEquipmentById(id);
+        var equipment = equipmentService.getEquipment(id);
         return ResponseEntity.ok(equipment);
     }
 

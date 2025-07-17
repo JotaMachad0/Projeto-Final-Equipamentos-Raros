@@ -8,7 +8,6 @@ public class MapperEquipment {
 
     public EquipmentEntity toEntity(EquipmentRequestDTO dto) {
         return EquipmentEntity.builder()
-                .id(dto.getId())
                 .type(dto.getType())
                 .serialNumber(dto.getSerialNumber())
                 .brand(dto.getBrand())

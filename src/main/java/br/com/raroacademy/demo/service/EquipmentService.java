@@ -30,14 +30,7 @@ public class EquipmentService {
         return mapperEquipment.toDTO(entity);
     }
 
-    public List<EquipmentResponseDTO> getAll() {
-        return equipmentRepository.findAll()
-                .stream()
-                .map(mapperEquipment::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public EquipmentResponseDTO getEquipmentById(Long id) {
+    public EquipmentResponseDTO getEquipment(Long id) {
         var equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
         return mapperEquipment.toDTO(equipment);
@@ -63,5 +56,12 @@ public class EquipmentService {
         var equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
         equipmentRepository.delete(equipment);
+    }
+
+    public List<EquipmentResponseDTO> getAll() {
+        return equipmentRepository.findAll()
+                .stream()
+                .map(mapperEquipment::toDTO)
+                .collect(Collectors.toList());
     }
 }

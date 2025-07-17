@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class EquipmentEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
