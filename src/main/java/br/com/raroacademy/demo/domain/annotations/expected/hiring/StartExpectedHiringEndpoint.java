@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Operation(summary = "Mark expected hiring as processed",
         description = "Endpoint responsible for updating the status of an expected hiring from 'Criada' to 'Processada'",
         parameters = {
-                @Parameter(name = "id", example = "1", description = "ID da previsão de contratação")
+                @Parameter(name = "id", example = "1", description = "Expected hiring ID")
         }
 )
 @RequestMapping(method = RequestMethod.PUT, path = "/{id}/start", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,6 +1,6 @@
-package br.com.raroacademy.demo.domain.annotations.expected.hiring;
+package br.com.raroacademy.demo.domain.annotations.stock;
 
-import br.com.raroacademy.demo.commons.annotations.OpenApiResponse200;
+import br.com.raroacademy.demo.commons.annotations.OpenApiResponse204;
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse404;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,16 +13,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Operation(summary = "Get expected hiring",
-        description = "Endpoint responsible for searching for a single expected hiring",
+@Operation(summary = "Delete equipment stock",
+        description = "Endpoint responsible for deleting an equipment stock",
         parameters = {
-                @Parameter(name = "id", example = "1", description = "Expected hiring ID")
+                @Parameter(name = "id", example = "1", description = "Equipment stock ID")
         }
 )
-@RequestMapping(method = RequestMethod.GET, path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-@OpenApiResponse200
+@RequestMapping(method = RequestMethod.DELETE, path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+@OpenApiResponse204
 @OpenApiResponse404
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GetExpectedHiringEndpoint {
+public @interface DeleteEquipmentStockEndpoint {
 }

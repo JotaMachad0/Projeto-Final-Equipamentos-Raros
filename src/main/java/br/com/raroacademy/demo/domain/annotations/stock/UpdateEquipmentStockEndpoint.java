@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.annotations.expected.hiring;
+package br.com.raroacademy.demo.domain.annotations.stock;
 
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse200;
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse404;
@@ -15,10 +15,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Operation(summary = "Update expected hiring",
-        description = "Endpoint responsible for updating an expected hiring.",
+@Operation(summary = "Update equipment stock",
+        description = "Endpoint responsible for updating an equipment stock.",
         parameters = {
-                @Parameter(name = "id", example = "1", description = "Expected hiring ID")
+                @Parameter(name = "id", example = "1", description = "Equipment stock ID")
         }
 )
 @RequestMapping(method = RequestMethod.PUT, path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,5 +28,5 @@ import java.lang.annotation.Target;
 @OpenApiResponse422
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UpdateExpectedHiringEndpoint {
+public @interface UpdateEquipmentStockEndpoint {
 }

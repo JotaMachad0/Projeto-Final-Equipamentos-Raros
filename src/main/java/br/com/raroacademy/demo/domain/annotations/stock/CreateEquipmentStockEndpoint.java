@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.annotations.expected.hiring;
+package br.com.raroacademy.demo.domain.annotations.stock;
 
 import br.com.raroacademy.demo.commons.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,8 +11,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Operation(summary = "Create expected hiring",
-        description = "Endpoint responsible for creating a new expected hiring."
+@Operation(summary = "Create equipment stock",
+        description = "Endpoint responsible for creating a new equipment stock."
 )
 @RequestMapping(method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
 @OpenApiResponse200
@@ -22,5 +22,5 @@ import java.lang.annotation.Target;
 @OpenApiResponse422
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CreateExpectedHiringEndpoint {
+public @interface CreateEquipmentStockEndpoint {
 }

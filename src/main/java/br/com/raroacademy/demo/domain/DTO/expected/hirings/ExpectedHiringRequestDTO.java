@@ -9,24 +9,23 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 
-@Schema(description = "Dados da previsão de contratação fornecidos pelo usuário")
+@Schema(description = "Dados para cadastro ou atualização da previsão de contratação")
 public record ExpectedHiringRequestDTO(
         @NotNull
         @Future(message = "A data de contratação deve ser no futuro")
-        @Schema(example = "2025-12-31", description = "Data prevista para a(s) contratação(ões)")
+        @Schema(example = "2025-12-31", description = "Data prevista")
         LocalDate expectedHireDate,
 
         @NotBlank
         @Length(max = 100)
-        @Schema(example = "Desenvolvedor", description = "Cargo previsto para a(s) contratação(ões)")
+        @Schema(example = "Desenvolvedor", description = "Cargo previsto")
         String position,
 
         @NotBlank
-        @Schema(example = "1 notebook 16GB, 2 celulares",
-                description = "Equipamentos requisitados pela previsão de contratação")
+        @Schema(example = "1 notebook 16GB, 2 celulares", description = "Equipamentos requisitados")
         String equipmentRequirements,
 
         @NotNull
-        @Schema(example = "Centro-Oeste", description = "Região de origem da(s) pessoa(s) a ser(em) contratada(s)")
+        @Schema(example = "Centro-Oeste", description = "Região de origem")
         Region region) {
 }
