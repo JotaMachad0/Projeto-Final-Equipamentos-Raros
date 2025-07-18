@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @RequiredArgsConstructor
@@ -21,9 +22,11 @@ public class UserEntity {
     @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
+    @Setter
     @Column(name = "password", nullable = false, length = 50)
     private String password;
 
+    @Setter
     @Column(name = "email_confirmed")
     private Boolean emailConfirmed;
 

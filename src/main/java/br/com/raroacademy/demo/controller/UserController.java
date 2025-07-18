@@ -2,6 +2,7 @@ package br.com.raroacademy.demo.controller;
 
 import br.com.raroacademy.demo.commons.annotations.ApiController;
 import br.com.raroacademy.demo.commons.annotations.OpenApiController;
+import br.com.raroacademy.demo.domain.DTO.user.ChangePasswordRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.SendEmailRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.UserRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.user.UserResponseDTO;
@@ -59,6 +60,24 @@ public class UserController {
     @SendEmailResetEndpoint
     public ResponseEntity<Void> sendEmailResetPassword(@Valid @RequestBody SendEmailRequestDTO request ){
         userService.sendEmailResetPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @ChangePasswordEndpoint
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequestDTO request ){
+        userService.changePassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @ConfirmEmailEndpoint
+    public ResponseEntity<Void> confirmEmail(@RequestParam String email, @RequestParam Long token) {
+        userService.confirmEmail(email, token);
+        return ResponseEntity.ok().build();
+    }
+
+    @ResendConfirmEmailEndpoint
+    public ResponseEntity<Void> resendConfirmationEmail(@Valid @RequestBody SendEmailRequestDTO request) {
+        userService.resendConfirmationEmail(request);
         return ResponseEntity.ok().build();
     }
 }
