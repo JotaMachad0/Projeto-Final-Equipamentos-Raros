@@ -28,11 +28,13 @@ public class SecurityConfig {
                         authorizeConfig -> {
                             authorizeConfig.requestMatchers(
                                     "https://viacep.com.br/ws",
-                                    "/users/**",
                                     "/v3/api-docs.yaml",
                                     "/v3/api-docs/**",
                                     "/swagger-ui/**",
-                                    "/swagger-ui.html").permitAll();
+                                    "/swagger-ui.html",
+                                    "/users/confirm-email",
+                                    "/users/confirm-email/**",
+                                    "/users/resend-confirm-email").permitAll();
                             authorizeConfig.anyRequest().authenticated();
                         }
                 )

@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessage> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
-                                                                 HttpServletRequest request) {
+                                                                              HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCepException.class)
     public ResponseEntity<ErrorMessage> handleInvalidCepException(InvalidCepException ex,
-                                                               HttpServletRequest request) {
+                                                                  HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorMessage> handleUnauthorizedException(UnauthorizedException ex,
-                                                                  HttpServletRequest request) {
+                                                                    HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidStatusException.class)
     public ResponseEntity<ErrorMessage> handleInvalidStatusException(InvalidStatusException ex,
-                                                                  HttpServletRequest request) {
+                                                                     HttpServletRequest request) {
         log.error("Api error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -112,5 +112,14 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessageKey()));
+    }
+
+    @ExceptionHandler(CodeException.class)
+    public ResponseEntity<ErrorMessage> handleCodeException(CodeException ex, HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 }
