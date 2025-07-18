@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.equipment;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ public class MapperEquipment {
 
     public EquipmentEntity toEntity(EquipmentRequestDTO dto) {
         return EquipmentEntity.builder()
-                .type(dto.getType())
+                .type(EquipmentType.valueOf(dto.getType().toUpperCase()))
                 .serialNumber(dto.getSerialNumber())
                 .brand(dto.getBrand())
                 .model(dto.getModel())
@@ -22,7 +23,7 @@ public class MapperEquipment {
     public EquipmentResponseDTO toDTO(EquipmentEntity entity) {
         return EquipmentResponseDTO.builder()
                 .id(entity.getId())
-                .type(entity.getType())
+                .type(entity.getType().name())
                 .serialNumber(entity.getSerialNumber())
                 .brand(entity.getBrand())
                 .model(entity.getModel())
@@ -34,7 +35,7 @@ public class MapperEquipment {
     }
 
     public EquipmentEntity toUpdateEquipment(EquipmentEntity entity, EquipmentRequestDTO request) {
-        entity.setType(request.getType());
+        entity.setType(EquipmentType.valueOf(request.getType().toUpperCase()));
         entity.setSerialNumber(request.getSerialNumber());
         entity.setBrand(request.getBrand());
         entity.setModel(request.getModel());
