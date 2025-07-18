@@ -6,8 +6,8 @@ import br.com.raroacademy.demo.domain.DTO.stock.parameters.MapperStockParameter;
 import br.com.raroacademy.demo.domain.entities.StockParameterEntity;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
 import br.com.raroacademy.demo.exception.NotFoundException;
-import br.com.raroacademy.demo.repository.StockParameterRepository;
 import br.com.raroacademy.demo.repository.EquipmentRepository;
+import br.com.raroacademy.demo.repository.StockParameterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,56 +18,63 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StockParameterService {
 
-    private final StockParameterRepository repository;
+    private final StockParameterRepository stockParameterRepository;
     private final EquipmentRepository equipmentRepository;
-
-    private static final int DEFAULT_DELIVERY_DAYS = 3;
 
     public StockParameterResponseDTO create(StockParameterRequestDTO request) {
         EquipmentEntity equipment = equipmentRepository.findById(request.getEquipmentId())
-                .orElseThrow(() -> new NotFoundException("Equipment not found with id: " + request.getEquipmentId()));
+                .orElseThrow(() -> new NotFoundException("Equipment not found with ID: " + request.getEquipmentId()));
 
-        StockParameterEntity entity = MapperStockParameter.toEntity(request, equipment);
-        entity.setAvgDeliveryTimeDays(DEFAULT_DELIVERY_DAYS);
+        int minStock = equipment.getType().getMinimumStock();
 
-        StockParameterEntity saved = repository.save(entity);
+        StockParameterEntity entity = StockParameterEntity.builder()
+                .equipment(equipment)
+                .minStock(minStock)
+                .avgRestockTimeDays(request.getAvgRestockTimeDays())
+                .avgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays())
+                .avgDefectiveRate(request.getAvgDefectiveRate())
+                .build();
+
+        StockParameterEntity saved = stockParameterRepository.save(entity);
         return MapperStockParameter.toResponseDTO(saved);
     }
 
     public List<StockParameterResponseDTO> findAll() {
-        return repository.findAll()
+        return stockParameterRepository.findAll()
                 .stream()
                 .map(MapperStockParameter::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     public StockParameterResponseDTO findById(Long id) {
-        StockParameterEntity entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("StockParameter not found with id: " + id));
+        StockParameterEntity entity = stockParameterRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Stock parameter not found with ID: " + id));
         return MapperStockParameter.toResponseDTO(entity);
     }
 
     public StockParameterResponseDTO update(Long id, StockParameterRequestDTO request) {
-        StockParameterEntity existing = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("StockParameter not found with id: " + id));
+        StockParameterEntity existing = stockParameterRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Stock parameter not found with ID: " + id));
 
         EquipmentEntity equipment = equipmentRepository.findById(request.getEquipmentId())
-                .orElseThrow(() -> new NotFoundException("Equipment not found with id: " + request.getEquipmentId()));
+                .orElseThrow(() -> new NotFoundException("Equipment not found with ID: " + request.getEquipmentId()));
+
+        int minStock = equipment.getType().getMinimumStock();
 
         existing.setEquipment(equipment);
-        existing.setMinStock(request.getMinStock());
+        existing.setMinStock(minStock);
         existing.setAvgRestockTimeDays(request.getAvgRestockTimeDays());
         existing.setAvgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays());
         existing.setAvgDefectiveRate(request.getAvgDefectiveRate());
-        existing.setAvgDeliveryTimeDays(DEFAULT_DELIVERY_DAYS);
 
-        StockParameterEntity updated = repository.save(existing);
+        StockParameterEntity updated = stockParameterRepository.save(existing);
         return MapperStockParameter.toResponseDTO(updated);
     }
 
     public void delete(Long id) {
-        StockParameterEntity existing = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("StockParameter not found with id: " + id));
-        repository.delete(existing);
+        StockParameterEntity existing = stockParameterRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Stock parameter not found with ID: " + id));
+        stockParameterRepository.delete(existing);
     }
 }
+

@@ -15,10 +15,6 @@ public class StockParameterRequestDTO {
     private Long equipmentId;
 
     @NotNull
-    @Schema(description = "Estoque mínimo recomendado", example = "10")
-    private Integer minStock;
-
-    @NotNull
     @Schema(description = "Tempo médio de reposição (em dias)", example = "7")
     private Integer avgRestockTimeDays;
 

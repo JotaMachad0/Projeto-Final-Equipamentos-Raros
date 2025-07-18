@@ -25,9 +25,6 @@ public class StockParameterEntity {
     @Column(name = "avg_stock_consumption_time_days", nullable = false)
     private Integer avgStockConsumptionTimeDays;
 
-    @Column(name = "avg_delivery_time_days", nullable = false)
-    private Integer avgDeliveryTimeDays;
-
     @Column(name = "avg_defective_rate", nullable = false)
     private Float avgDefectiveRate;
 
