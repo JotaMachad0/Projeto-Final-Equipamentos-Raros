@@ -1,0 +1,51 @@
+package br.com.raroacademy.demo.domain.DTO.equipmentCollaborator;
+
+import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
+import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
+import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
+import br.com.raroacademy.demo.domain.entities.EquipmentCollaboratorEntity;
+import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@AllArgsConstructor
+public class MapperEquipmentCollaborator {
+    private final MapperCollaborator mapperCollaborator;
+    private final MapperEquipment mapperEquipment;
+
+    public EquipmentCollaboratorEntity toEntity(EquipmentCollaboratorRequestDTO dto,
+                                                CollaboratorEntity collaborator,
+                                                EquipmentEntity equipment) {
+        return EquipmentCollaboratorEntity.builder()
+                .collaborator(collaborator)
+                .equipment(equipment)
+                .deliveryDate(dto.getDeliveryDate())
+                .returnDate(dto.getReturnDate())
+                .deliveryStatus(dto.getDeliveryStatus())
+                .notes(dto.getNotes())
+                .build();
+    }
+
+    public EquipmentCollaboratorResponseDTO toResponse(EquipmentCollaboratorEntity entity,
+                                                       CollaboratorResponseDTO collaborator,
+                                                       EquipmentResponseDTO equipment) {
+        return EquipmentCollaboratorResponseDTO.builder()
+                .id(entity.getId())
+                .deliveryDate(entity.getDeliveryDate())
+                .returnDate(entity.getReturnDate())
+                .deliveryStatus(entity.getDeliveryStatus())
+                .notes(entity.getNotes())
+                .collaborator(collaborator)
+                .equipment(equipment)
+                .build();
+    }
+
+    public EquipmentCollaboratorResponseDTO mapToResponseDTO(EquipmentCollaboratorEntity entity) {
+        var collaboratorResponse = mapperCollaborator.toResponse(entity.getCollaborator());
+        var equipmentResponse = mapperEquipment.toDTO(entity.getEquipment());
+        return toResponse(entity, collaboratorResponse, equipmentResponse);
+    }
+}

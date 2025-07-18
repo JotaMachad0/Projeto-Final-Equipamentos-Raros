@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorizeConfig -> {
                             authorizeConfig.requestMatchers(
+                                    "https://viacep.com.br/ws",
                                     "/users/**",
                                     "/v3/api-docs.yaml",
                                     "/v3/api-docs/**",
