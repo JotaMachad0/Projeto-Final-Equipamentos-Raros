@@ -46,7 +46,7 @@ public class EquipmentEntity {
 
     @Builder
     public EquipmentEntity(Long id, EquipmentType type, String serialNumber, String model, String brand,
-                                String specs, LocalDate acquisitionDate, Integer usageTimeMonths, String status) {
+                                String specs, LocalDate acquisitionDate, Integer usageTimeMonths, EquipmentStatus status) {
         this.id = id;
         this.type = type;
         this.serialNumber = serialNumber;
@@ -55,7 +55,7 @@ public class EquipmentEntity {
         this.specs = specs;
         this.acquisitionDate = acquisitionDate;
         this.usageTimeMonths = usageTimeMonths;
-        this.equipmentstatus = status;
+        this.status = status;
     }
 
 }

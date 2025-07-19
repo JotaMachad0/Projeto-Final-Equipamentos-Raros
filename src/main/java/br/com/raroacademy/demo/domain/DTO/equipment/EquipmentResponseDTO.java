@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.equipment;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -34,5 +35,5 @@ public record EquipmentResponseDTO (
     Integer usageTimeMonths,
 
     @Schema(description = "Status atual do equipamento", example = "EM_USO")
-    String status) {
+    EquipmentStatus status) {
 }
