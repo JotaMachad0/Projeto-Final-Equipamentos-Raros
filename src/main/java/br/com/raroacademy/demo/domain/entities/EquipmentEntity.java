@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,8 +19,9 @@ public class EquipmentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type;
+    private EquipmentType type;
 
     @Column(nullable = false, unique = true)
     private String serialNumber;

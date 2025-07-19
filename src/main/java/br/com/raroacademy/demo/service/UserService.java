@@ -2,10 +2,8 @@ package br.com.raroacademy.demo.service;
 
 import br.com.raroacademy.demo.commons.email.EmailBody;
 import br.com.raroacademy.demo.commons.i18n.I18nUtil;
-import br.com.raroacademy.demo.domain.DTO.user.MapperUser;
-import br.com.raroacademy.demo.domain.DTO.user.SendEmailRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.user.UserRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.user.UserResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.user.*;
+import br.com.raroacademy.demo.exception.InvalidArgumentException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -26,10 +24,19 @@ public class UserService {
     private final EmailBody emailBody;
     private final CodeService codesService;
 
+    @Transactional
     public UserResponseDTO create(UserRequestDTO request) {
         var user = mapperUser.toUser(request);
         try {
             var savedUser = userRepository.save(user);
+
+            var confirmationToken = codesService.addUserAndCode(savedUser);
+            try {
+                emailBody.sendConfirmationEmail(savedUser.getEmail(), confirmationToken);
+            } catch (Exception e) {
+                throw new RuntimeException(i18n.getMessage("error.sending.email"));
+            }
+
             return mapperUser.toUserResponseDTO(savedUser);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException(i18n.getMessage("user.email.already.exists"));
@@ -66,15 +73,61 @@ public class UserService {
         return mapperUser.toUserList(userList);
     }
 
+    @Transactional
     public void sendEmailResetPassword(SendEmailRequestDTO request) {
         var user = userRepository.findByEmail(request.email());
         if (user == null) {
             throw new NotFoundException(i18n.getMessage("user.does.not.have.with.email"));
         }
 
-        var tokenResetPassword = codesService.addUserAndToken(user);
+        var tokenResetPassword = codesService.addUserAndCode(user);
         try {
             emailBody.sendEmail(user.getEmail(), tokenResetPassword);
+        } catch (Exception e) {
+            throw new RuntimeException(i18n.getMessage("error.sending.email"));
+        }
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequestDTO request) {
+        var user = userRepository.findByEmail(request.email());
+        if (user == null) {
+            throw new NotFoundException(i18n.getMessage("user.does.not.have.with.email"));
+        }
+
+        codesService.verifyAndConfirmCode(request.code(), user);
+        user.setPassword(request.newPassword());
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void confirmEmail(String email, Long token) {
+        var user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new NotFoundException(i18n.getMessage("user.does.not.have.with.email"));
+        }
+
+        codesService.confirmCode(token, user);
+        user.setEmailConfirmed(true);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void resendConfirmationEmail(SendEmailRequestDTO request) {
+        var user = userRepository.findByEmail(request.email());
+        if (user == null) {
+            throw new NotFoundException(i18n.getMessage("user.does.not.have.with.email"));
+        }
+
+        if (user.getEmailConfirmed()) {
+            throw new InvalidArgumentException(i18n.getMessage("user.email.already.confirmed"));
+        }
+
+        var confirmationToken = codesService.addUserAndCode(user);
+        try {
+            emailBody.sendConfirmationEmail(user.getEmail(), confirmationToken);
         } catch (Exception e) {
             throw new RuntimeException(i18n.getMessage("error.sending.email"));
         }
