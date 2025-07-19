@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +42,7 @@ public class EquipmentEntity {
     @Column(nullable = false)
     private Integer usageTimeMonths;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private EquipmentStatus status;
 }

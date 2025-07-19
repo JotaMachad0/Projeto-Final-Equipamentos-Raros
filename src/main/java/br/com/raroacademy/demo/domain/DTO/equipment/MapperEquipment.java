@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.equipment;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class MapperEquipment {
                 .specs(dto.getSpecs())
                 .acquisitionDate(dto.getAcquisitionDate())
                 .usageTimeMonths(dto.getUsageTimeMonths())
-                .status(dto.getStatus())
+                .status(EquipmentStatus.valueOf(dto.getStatus()))
                 .build();
     }
 
@@ -30,7 +31,7 @@ public class MapperEquipment {
                 .specs(entity.getSpecs())
                 .acquisitionDate(entity.getAcquisitionDate())
                 .usageTimeMonths(entity.getUsageTimeMonths())
-                .status(entity.getStatus())
+                .status(String.valueOf(entity.getStatus()))
                 .build();
     }
 
@@ -42,7 +43,7 @@ public class MapperEquipment {
         entity.setSpecs(request.getSpecs());
         entity.setAcquisitionDate(request.getAcquisitionDate());
         entity.setUsageTimeMonths(request.getUsageTimeMonths());
-        entity.setStatus(request.getStatus());
+        entity.setStatus(EquipmentStatus.valueOf(request.getStatus()));
         return entity;
     }
 

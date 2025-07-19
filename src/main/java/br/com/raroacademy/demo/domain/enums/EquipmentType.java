@@ -26,4 +26,13 @@ public enum EquipmentType {
     public String getLabel() {
         return label;
     }
+
+    public static EquipmentType fromLabel(String label) {
+        for (EquipmentType type : values()) {
+            if (type.label.equalsIgnoreCase(label) || type.name().equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Tipo inválido: " + label);
+    }
 }
