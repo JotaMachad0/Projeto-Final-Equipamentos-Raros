@@ -50,8 +50,6 @@ public class MapperEquipment {
         return EquipmentSummaryDTO.builder()
                 .id(entity.getId())
                 .type(entity.getType().toString())
-                .serialNumber(entity.getSerialNumber())
-                .brand(entity.getBrand())
                 .model(entity.getModel())
                 .build();
     }

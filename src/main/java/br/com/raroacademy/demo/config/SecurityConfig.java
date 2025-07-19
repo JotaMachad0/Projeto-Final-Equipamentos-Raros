@@ -31,6 +31,8 @@ public class SecurityConfig {
                                     "https://viacep.com.br/ws",
                                     "/users/**",
                                     "/v3/api-docs.yaml",
+                                    "/users/**",
+                                    "/users",
                                     "/v3/api-docs/**",
                                     "/swagger-ui/**",
                                     "/swagger-ui.html",
