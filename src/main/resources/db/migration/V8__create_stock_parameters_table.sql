@@ -5,5 +5,7 @@ CREATE TABLE stock_parameters (
     avg_restock_time_days INTEGER NOT NULL,
     avg_stock_consumption_time_days INTEGER NOT NULL,
     avg_defective_rate FLOAT NOT NULL,
+    security_stock BIGINT NOT NULL,
+    current_stock INT NOT NULL DEFAULT 0,
     FOREIGN KEY (equipment_id) REFERENCES equipments(id)
 );

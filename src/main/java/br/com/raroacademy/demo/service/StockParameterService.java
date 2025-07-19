@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.service;
 
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.stock.parameters.StockParameterRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.stock.parameters.StockParameterResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.stock.parameters.MapperStockParameter;
@@ -20,19 +21,39 @@ public class StockParameterService {
 
     private final StockParameterRepository stockParameterRepository;
     private final EquipmentRepository equipmentRepository;
+    private final I18nUtil i18n;
+
+    private float calculateAvgDefectiveRate(EquipmentEntity equipment) {
+        long totalEquipments = equipmentRepository.countByType(equipment.getType());
+        long defectiveEquipments = equipmentRepository.countByTypeAndStatus(equipment.getType(), "DEFECTIVE");
+
+        if (totalEquipments == 0) {
+            return 0.0f;
+        }
+
+        return (float) defectiveEquipments / totalEquipments;
+    }
 
     public StockParameterResponseDTO create(StockParameterRequestDTO request) {
         EquipmentEntity equipment = equipmentRepository.findById(request.getEquipmentId())
-                .orElseThrow(() -> new NotFoundException("Equipment not found with ID: " + request.getEquipmentId()));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found", request.getEquipmentId())));
+
+        if (stockParameterRepository.existsByEquipmentId(request.getEquipmentId())) {
+            throw new IllegalStateException(i18n.getMessage("stock.parameter.already.exists", request.getEquipmentId()));
+        }
 
         int minStock = equipment.getType().getMinimumStock();
+        int securityStock = equipment.getType().getSecurityStock();
+        float avgDefectiveRate = calculateAvgDefectiveRate(equipment);
 
         StockParameterEntity entity = StockParameterEntity.builder()
                 .equipment(equipment)
                 .minStock(minStock)
+                .securityStock(securityStock)
+                .currentStock(0)
                 .avgRestockTimeDays(request.getAvgRestockTimeDays())
                 .avgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays())
-                .avgDefectiveRate(request.getAvgDefectiveRate())
+                .avgDefectiveRate(avgDefectiveRate)
                 .build();
 
         StockParameterEntity saved = stockParameterRepository.save(entity);
@@ -48,24 +69,28 @@ public class StockParameterService {
 
     public StockParameterResponseDTO findById(Long id) {
         StockParameterEntity entity = stockParameterRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Stock parameter not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
         return MapperStockParameter.toResponseDTO(entity);
     }
 
     public StockParameterResponseDTO update(Long id, StockParameterRequestDTO request) {
         StockParameterEntity existing = stockParameterRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Stock parameter not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
 
         EquipmentEntity equipment = equipmentRepository.findById(request.getEquipmentId())
-                .orElseThrow(() -> new NotFoundException("Equipment not found with ID: " + request.getEquipmentId()));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found", request.getEquipmentId())));
 
         int minStock = equipment.getType().getMinimumStock();
+        int securityStock = equipment.getType().getSecurityStock();
+        float avgDefectiveRate = calculateAvgDefectiveRate(equipment);
 
         existing.setEquipment(equipment);
         existing.setMinStock(minStock);
+        existing.setSecurityStock(securityStock);
         existing.setAvgRestockTimeDays(request.getAvgRestockTimeDays());
         existing.setAvgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays());
-        existing.setAvgDefectiveRate(request.getAvgDefectiveRate());
+        existing.setAvgDefectiveRate(avgDefectiveRate);
+
 
         StockParameterEntity updated = stockParameterRepository.save(existing);
         return MapperStockParameter.toResponseDTO(updated);
@@ -73,8 +98,24 @@ public class StockParameterService {
 
     public void delete(Long id) {
         StockParameterEntity existing = stockParameterRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Stock parameter not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
         stockParameterRepository.delete(existing);
     }
-}
 
+
+    public void consumeStock(Long equipmentId) {
+        StockParameterEntity stock = stockParameterRepository.findByEquipmentId(equipmentId)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
+
+        stock.decrementCurrentStock();
+        stockParameterRepository.save(stock);
+    }
+
+    public void addStock(Long equipmentId) {
+        StockParameterEntity stock = stockParameterRepository.findByEquipmentId(equipmentId)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
+
+        stock.incrementCurrentStock();
+        stockParameterRepository.save(stock);
+    }
+}

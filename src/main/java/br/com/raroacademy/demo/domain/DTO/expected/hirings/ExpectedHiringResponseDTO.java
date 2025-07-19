@@ -8,24 +8,24 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-@Schema(description = "Dados da previsão de contratação retornados pela API")
+@Schema(description = "Expected hiring data returned by the API")
 public record ExpectedHiringResponseDTO(
-        @Schema(example = "1", description = "ID da previsão de contratação")
+        @Schema(example = "1", description = "Expected hiring ID")
         Long id,
 
-        @Schema(example = "2025-12-31", description = "Data prevista para a(s) contratação(ões)")
+        @Schema(example = "2025-12-31", description = "Expected date for the hiring(s)")
         LocalDate expectedHireDate,
 
-        @Schema(example = "Desenvolvedor", description = "Cargo previsto para a(s) contratação(ões)")
+        @Schema(example = "Developer", description = "Position expected for the hiring(s)")
         String position,
 
-        @Schema(example = "1 notebook 16GB, 2 celulares",
-                description = "Equipamentos requisitados pela previsão de contratação")
+        @Schema(example = "1 laptop 16GB, 2 smartphones",
+                description = "Equipment requirements for the expected hiring(s)")
         String equipmentRequirements,
 
-        @Schema(example = "Centro-Oeste", description = "Região de origem da(s) pessoa(s) a ser(em) contratada(s)")
+        @Schema(example = "Midwest", description = "Region of origin of the person(s) to be hired")
         Region region,
 
-        @Schema(example = "Processada", description = "Status da previsão de contratação")
+        @Schema(example = "Processed", description = "Status of the expected hiring")
         Status status) {
 }

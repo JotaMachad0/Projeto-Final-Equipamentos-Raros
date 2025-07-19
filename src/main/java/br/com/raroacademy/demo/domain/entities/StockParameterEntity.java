@@ -19,6 +19,12 @@ public class StockParameterEntity {
     @Column(name = "min_stock", nullable = false)
     private Integer minStock;
 
+    @Column(name = "security_stock", nullable = false)
+    private Integer securityStock;
+
+    @Column(name = "current_stock", nullable = false)
+    private Integer currentStock;
+
     @Column(name = "avg_restock_time_days", nullable = false)
     private Integer avgRestockTimeDays;
 
@@ -31,4 +37,19 @@ public class StockParameterEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipment_id", nullable = false)
     private EquipmentEntity equipment;
+
+    public void decrementCurrentStock() {
+        if (currentStock == null || currentStock <= 0) {
+            throw new IllegalStateException("Insufficient current stock");
+        }
+        currentStock--;
+    }
+
+    public void incrementCurrentStock() {
+        if (currentStock == null) {
+            currentStock = 0;
+        }
+        currentStock++;
+    }
 }
+
