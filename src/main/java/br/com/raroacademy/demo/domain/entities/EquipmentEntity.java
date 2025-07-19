@@ -1,11 +1,9 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import br.com.raroacademy.demo.domain.enums.EquipmentType;
-import br.com.raroacademy.demo.domain.enums.ExpectedHiringStatus;
-import br.com.raroacademy.demo.domain.enums.Region;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -15,6 +13,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Table(name = "equipments")
 public class EquipmentEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,8 +40,9 @@ public class EquipmentEntity {
     @Column(nullable = false)
     private Integer usageTimeMonths;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private EquipmentStatus status;
 
     @Builder
     public EquipmentEntity(Long id, EquipmentType type, String serialNumber, String model, String brand,
@@ -55,6 +55,7 @@ public class EquipmentEntity {
         this.specs = specs;
         this.acquisitionDate = acquisitionDate;
         this.usageTimeMonths = usageTimeMonths;
-        this.status = status;
+        this.equipmentstatus = status;
     }
+
 }

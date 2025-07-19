@@ -39,18 +39,4 @@ public class StockEntity {
     @Column(name = "avg_defective_rate", nullable = false)
     private Float avgDefectiveRate;
 
-//    public void decrementCurrentStock() {
-//        if (currentStock == null || currentStock <= 0) {
-//            throw new IllegalStateException("Insufficient current stock");
-//        }
-//        currentStock--;
-//    }
-//
-//    public void incrementCurrentStock() {
-//        if (currentStock == null) {
-//            currentStock = 0;
-//        }
-//        currentStock++;
-//    }
 }
-

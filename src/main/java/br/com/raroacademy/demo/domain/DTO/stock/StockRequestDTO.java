@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.DTO.stock.parameters;
+package br.com.raroacademy.demo.domain.DTO.stock;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(name = "StockParameterRequestDTO", description = "DTO for creating stock parameters")
-public class StockParameterRequestDTO {
+@Schema(name = "StockRequestDTO", description = "DTO for creating stock parameters")
+public class StockRequestDTO {
 
     @NotNull
     @Schema(description = "Equipment ID", example = "1")
