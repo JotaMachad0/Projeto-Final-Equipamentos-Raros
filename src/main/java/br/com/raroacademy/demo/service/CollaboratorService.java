@@ -4,6 +4,7 @@ import br.com.raroacademy.demo.domain.DTO.address.MapperAddress;
 import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
+import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
 import br.com.raroacademy.demo.exception.InvalidCepException;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +33,7 @@ public class CollaboratorService {
     private final MapperAddress mapperAddress;
     private final AddressRepository addressRepository;
     private final ViaCepClient viaCepClient;
+    private final ViaCepService viaCepService;
     private final MessageSource messageSource;
 
     private String getMessage(String code) {
@@ -38,15 +42,24 @@ public class CollaboratorService {
     }
 
     public CollaboratorResponseDTO save(CollaboratorRequestDTO request) {
+
+        CompletableFuture<ViaCepResponseDTO> viaCepFuture = viaCepService.buscarEnderecoPorCepAsync(request.getCep());
+
         if (collaboratorRepository.existsByCpf(request.getCpf())) {
             throw new DataIntegrityViolationException(getMessage("collaborator.cpf.already-exists"));
         }
-
         if (collaboratorRepository.existsByEmail(request.getEmail())) {
             throw new DataIntegrityViolationException(getMessage("collaborator.email.already-exists"));
         }
 
-        var viaCep = viaCepClient.buscarEnderecoPorCep(request.getCep());
+        ViaCepResponseDTO viaCep;
+        try {
+            viaCep = viaCepFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            throw new InvalidCepException("cep.service.error");
+        }
+
         if (viaCep.getCep() == null) {
             throw new InvalidCepException(getMessage("address.cep.invalid"));
         }
