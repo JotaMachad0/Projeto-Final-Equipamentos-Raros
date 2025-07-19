@@ -15,9 +15,9 @@ public class MapperAddress {
                 .neighborhood(viaCep.getNeighborhood())
                 .city(viaCep.getCity())
                 .state(viaCep.getState())
-                .cep(dto.cep())
-                .number(dto.number())
-                .complement(dto.complement())
+                .cep(dto.getCep())
+                .number(dto.getNumber())
+                .complement(dto.getComplement())
                 .country("Brasil")
                 .respostaViaCepJson(jsonParaTeste)
                 .build();
