@@ -1,20 +1,25 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "stock_parameters")
+@Table(name = "stock")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StockParameterEntity {
+public class StockEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "equipment_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EquipmentType equipmentType;
 
     @Column(name = "min_stock", nullable = false)
     private Integer minStock;
@@ -34,22 +39,18 @@ public class StockParameterEntity {
     @Column(name = "avg_defective_rate", nullable = false)
     private Float avgDefectiveRate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipment_id", nullable = false)
-    private EquipmentEntity equipment;
-
-    public void decrementCurrentStock() {
-        if (currentStock == null || currentStock <= 0) {
-            throw new IllegalStateException("Insufficient current stock");
-        }
-        currentStock--;
-    }
-
-    public void incrementCurrentStock() {
-        if (currentStock == null) {
-            currentStock = 0;
-        }
-        currentStock++;
-    }
+//    public void decrementCurrentStock() {
+//        if (currentStock == null || currentStock <= 0) {
+//            throw new IllegalStateException("Insufficient current stock");
+//        }
+//        currentStock--;
+//    }
+//
+//    public void incrementCurrentStock() {
+//        if (currentStock == null) {
+//            currentStock = 0;
+//        }
+//        currentStock++;
+//    }
 }
 
