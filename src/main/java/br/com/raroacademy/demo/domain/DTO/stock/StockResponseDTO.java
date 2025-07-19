@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.DTO.stock.parameters;
+package br.com.raroacademy.demo.domain.DTO.stock;
 
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentSummaryDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,8 +7,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-@Schema(name = "StockParameterResponseDTO", description = "Response DTO with stock parameter information")
-public class StockParameterResponseDTO {
+@Schema(name = "StockResponseDTO", description = "Response DTO with stock parameter information")
+public class StockResponseDTO {
 
     @Schema(description = "Parameter ID", example = "1")
     private Long id;
@@ -31,6 +31,4 @@ public class StockParameterResponseDTO {
     @Schema(description = "Average defective equipment rate", example = "0.05")
     private Float avgDefectiveRate;
 
-    @Schema(description = "Linked equipment information")
-    private EquipmentSummaryDTO equipment;
 }
