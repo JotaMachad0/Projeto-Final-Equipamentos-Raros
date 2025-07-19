@@ -1,8 +1,8 @@
 package br.com.raroacademy.demo.domain.DTO.equipmentCollaborator;
 
-import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorSummaryDTO;
 import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
-import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentSummaryDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
 import br.com.raroacademy.demo.domain.entities.EquipmentCollaboratorEntity;
@@ -30,8 +30,8 @@ public class MapperEquipmentCollaborator {
     }
 
     public EquipmentCollaboratorResponseDTO toResponse(EquipmentCollaboratorEntity entity,
-                                                       CollaboratorResponseDTO collaborator,
-                                                       EquipmentResponseDTO equipment) {
+                                                       CollaboratorSummaryDTO collaborator,
+                                                       EquipmentSummaryDTO equipment) {
         return EquipmentCollaboratorResponseDTO.builder()
                 .id(entity.getId())
                 .deliveryDate(entity.getDeliveryDate())
@@ -44,8 +44,8 @@ public class MapperEquipmentCollaborator {
     }
 
     public EquipmentCollaboratorResponseDTO mapToResponseDTO(EquipmentCollaboratorEntity entity) {
-        var collaboratorResponse = mapperCollaborator.toResponse(entity.getCollaborator());
-        var equipmentResponse = mapperEquipment.toDTO(entity.getEquipment());
+        var collaboratorResponse = mapperCollaborator.toSummaryResponse(entity.getCollaborator());
+        var equipmentResponse = mapperEquipment.toSummaryResponse(entity.getEquipment());
         return toResponse(entity, collaboratorResponse, equipmentResponse);
     }
 }

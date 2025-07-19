@@ -68,8 +68,8 @@ public class EquipmentCollaboratorService {
         var entityToSave = mapperEquipmentCollaborator.toEntity(request, collaborator, equipment);
         var savedEntity = equipmentCollaboratorRepository.save(entityToSave);
 
-        var collaboratorResponse = mapperCollaborator.toResponse(savedEntity.getCollaborator());
-        var equipmentResponse = mapperEquipment.toDTO(savedEntity.getEquipment());
+        var collaboratorResponse = mapperCollaborator.toSummaryResponse(savedEntity.getCollaborator());
+        var equipmentResponse = mapperEquipment.toSummaryResponse(savedEntity.getEquipment());
 
         return mapperEquipmentCollaborator.toResponse(savedEntity, collaboratorResponse, equipmentResponse);
     }
@@ -78,8 +78,8 @@ public class EquipmentCollaboratorService {
         EquipmentCollaboratorEntity entity = equipmentCollaboratorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(getMessage("equipment-collaborator.not-found")));
 
-        var collaboratorResponse = mapperCollaborator.toResponse(entity.getCollaborator());
-        var equipmentResponse = mapperEquipment.toDTO(entity.getEquipment());
+        var collaboratorResponse = mapperCollaborator.toSummaryResponse(entity.getCollaborator());
+        var equipmentResponse = mapperEquipment.toSummaryResponse(entity.getEquipment());
 
         return mapperEquipmentCollaborator.toResponse(entity, collaboratorResponse, equipmentResponse);
     }

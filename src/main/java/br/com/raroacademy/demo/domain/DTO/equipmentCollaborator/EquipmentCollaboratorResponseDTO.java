@@ -1,7 +1,7 @@
 package br.com.raroacademy.demo.domain.DTO.equipmentCollaborator;
 
-import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorResponseDTO;
-import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorSummaryDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentSummaryDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +28,8 @@ public class EquipmentCollaboratorResponseDTO {
     private String notes;
 
     @Schema(description = "Data of the collaborator who received the equipment")
-    private CollaboratorResponseDTO collaborator;
+    private CollaboratorSummaryDTO collaborator;
 
     @Schema(description = "Data of the loaned equipment")
-    private EquipmentResponseDTO equipment;
+    private EquipmentSummaryDTO equipment;
 }
