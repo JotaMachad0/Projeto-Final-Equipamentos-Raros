@@ -20,6 +20,6 @@ import java.lang.annotation.*;
         @ApiResponse(responseCode = "409", description = "Conflict"),
         @ApiResponse(responseCode = "422", description = "Unprocessable entity")
 })
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CreateStockParameterEndpoint {}

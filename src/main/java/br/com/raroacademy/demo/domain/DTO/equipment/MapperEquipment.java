@@ -45,4 +45,12 @@ public class MapperEquipment {
         entity.setStatus(request.getStatus());
         return entity;
     }
+
+    public EquipmentSummaryDTO toSummaryResponse(EquipmentEntity entity) {
+        return EquipmentSummaryDTO.builder()
+                .id(entity.getId())
+                .type(entity.getType().toString())
+                .model(entity.getModel())
+                .build();
+    }
 }

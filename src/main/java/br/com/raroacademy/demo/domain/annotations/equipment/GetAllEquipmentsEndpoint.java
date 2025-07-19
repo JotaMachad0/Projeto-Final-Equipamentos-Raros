@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 @OpenApiResponse200
 @OpenApiResponse400
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GetAllEquipmentsEndpoint {
 }

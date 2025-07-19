@@ -1,27 +1,29 @@
 package br.com.raroacademy.demo.domain.enums;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-@Getter
 public enum EquipmentType {
-    HDMI_CABLE(10, 15),
-    ANDROID_CELLPHONE_CHARGER(5, 10),
-    IPHONE_CHARGER(2, 5),
-    NOTEBOOK_CHARGER(10, 15),
-    ANDROID_CELLPHONE(10, 15),
-    IPHONE(5, 10),
-    COMPUTER(10, 20),
-    EARPHONES(15, 25),
-    MONITOR(15, 25),
-    MOUSE(20, 30),
-    NOTEBOOK(20, 30),
-    KEYBOARD(20, 30);
+    HDMI_CABLE("HDMI Cable"),
+    ANDROID_PHONE_CHARGER("Android Phone Charger"),
+    IPHONE_CHARGER("iPhone Charger"),
+    NOTEBOOK_CHARGER("Notebook Charger"),
+    ANDROID_PHONE("Android Phone"),
+    IPHONE("iPhone"),
+    COMPUTER("Computer"),
+    HEADPHONE("Headphone"),
+    MONITOR("Monitor"),
+    MOUSE("Mouse"),
+    NOTEBOOK("Notebook"),
+    KEYBOARD("Keyboard");
 
-    private final int minimumStock;
-    private final int securityStock;
+    private final String label;
 
-    EquipmentType(int minimumStock, int securityStock) {
-        this.minimumStock = minimumStock;
-        this.securityStock = securityStock;
+    EquipmentType(String label) {
+        this.label = label;
+    }
+
+    @JsonValue
+    public String getLabel() {
+        return label;
     }
 }

@@ -9,6 +9,7 @@ import br.com.raroacademy.demo.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +24,14 @@ public class UserService {
     private final I18nUtil i18n;
     private final EmailBody emailBody;
     private final CodeService codesService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserResponseDTO create(UserRequestDTO request) {
         var user = mapperUser.toUser(request);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
         try {
             var savedUser = userRepository.save(user);
 
@@ -59,6 +64,9 @@ public class UserService {
             throw new DataIntegrityViolationException(i18n.getMessage("user.email.already.exists"));
         }
         var updated = mapperUser.toUpdateUser(existing, request);
+
+        updated.setPassword(passwordEncoder.encode(request.password()));
+        
         return mapperUser.toUserResponseDTO(userRepository.save(updated));
     }
 
@@ -96,7 +104,8 @@ public class UserService {
         }
 
         codesService.verifyAndConfirmCode(request.code(), user);
-        user.setPassword(request.newPassword());
+
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
 
         userRepository.save(user);
     }

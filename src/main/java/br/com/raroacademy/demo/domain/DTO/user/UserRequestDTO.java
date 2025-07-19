@@ -18,7 +18,7 @@ public record UserRequestDTO(
         String email,
 
         @NotBlank
-        @Length(min = 6, max = 50)
+        @Length(min = 6, max = 255)
         @Schema(example = "your-password")
         String password) {
 }

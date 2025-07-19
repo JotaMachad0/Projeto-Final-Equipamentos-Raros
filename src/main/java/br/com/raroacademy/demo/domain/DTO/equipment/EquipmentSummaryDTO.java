@@ -9,13 +9,14 @@ import lombok.Getter;
 @Schema(name = "EquipmentSummaryDTO", description = "Resumo das informações do equipamento")
 public class EquipmentSummaryDTO {
 
-    @Schema(description = "ID do equipamento", example = "1")
+    @Schema(description = "Equipment ID", example = "4")
     private Long id;
 
-    @Schema(description = "Tipo do equipamento", example = "NOTEBOOK")
+    @Schema(description = "Type of equipment", example = "Notebook")
     private String type;
 
-    @Schema(description = "Modelo do equipamento", example = "XPS 13")
+    @Schema(description = "Equipment model", example = "XPS 13")
     private String model;
+
 
 }
