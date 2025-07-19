@@ -22,11 +22,14 @@ public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
     private final MapperEquipment mapperEquipment;
+    private final StockService stockService;
     private final I18nUtil i18n;
 
+    @Transactional
     public EquipmentResponseDTO create(EquipmentRequestDTO dto) {
         EquipmentEntity entity = mapperEquipment.toEntity(dto);
         equipmentRepository.save(entity);
+        stockService.incrementStock(entity.getType());
         return mapperEquipment.toDTO(entity);
     }
 
@@ -52,10 +55,12 @@ public class EquipmentService {
         return mapperEquipment.toDTO(savedEquipment);
     }
 
+    @Transactional
     public void delete(Long id) {
         var equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
         equipmentRepository.delete(equipment);
+        stockService.decrementStock(equipment.getType());
     }
 
     public List<EquipmentResponseDTO> getAll() {

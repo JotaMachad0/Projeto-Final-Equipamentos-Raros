@@ -3,38 +3,27 @@ package br.com.raroacademy.demo.domain.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EquipmentType {
-    CABO_HDMI("Cabo HDMI", 10, 15),
-    CARREGADOR_CELULAR_ANDROID("Carregador de celular Android", 5, 10),
-    CARREGADOR_CELULAR_IPHONE("Carregador de celular iPhone", 2, 5),
-    CARREGADOR_NOTEBOOK("Carregador de notebook", 10, 15),
-    CELULAR_ANDROID("Celular Android", 10, 15),
-    CELULAR_IPHONE("Celular iPhone", 5, 10),
-    COMPUTADOR("Computador", 10, 20),
-    FONE_OUVIDO("Fone de ouvido", 15, 25),
-    MONITOR("Monitor", 15, 25),
-    MOUSE("Mouse", 20, 30),
-    NOTEBOOK("Notebook", 20, 30),
-    TECLADO("Teclado", 20, 30);
+    HDMI_CABLE("HDMI Cable"),
+    ANDROID_PHONE_CHARGER("Android Phone Charger"),
+    IPHONE_CHARGER("iPhone Charger"),
+    NOTEBOOK_CHARGER("Notebook Charger"),
+    ANDROID_PHONE("Android Phone"),
+    IPHONE("iPhone"),
+    COMPUTER("Computer"),
+    HEADPHONE("Headphone"),
+    MONITOR("Monitor"),
+    MOUSE("Mouse"),
+    NOTEBOOK("Notebook"),
+    KEYBOARD("Keyboard");
 
     private final String label;
-    private final int minimumStock;
-    private final int securityStock;
 
-    EquipmentType(String label, int minimumStock, int securityStock) {
+    EquipmentType(String label) {
         this.label = label;
-        this.minimumStock = minimumStock;
-        this.securityStock = securityStock;
     }
-@JsonValue
+
+    @JsonValue
     public String getLabel() {
         return label;
-    }
-
-    public int getMinimumStock() {
-        return minimumStock;
-    }
-
-    public int getSecurityStock() {
-        return securityStock;
     }
 }
