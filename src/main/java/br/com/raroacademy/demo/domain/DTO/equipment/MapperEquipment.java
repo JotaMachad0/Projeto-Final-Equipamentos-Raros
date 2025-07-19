@@ -17,7 +17,7 @@ public class MapperEquipment {
                 .specs(dto.getSpecs())
                 .acquisitionDate(dto.getAcquisitionDate())
                 .usageTimeMonths(dto.getUsageTimeMonths())
-                .status(EquipmentStatus.valueOf(dto.getStatus()))
+                .status(EquipmentStatus.valueOf(dto.getStatus().toUpperCase()))
                 .build();
     }
 
@@ -31,7 +31,7 @@ public class MapperEquipment {
                 .specs(entity.getSpecs())
                 .acquisitionDate(entity.getAcquisitionDate())
                 .usageTimeMonths(entity.getUsageTimeMonths())
-                .status(String.valueOf(entity.getStatus()))
+                .status(entity.getStatus().getLabel())
                 .build();
     }
 
@@ -43,7 +43,7 @@ public class MapperEquipment {
         entity.setSpecs(request.getSpecs());
         entity.setAcquisitionDate(request.getAcquisitionDate());
         entity.setUsageTimeMonths(request.getUsageTimeMonths());
-        entity.setStatus(EquipmentStatus.valueOf(request.getStatus()));
+        entity.setStatus(EquipmentStatus.valueOf(request.getStatus().toUpperCase()));
         return entity;
     }
 
