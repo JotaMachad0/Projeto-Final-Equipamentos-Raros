@@ -19,6 +19,9 @@ public class StockParameterEntity {
     @Column(name = "min_stock", nullable = false)
     private Integer minStock;
 
+    @Column(name = "security_stock", nullable = false)
+    private Integer securityStock;
+
     @Column(name = "avg_restock_time_days", nullable = false)
     private Integer avgRestockTimeDays;
 

@@ -29,6 +29,8 @@ public class SecurityConfig {
                             authorizeConfig.requestMatchers(
                                     "https://viacep.com.br/ws",
                                     "/v3/api-docs.yaml",
+                                    "/users/**",
+                                    "/users",
                                     "/v3/api-docs/**",
                                     "/swagger-ui/**",
                                     "/swagger-ui.html",

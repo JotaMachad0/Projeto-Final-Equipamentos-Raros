@@ -2,7 +2,9 @@ package br.com.raroacademy.demo.domain.DTO.stock.parameters;
 
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentSummaryDTO;
 import br.com.raroacademy.demo.domain.entities.StockParameterEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MapperStockParameter {
 
     public static StockParameterResponseDTO toResponseDTO(StockParameterEntity entity) {
