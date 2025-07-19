@@ -1,7 +1,7 @@
 package br.com.raroacademy.demo.domain.DTO.expected.hirings;
 
 import br.com.raroacademy.demo.domain.entities.ExpectedHiringEntity;
-import br.com.raroacademy.demo.domain.entities.Status;
+import br.com.raroacademy.demo.domain.enums.Status;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

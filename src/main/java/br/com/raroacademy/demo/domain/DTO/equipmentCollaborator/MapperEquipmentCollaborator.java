@@ -35,6 +35,7 @@ public class MapperEquipmentCollaborator {
         return EquipmentCollaboratorResponseDTO.builder()
                 .id(entity.getId())
                 .deliveryDate(entity.getDeliveryDate())
+                .previsionDeliveryDate(entity.getPrevisionDeliveryDate())
                 .returnDate(entity.getReturnDate())
                 .deliveryStatus(entity.getDeliveryStatus())
                 .notes(entity.getNotes())

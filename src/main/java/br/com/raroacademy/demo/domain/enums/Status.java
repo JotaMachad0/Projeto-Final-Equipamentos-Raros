@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.entities;
+package br.com.raroacademy.demo.domain.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

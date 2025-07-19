@@ -1,7 +1,7 @@
 package br.com.raroacademy.demo.domain.helpers;
 
 import br.com.raroacademy.demo.commons.i18n.I18nUtil;
-import br.com.raroacademy.demo.domain.entities.Region;
+import br.com.raroacademy.demo.domain.enums.Region;
 import br.com.raroacademy.demo.exception.InvalidArgumentException;
 
 import java.util.Arrays;

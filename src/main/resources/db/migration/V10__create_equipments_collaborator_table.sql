@@ -3,6 +3,7 @@ CREATE TABLE equipment_collaborator (
     collaborator_id BIGINT NOT NULL,
     equipment_id BIGINT NOT NULL,
     delivery_date DATE NOT NULL,
+    prevision_delivery_date DATE,
     return_date DATE,
     delivery_status VARCHAR(255),
     notes TEXT,
@@ -14,6 +15,6 @@ CREATE TABLE equipment_collaborator (
 
     CONSTRAINT fk_equipment_collaborator_equipment
         FOREIGN KEY (equipment_id)
-        REFERENCES equipment(id)
+        REFERENCES equipments(id)
         ON DELETE CASCADE
 );
