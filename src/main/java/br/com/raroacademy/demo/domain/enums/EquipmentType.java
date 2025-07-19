@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EquipmentType {
     CABO_HDMI("Cabo HDMI", 10, 15),
@@ -24,7 +25,7 @@ public enum EquipmentType {
         this.minimumStock = minimumStock;
         this.securityStock = securityStock;
     }
-
+@JsonValue
     public String getLabel() {
         return label;
     }
@@ -37,4 +38,3 @@ public enum EquipmentType {
         return securityStock;
     }
 }
-

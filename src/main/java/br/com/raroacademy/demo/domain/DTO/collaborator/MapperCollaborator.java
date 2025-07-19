@@ -43,4 +43,13 @@ public class MapperCollaborator {
                 .contractEndDate(entity.getContractEndDate())
                 .build();
     }
+
+    public CollaboratorSummaryDTO toSummaryResponse(CollaboratorEntity entity) {
+        return CollaboratorSummaryDTO.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .cpf(entity.getCpf())
+                .email(entity.getEmail())
+                .build();
+    }
 }

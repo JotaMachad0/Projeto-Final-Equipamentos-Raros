@@ -48,7 +48,11 @@ public class SecurityConfig {
                         authorizeConfig -> {
                             authorizeConfig.requestMatchers(
                                     "https://viacep.com.br/ws",
+                                    "https://viacep.com.br/ws",
+                                    "/users/**",
                                     "/v3/api-docs.yaml",
+                                    "/users/**",
+                                    "/users",
                                     "/v3/api-docs/**",
                                     "/swagger-ui/**",
                                     "/swagger-ui.html",

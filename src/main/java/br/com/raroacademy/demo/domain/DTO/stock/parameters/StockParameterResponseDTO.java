@@ -7,24 +7,30 @@ import lombok.Getter;
 
 @Getter
 @Builder
-@Schema(name = "StockParameterResponseDTO", description = "DTO de resposta com informações dos parâmetros de estoque")
+@Schema(name = "StockParameterResponseDTO", description = "Response DTO with stock parameter information")
 public class StockParameterResponseDTO {
 
-    @Schema(description = "ID do parâmetro", example = "1")
+    @Schema(description = "Parameter ID", example = "1")
     private Long id;
 
-    @Schema(description = "Estoque mínimo recomendado", example = "10")
+    @Schema(description = "Recommended minimum stock", example = "10")
     private Integer minStock;
 
-    @Schema(description = "Tempo médio de reposição (em dias)", example = "7")
+    @Schema(description = "Security stock", example = "15")
+    private Integer securityStock;
+
+    @Schema(description = "Current stock", example = "0")
+    private Integer currentStock;
+
+    @Schema(description = "Average restock time (in days)", example = "7")
     private Integer avgRestockTimeDays;
 
-    @Schema(description = "Tempo médio de consumo do estoque (em dias)", example = "15")
+    @Schema(description = "Average stock consumption time (in days)", example = "15")
     private Integer avgStockConsumptionTimeDays;
 
-    @Schema(description = "Taxa média de equipamentos com defeito", example = "0.05")
+    @Schema(description = "Average defective equipment rate", example = "0.05")
     private Float avgDefectiveRate;
 
-    @Schema(description = "Informações do equipamento vinculado")
+    @Schema(description = "Linked equipment information")
     private EquipmentSummaryDTO equipment;
 }

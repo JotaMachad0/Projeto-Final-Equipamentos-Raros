@@ -1,6 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.expected.hirings;
 
-import br.com.raroacademy.demo.domain.entities.Region;
+import br.com.raroacademy.demo.domain.enums.Region;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -9,24 +9,24 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 
-@Schema(description = "Dados da previsão de contratação fornecidos pelo usuário")
+@Schema(description = "Expected hiring data provided by the user")
 public record ExpectedHiringRequestDTO(
         @NotNull
-        @Future(message = "A data de contratação deve ser no futuro")
-        @Schema(example = "2025-12-31", description = "Data prevista para a(s) contratação(ões)")
+        @Future(message = "The hiring date must be in the future")
+        @Schema(example = "2025-12-31", description = "Expected date for the hiring(s)")
         LocalDate expectedHireDate,
 
         @NotBlank
         @Length(max = 100)
-        @Schema(example = "Desenvolvedor", description = "Cargo previsto para a(s) contratação(ões)")
+        @Schema(example = "Developer", description = "Position expected for the hiring(s)")
         String position,
 
         @NotBlank
-        @Schema(example = "1 notebook 16GB, 2 celulares",
-                description = "Equipamentos requisitados pela previsão de contratação")
+        @Schema(example = "1 laptop 16GB, 2 smartphones",
+                description = "Equipment requirements for the expected hiring(s)")
         String equipmentRequirements,
 
         @NotNull
-        @Schema(example = "Centro-Oeste", description = "Região de origem da(s) pessoa(s) a ser(em) contratada(s)")
+        @Schema(example = "Midwest", description = "Region of origin of the person(s) to be hired")
         Region region) {
 }
