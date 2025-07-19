@@ -3,6 +3,8 @@ package br.com.raroacademy.demo.service;
 import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.MapperEquipmentPurchases;
+import br.com.raroacademy.demo.domain.entities.EquipmentPurchasesEntity;
+import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentPurchasesRepository;
 import jakarta.validation.Valid;
@@ -21,7 +23,16 @@ public class EquipmentPurchasesService {
 
     @Transactional
     public EquipmentPurchasesResponseDTO create(@Valid EquipmentPurchasesRequestDTO request) {
-        var entity = mapper.toEntity(request);
+        var requestWithStatus = new EquipmentPurchasesRequestDTO(
+            request.equipmentType(),
+            request.quantity(),
+            request.orderDate(),
+            request.supplier(),
+            request.receiptDate(),
+            PurchaseStatus.PURCHASED
+        );
+        
+        var entity = mapper.toEntity(requestWithStatus);
         var savedEntity = equipmentPurchasesRepository.save(entity);
         return mapper.toResponseDTO(savedEntity);
     }
@@ -49,10 +60,18 @@ public class EquipmentPurchasesService {
     }
 
     @Transactional
-    public void delete(Long id) {
-        if (!equipmentPurchasesRepository.existsById(id)) {
-            throw new NotFoundException("Purchase not found with id: " + id);
+    public EquipmentPurchasesResponseDTO registerInStock(Long id) {
+        EquipmentPurchasesEntity purchase = equipmentPurchasesRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Purchase not found with id: " + id));
+
+        if (PurchaseStatus.REGISTERED.equals(purchase.getStatus())) {
+            throw new IllegalStateException("Purchase has already been registered in stock");
         }
-        equipmentPurchasesRepository.deleteById(id);
+
+        purchase.setStatus(PurchaseStatus.REGISTERED);
+
+        EquipmentPurchasesEntity updatedPurchase = equipmentPurchasesRepository.save(purchase);
+        
+        return mapper.toResponseDTO(updatedPurchase);
     }
 }

@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.equipmentPurchase;
 
+import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -22,7 +23,10 @@ public record EquipmentPurchasesResponseDTO(
         @Schema(example = "Tech Supplies Inc.")
         String supplier,
 
-        @Schema(description = "Receinpt Date.", example = "2025-07-29")
-        LocalDate receiptDate
+        @Schema(description = "Receipt Date.", example = "2025-07-29")
+        LocalDate receiptDate,
+        
+        @Schema(description = "Purchase status.", example = "purchased")
+        PurchaseStatus status
 ) {
 }

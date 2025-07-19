@@ -52,9 +52,9 @@ public class EquipmentPurchasesController {
         return ResponseEntity.ok(response);
     }
 
-    @DeletePurchaseEndpoint
-    public ResponseEntity<Void> deletePurchase(@PathVariable Long id) {
-        equipmentPurchasesService.delete(id);
-        return ResponseEntity.noContent().build();
+    @RegisterInStockEndpoint
+    public ResponseEntity<EquipmentPurchasesResponseDTO> registerInStock(@PathVariable Long id) {
+        var response = equipmentPurchasesService.registerInStock(id);
+        return ResponseEntity.ok(response);
     }
 }
