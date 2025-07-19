@@ -11,6 +11,8 @@ public class MapperStockParameter {
         return StockParameterResponseDTO.builder()
                 .id(entity.getId())
                 .minStock(entity.getMinStock())
+                .securityStock(entity.getSecurityStock())
+                .currentStock(entity.getCurrentStock())
                 .avgRestockTimeDays(entity.getAvgRestockTimeDays())
                 .avgStockConsumptionTimeDays(entity.getAvgStockConsumptionTimeDays())
                 .avgDefectiveRate(entity.getAvgDefectiveRate())

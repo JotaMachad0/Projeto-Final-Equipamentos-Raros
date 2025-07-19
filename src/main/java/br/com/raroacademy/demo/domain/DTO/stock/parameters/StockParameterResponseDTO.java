@@ -16,6 +16,12 @@ public class StockParameterResponseDTO {
     @Schema(description = "Recommended minimum stock", example = "10")
     private Integer minStock;
 
+    @Schema(description = "Security stock", example = "15")
+    private Integer securityStock;
+
+    @Schema(description = "Current stock", example = "0")
+    private Integer currentStock;
+
     @Schema(description = "Average restock time (in days)", example = "7")
     private Integer avgRestockTimeDays;
 

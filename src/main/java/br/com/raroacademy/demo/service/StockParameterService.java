@@ -50,6 +50,7 @@ public class StockParameterService {
                 .equipment(equipment)
                 .minStock(minStock)
                 .securityStock(securityStock)
+                .currentStock(0)
                 .avgRestockTimeDays(request.getAvgRestockTimeDays())
                 .avgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays())
                 .avgDefectiveRate(avgDefectiveRate)
@@ -90,6 +91,7 @@ public class StockParameterService {
         existing.setAvgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays());
         existing.setAvgDefectiveRate(avgDefectiveRate);
 
+
         StockParameterEntity updated = stockParameterRepository.save(existing);
         return MapperStockParameter.toResponseDTO(updated);
     }
@@ -98,5 +100,22 @@ public class StockParameterService {
         StockParameterEntity existing = stockParameterRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
         stockParameterRepository.delete(existing);
+    }
+
+
+    public void consumeStock(Long equipmentId) {
+        StockParameterEntity stock = stockParameterRepository.findByEquipmentId(equipmentId)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
+
+        stock.decrementCurrentStock();
+        stockParameterRepository.save(stock);
+    }
+
+    public void addStock(Long equipmentId) {
+        StockParameterEntity stock = stockParameterRepository.findByEquipmentId(equipmentId)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("stock.parameter.not.found")));
+
+        stock.incrementCurrentStock();
+        stockParameterRepository.save(stock);
     }
 }
