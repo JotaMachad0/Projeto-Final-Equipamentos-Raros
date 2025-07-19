@@ -1,18 +1,18 @@
 package br.com.raroacademy.demo.domain.DTO.stock;
 
-import br.com.raroacademy.demo.domain.entities.EquipmentType;
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "Dados para cadastro ou atualização do estoque de um tipo de equipamento")
+@Schema(description = "Data required for creating or updating an equipment type.")
 public record EquipmentStockRequestDTO(
         @NotNull
-        @Schema(example = "Notebook", description = "Tipo do equipamento")
+        @Schema(example = "NOTEBOOK", description = "Equipment type.")
         EquipmentType equipmentType,
 
         @NotNull
-        @Min(value = 0, message = "A quantidade não pode ser negativa")
-        @Schema(example = "20", description = "Quantidade disponível em estoque")
-        Integer quantity) {
+        @NotNull(message = "The current stock is required.")
+        @Min(value = 0, message = "The current stock can't be negative.")
+        Integer currentStock) {
 }

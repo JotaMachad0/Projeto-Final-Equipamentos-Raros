@@ -1,8 +1,7 @@
 package br.com.raroacademy.demo.domain.annotations.stock.allert;
 
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse200;
-import br.com.raroacademy.demo.commons.annotations.OpenApiResponse404;
-import br.com.raroacademy.demo.commons.annotations.OpenApiResponse409;
+import br.com.raroacademy.demo.commons.annotations.OpenApiResponse422;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.MediaType;
@@ -22,8 +21,7 @@ import java.lang.annotation.Target;
 )
 @RequestMapping(method = RequestMethod.PUT, path = "/{id}/process", produces = MediaType.APPLICATION_JSON_VALUE)
 @OpenApiResponse200
-@OpenApiResponse404
-@OpenApiResponse409
+@OpenApiResponse422
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProcessStockAlertEndpoint {

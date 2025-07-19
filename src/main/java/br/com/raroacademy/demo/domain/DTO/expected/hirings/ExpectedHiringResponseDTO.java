@@ -1,31 +1,31 @@
 package br.com.raroacademy.demo.domain.DTO.expected.hirings;
 
-import br.com.raroacademy.demo.domain.entities.ExpectedHiringStatus;
-import br.com.raroacademy.demo.domain.entities.Region;
+import br.com.raroacademy.demo.domain.enums.ExpectedHiringStatus;
+import br.com.raroacademy.demo.domain.enums.Region;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 import java.time.LocalDate;
 
 @Builder
-@Schema(description = "Dados retornados sobre uma previsão de contratação")
+@Schema(description = "Data returned about an expected hiring.")
 public record ExpectedHiringResponseDTO(
-        @Schema(example = "1", description = "ID da previsão de contratação")
+        @Schema(example = "1", description = "Expected hiring ID.")
         Long id,
 
-        @Schema(example = "2025-12-31", description = "Data prevista")
+        @Schema(example = "2025-12-31", description = "Expected date.")
         LocalDate expectedHireDate,
 
-        @Schema(example = "Desenvolvedor", description = "Cargo previsto")
+        @Schema(example = "Developer", description = "Expected position.")
         String position,
 
-        @Schema(example = "1 notebook 16GB, 2 celulares",
-                description = "Equipamentos requisitados")
+        @Schema(example = "2 cellphones, 1 16GB notebook.",
+                description = "Equipment requirements.")
         String equipmentRequirements,
 
-        @Schema(example = "Centro-Oeste", description = "Região de origem")
+        @Schema(example = "CENTRO_OESTE", description = "Region of origin.")
         Region region,
 
-        @Schema(example = "Processada", description = "Status da previsão de contratação")
+        @Schema(example = "PROCESSADO", description = "Expected hiring status.")
         ExpectedHiringStatus expectedHiringStatus) {
 }

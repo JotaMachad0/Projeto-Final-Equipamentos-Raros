@@ -1,7 +1,7 @@
 package br.com.raroacademy.demo.domain.DTO.equipment;
 
-import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import org.springframework.stereotype.Component;
 
 @Component

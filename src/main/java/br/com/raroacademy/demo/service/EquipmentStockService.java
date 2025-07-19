@@ -4,6 +4,7 @@ import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.stock.EquipmentStockRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.stock.EquipmentStockResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.stock.MapperEquipmentStock;
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.exception.BusinessException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentStockRepository;
@@ -31,7 +32,11 @@ public class EquipmentStockService {
         var existing = equipmentStockRepository.findByEquipmentType(request.equipmentType());
 
         if (existing.isPresent()) {
-            throw new BusinessException(i18nUtil.getMessage("equipment.stock.already.exists"));
+            EquipmentType equipmentType = existing.get().getEquipmentType();
+            Long id = existing.get().getId();
+            String translatedLabel = i18nUtil.getMessage("equipmenttype." + equipmentType.name().toLowerCase());
+
+            throw new BusinessException(i18nUtil.getMessage("equipment.stock.already.exists", translatedLabel, id));
         }
 
         var equipmentStock = mapperEquipmentStock.toEquipmentStock(request);
@@ -55,7 +60,8 @@ public class EquipmentStockService {
         var updated = mapperEquipmentStock.toApplyUpdates(existing, request);
 
         if (existing.equals(updated)) {
-            log.info(i18nUtil.getMessage("equipment.stock.unchanged", existing.getEquipmentType().getLabel()));
+            String translatedLabel = i18nUtil.getMessage("equipmenttype." + existing.getEquipmentType().name().toLowerCase());
+            log.info(i18nUtil.getMessage("equipment.stock.unchanged", translatedLabel));
             return mapperEquipmentStock.toResponseDTO(existing);
         }
 
@@ -74,7 +80,7 @@ public class EquipmentStockService {
     @Transactional(readOnly = true)
     public List<EquipmentStockResponseDTO> getAllEquipmentStocks() {
         var equipmentStockList = equipmentStockRepository.findAll(
-                Sort.by(Sort.Direction.ASC, "equipmentStock.equipmentType")
+                Sort.by(Sort.Direction.ASC, "equipmentType")
         );
         return mapperEquipmentStock.toEquipmentStockList(equipmentStockList);
     }

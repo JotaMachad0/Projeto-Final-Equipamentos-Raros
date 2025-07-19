@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.StockAlertStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -18,26 +19,26 @@ public class StockAlertEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "O estoque de equipamento é obrigatório")
+    @NotNull(message = "{equipment.stock.required}")
     @ManyToOne(optional = false)
     @JoinColumn(name = "equipment_stock_id", nullable = false)
     private EquipmentStockEntity equipmentStock;
 
-    @NotNull(message = "O estoque mínimo é obrigatório")
-    @Min(value = 0, message = "O estoque mínimo não pode ser negativo")
+    @NotNull(message = "{minimum.stock.required}")
+    @Min(value = 0, message = "{minimum.stock.negative}")
     @Column(name = "minimum_stock", nullable = false)
     private Integer minimumStock;
 
-    @NotNull(message = "O estoque de segurança é obrigatório")
-    @Min(value = 0, message = "O estoque de segurança não pode ser negativo")
+    @NotNull(message = "{security.stock.required}")
+    @Min(value = 0, message = "{security.stock.negative}")
     @Column(name = "security_stock", nullable = false)
     private Integer securityStock;
 
-    @NotNull(message = "A data de envio do alerta é obrigatória")
+    @NotNull
     @Column(name = "alert_sent_at", nullable = false)
     private Timestamp alertSentAt;
 
-    @NotNull(message = "O status do alerta é obrigatório")
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "stock_alert_status", nullable = false)
     private StockAlertStatus stockAlertStatus;

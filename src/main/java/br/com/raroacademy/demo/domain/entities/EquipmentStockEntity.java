@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -16,20 +17,20 @@ public class EquipmentStockEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "O tipo de equipamento é obrigatório")
+    @NotNull(message = "{equipment.type.required}")
     @Enumerated(EnumType.STRING)
     @Column(name = "equipment_type", nullable = false, unique = true)
     private EquipmentType equipmentType;
 
-    @NotNull(message = "A quantidade é obrigatória")
-    @Min(value = 0, message = "A quantidade não pode ser negativa")
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    @NotNull(message = "{current.stock.required}")
+    @Min(value = 0, message = "{current.stock.negative}")
+    @Column(name = "current_stock", nullable = false)
+    private Integer currentStock;
 
     @Builder
-    public EquipmentStockEntity(Long id, EquipmentType equipmentType, Integer quantity) {
+    public EquipmentStockEntity(Long id, EquipmentType equipmentType, Integer currentStock) {
         this.id = id;
         this.equipmentType = equipmentType;
-        this.quantity = quantity;
+        this.currentStock = currentStock;
     }
 }

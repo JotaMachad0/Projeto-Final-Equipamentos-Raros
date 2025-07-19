@@ -10,7 +10,7 @@ public class MapperEquipmentStock {
     public EquipmentStockEntity toEquipmentStock(EquipmentStockRequestDTO request) {
         return EquipmentStockEntity.builder()
                 .equipmentType(request.equipmentType())
-                .quantity(request.quantity())
+                .currentStock(request.currentStock())
                 .build();
     }
     
@@ -18,7 +18,7 @@ public class MapperEquipmentStock {
         return EquipmentStockResponseDTO.builder()
                 .id(entity.getId())
                 .equipmentType(entity.getEquipmentType())
-                .quantity(entity.getQuantity())
+                .currentStock(entity.getCurrentStock())
                 .build();
     }
 
@@ -26,7 +26,7 @@ public class MapperEquipmentStock {
         return EquipmentStockEntity.builder()
                 .id(existing.getId())
                 .equipmentType(request.equipmentType())
-                .quantity(request.quantity())
+                .currentStock(request.currentStock())
                 .build();
     }
 

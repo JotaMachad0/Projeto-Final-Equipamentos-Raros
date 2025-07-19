@@ -12,7 +12,7 @@ public class MapperStockAlert {
         return new StockAlertResponseDTO(
                 entity.getId(),
                 entity.getEquipmentStock().getEquipmentType(),
-                entity.getEquipmentStock().getQuantity(),
+                entity.getEquipmentStock().getCurrentStock(),
                 entity.getMinimumStock(),
                 entity.getSecurityStock(),
                 entity.getAlertSentAt(),

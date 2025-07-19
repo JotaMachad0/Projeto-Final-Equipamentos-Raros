@@ -1,6 +1,6 @@
 package br.com.raroacademy.demo.repository;
 
-import br.com.raroacademy.demo.domain.entities.EquipmentType;
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.domain.entities.EquipmentStockEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,7 +1,7 @@
 package br.com.raroacademy.demo.domain.DTO.expected.hirings;
 
 import br.com.raroacademy.demo.domain.entities.ExpectedHiringEntity;
-import br.com.raroacademy.demo.domain.entities.ExpectedHiringStatus;
+import br.com.raroacademy.demo.domain.enums.ExpectedHiringStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class MapperExpectedHiring {
                 .position(request.position())
                 .equipmentRequirements(request.equipmentRequirements())
                 .region(request.region())
-                .expectedHiringStatus(ExpectedHiringStatus.Criada)
+                .expectedHiringStatus(ExpectedHiringStatus.CREATED)
                 .build();
     }
 

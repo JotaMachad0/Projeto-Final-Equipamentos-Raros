@@ -14,6 +14,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Slf4j
 @RestControllerAdvice
 @AllArgsConstructor
@@ -57,10 +60,33 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleInvalidFormatException(InvalidFormatException ex,
                                                                      HttpServletRequest request) {
         log.error("Api error - ", ex);
+
+        String key = "invalid.format.default";
+        String message = null;
+
+        if (ex.getTargetType() != null) {
+            Class<?> type = ex.getTargetType();
+
+            if (type.isEnum()) {
+                List<String> enumValues = Arrays.stream(type.getEnumConstants())
+                        .map(Object::toString)
+                        .sorted()
+                        .toList();
+
+
+                String valuesStr = String.join(", ", enumValues);
+
+                message = i18n.getMessage("invalid.format.enum", new Object[]{valuesStr});
+            } else {
+                String typeName = type.getSimpleName().toLowerCase();
+                key = "invalid.format." + typeName;
+                message = i18n.getMessage(key);
+            }
+        }
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, i18n.getMessage("invalid.date.format")));
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, message));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

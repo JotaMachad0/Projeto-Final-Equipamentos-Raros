@@ -5,7 +5,7 @@ import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringRequest
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.MapperExpectedHiring;
 import br.com.raroacademy.demo.domain.entities.ExpectedHiringEntity;
-import br.com.raroacademy.demo.domain.entities.ExpectedHiringStatus;
+import br.com.raroacademy.demo.domain.enums.ExpectedHiringStatus;
 import br.com.raroacademy.demo.exception.ExpectedHiringAlreadyExistsException;
 import br.com.raroacademy.demo.exception.InvalidStatusException;
 import br.com.raroacademy.demo.exception.NotFoundException;
@@ -117,11 +117,11 @@ public class ExpectedHiringService {
         var entity = expectedHiringRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18nUtil.getMessage("expected.hiring.not.found")));
 
-        if (entity.getExpectedHiringStatus() != ExpectedHiringStatus.Criada) {
+        if (entity.getExpectedHiringStatus() != ExpectedHiringStatus.CREATED) {
             throw new InvalidStatusException(i18nUtil.getMessage("expected.hiring.invalid.status"));
         }
 
-        entity.setExpectedHiringStatus(ExpectedHiringStatus.Processada);
+        entity.setExpectedHiringStatus(ExpectedHiringStatus.PROCESSED);
         expectedHiringRepository.save(entity);
     }
 
@@ -129,14 +129,19 @@ public class ExpectedHiringService {
         var today = LocalDate.now();
         ExpectedHiringStatus newExpectedHiringStatus = null;
 
-        if (entity.getExpectedHiringStatus() == ExpectedHiringStatus.Criada &&
-                entity.getExpectedHireDate().isBefore(today)
-        ) {
-            newExpectedHiringStatus = ExpectedHiringStatus.Vencida;
-        } else if (entity.getExpectedHiringStatus() == ExpectedHiringStatus.Processada &&
-                entity.getExpectedHireDate().isBefore(today)
-        ) {
-            newExpectedHiringStatus = ExpectedHiringStatus.Concluída;
+        switch (entity.getExpectedHiringStatus()) {
+            case CREATED -> {
+                if (entity.getExpectedHireDate().isBefore(today)) {
+                    newExpectedHiringStatus = ExpectedHiringStatus.EXPIRED;
+                }
+            }
+            case PROCESSED -> {
+                if (entity.getExpectedHireDate().isBefore(today)) {
+                    newExpectedHiringStatus = ExpectedHiringStatus.CONCLUDED;
+                }
+            }
+            default -> {
+            }
         }
 
         if (newExpectedHiringStatus != null) {

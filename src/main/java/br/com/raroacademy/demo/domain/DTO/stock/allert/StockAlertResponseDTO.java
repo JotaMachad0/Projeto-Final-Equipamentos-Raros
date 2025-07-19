@@ -1,33 +1,33 @@
 package br.com.raroacademy.demo.domain.DTO.stock.allert;
 
-import br.com.raroacademy.demo.domain.entities.EquipmentType;
-import br.com.raroacademy.demo.domain.entities.StockAlertStatus;
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
+import br.com.raroacademy.demo.domain.enums.StockAlertStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 import java.sql.Timestamp;
 
 @Builder
-@Schema(description = "Dados retornados sobre o alerta de estoque")
+@Schema(description = "Data returned about the stock alert.")
 public record StockAlertResponseDTO(
-        @Schema(example = "1", description = "ID do alerta de estoque")
+        @Schema(example = "1", description = "Stock alert ID.")
         Long id,
 
-        @Schema(example = "Notebook", description = "Tipo do equipamento")
+        @Schema(example = "NOTEBOOK", description = "Equipment type.")
         EquipmentType equipmentType,
 
-        @Schema(example = "15", description = "Estoque atual")
+        @Schema(example = "15", description = "Current stock.")
         Integer currentStock,
 
-        @Schema(example = "5", description = "Estoque mínimo")
+        @Schema(example = "5", description = "Minimum stock.")
         Integer minimumStock,
 
-        @Schema(example = "10", description = "Estoque de segurança")
+        @Schema(example = "10", description = "Security stock.")
         Integer securityStock,
 
-        @Schema(example = "2025-12-31T12:30:00", description = "Data e hora de envio do alerta")
+        @Schema(example = "2025-12-31T12:30:00", description = "Time and date the alert was sent.")
         Timestamp alertSentAt,
 
-        @Schema(example = "Recebido", description = "Status do alerta de esotque")
+        @Schema(example = "PROCESSADO", description = "Stock alert status.")
         StockAlertStatus stockAlertStatus) {
 }

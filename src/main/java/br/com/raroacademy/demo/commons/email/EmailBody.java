@@ -68,4 +68,15 @@ public class EmailBody {
         mailSender.send(message);
     }
 
+    public void sendHtmlEmail(String to, String subject, String htmlContent) throws Exception {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setFrom("keferlinhares@gmail.com");
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlContent, true);
+
+        mailSender.send(message);
+    }
 }
