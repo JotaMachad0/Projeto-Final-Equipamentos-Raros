@@ -1,5 +1,7 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.Region;
+import br.com.raroacademy.demo.domain.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 

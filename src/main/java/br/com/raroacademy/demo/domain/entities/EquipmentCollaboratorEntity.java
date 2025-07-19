@@ -1,18 +1,15 @@
 package br.com.raroacademy.demo.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Entity
 @Table(name = "equipment_collaborator")
+@NoArgsConstructor
 public class EquipmentCollaboratorEntity {
 
     @Id
@@ -31,6 +28,9 @@ public class EquipmentCollaboratorEntity {
     @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate;
 
+    @Column(name = "prevision_delivery_date")
+    private LocalDate previsionDeliveryDate;
+
     @Column(name = "return_date")
     private LocalDate returnDate;
 
@@ -42,11 +42,12 @@ public class EquipmentCollaboratorEntity {
 
     @Builder
     public EquipmentCollaboratorEntity(Long id, CollaboratorEntity collaborator, EquipmentEntity equipment, LocalDate deliveryDate,
-                                       LocalDate returnDate, String deliveryStatus, String notes) {
+                                       LocalDate previsionDeliveryDate, LocalDate returnDate, String deliveryStatus, String notes) {
         this.id = id;
         this.collaborator = collaborator;
         this.equipment = equipment;
         this.deliveryDate = deliveryDate;
+        this.previsionDeliveryDate = previsionDeliveryDate;
         this.returnDate = returnDate;
         this.deliveryStatus = deliveryStatus;
         this.notes = notes;

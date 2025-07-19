@@ -5,11 +5,13 @@ import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
 import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.EquipmentCollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.EquipmentCollaboratorResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.MapperEquipmentCollaborator;
+import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
 import br.com.raroacademy.demo.domain.entities.EquipmentCollaboratorEntity;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
 import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
 import br.com.raroacademy.demo.exception.NotFoundException;
+import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
 import br.com.raroacademy.demo.repository.EquipmentCollaboratorRepository;
 import br.com.raroacademy.demo.repository.EquipmentRepository;
@@ -18,6 +20,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -30,10 +33,13 @@ public class EquipmentCollaboratorService {
     private final EquipmentCollaboratorRepository equipmentCollaboratorRepository;
     private final CollaboratorRepository collaboratorRepository;
     private final EquipmentRepository equipmentRepository;
+    private final AddressRepository addressRepository;
 
     private final MapperEquipmentCollaborator mapperEquipmentCollaborator;
     private final MapperCollaborator mapperCollaborator;
     private final MapperEquipment mapperEquipment;
+
+    private final DeliveryTimeService deliveryTimeService;
 
     private final MessageSource messageSource;
 
@@ -65,7 +71,16 @@ public class EquipmentCollaboratorService {
             }
         }
 
+        AddressEntity address = addressRepository.findById(collaborator.getAddressId())
+                .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
+
+
+
         var entityToSave = mapperEquipmentCollaborator.toEntity(request, collaborator, equipment);
+
+        LocalDate previsionDate = deliveryTimeService.calculate(address.getState(), entityToSave.getDeliveryDate());
+        entityToSave.setPrevisionDeliveryDate(previsionDate);
+
         var savedEntity = equipmentCollaboratorRepository.save(entityToSave);
 
         var collaboratorResponse = mapperCollaborator.toSummaryResponse(savedEntity.getCollaborator());
@@ -117,5 +132,4 @@ public class EquipmentCollaboratorService {
         }
         equipmentCollaboratorRepository.deleteById(id);
     }
-
 }
