@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @OpenApiResponse400
 @OpenApiResponse409
 @OpenApiResponse422
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CreateEquipmentEndpoint {
 }

@@ -13,12 +13,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
 @Operation(summary = "Resend confirmation email", description = "Resend confirmation email with a new token")
 @RequestMapping(method = RequestMethod.POST, path = "/resend-confirm-email", produces = MediaType.APPLICATION_JSON_VALUE)
 @OpenApiResponse204
 @OpenApiResponse404
 @SecurityRequirements
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ResendConfirmEmailEndpoint {
 }

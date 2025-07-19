@@ -14,6 +14,6 @@ import java.lang.annotation.*;
 )
 @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 @ApiResponse(responseCode = "200", description = "List returned successfully")
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GetAllStockParametersEndpoint {}
