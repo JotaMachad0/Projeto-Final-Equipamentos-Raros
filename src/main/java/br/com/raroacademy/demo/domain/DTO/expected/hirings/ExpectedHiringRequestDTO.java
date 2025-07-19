@@ -1,6 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.expected.hirings;
 
-import br.com.raroacademy.demo.domain.entities.Region;
+import br.com.raroacademy.demo.domain.enums.Region;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;

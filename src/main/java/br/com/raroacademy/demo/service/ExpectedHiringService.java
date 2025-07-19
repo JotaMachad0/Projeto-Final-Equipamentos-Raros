@@ -5,7 +5,7 @@ import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringRequest
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.MapperExpectedHiring;
 import br.com.raroacademy.demo.domain.entities.ExpectedHiringEntity;
-import br.com.raroacademy.demo.domain.entities.Status;
+import br.com.raroacademy.demo.domain.enums.Status;
 import br.com.raroacademy.demo.exception.ExpectedHiringAlreadyExistsException;
 import br.com.raroacademy.demo.exception.InvalidStatusException;
 import br.com.raroacademy.demo.exception.NotFoundException;
