@@ -23,6 +23,9 @@ public record EquipmentPurchasesRequestDTO(
 
         @NotBlank
         @Schema(example = "Tech Supplies Inc.")
-        String supplier
+        String supplier,
+
+        @Schema(description = "Receinpt Date.", example = "")
+        LocalDate receiptDate
 ) {
 }

@@ -20,6 +20,9 @@ public record EquipmentPurchasesResponseDTO(
         LocalDate orderDate,
 
         @Schema(example = "Tech Supplies Inc.")
-        String supplier
+        String supplier,
+
+        @Schema(description = "Receinpt Date.", example = "2025-07-29")
+        LocalDate receiptDate
 ) {
 }

@@ -28,15 +28,19 @@ public class EquipmentPurchasesEntity {
     @Column(name = "order_date", nullable = false)
     private LocalDate orderDate;
 
+    @Column(name = "receipt_date")
+    private LocalDate receiptDate;
+
     @Column(name = "supplier", nullable = false, length = 100)
     private String supplier;
 
     @Builder
-    public EquipmentPurchasesEntity(Long id, String equipmentType, Integer quantity, LocalDate orderDate, String supplier) {
+    public EquipmentPurchasesEntity(Long id, String equipmentType, Integer quantity, LocalDate orderDate, LocalDate receiptDate, String supplier) {
         this.id = id;
         this.equipmentType = equipmentType;
         this.quantity = quantity;
         this.orderDate = orderDate;
+        this.receiptDate = receiptDate;
         this.supplier = supplier;
     }
 }

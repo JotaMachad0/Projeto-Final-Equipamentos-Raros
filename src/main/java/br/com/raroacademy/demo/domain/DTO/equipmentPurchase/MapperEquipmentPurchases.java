@@ -14,6 +14,7 @@ public class MapperEquipmentPurchases {
                 .quantity(request.quantity())
                 .orderDate(request.orderDate())
                 .supplier(request.supplier())
+                .receiptDate(request.receiptDate())
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class MapperEquipmentPurchases {
                 .quantity(entity.getQuantity())
                 .orderDate(entity.getOrderDate())
                 .supplier(entity.getSupplier())
+                .receiptDate(entity.getReceiptDate())
                 .build();
     }
 
@@ -32,6 +34,7 @@ public class MapperEquipmentPurchases {
         entity.setQuantity(dto.quantity());
         entity.setOrderDate(dto.orderDate());
         entity.setSupplier(dto.supplier());
+        entity.setReceiptDate(dto.receiptDate());
     }
 
     public List<EquipmentPurchasesResponseDTO> toResponseDTOList(List<EquipmentPurchasesEntity> entityList) {
