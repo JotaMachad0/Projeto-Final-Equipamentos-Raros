@@ -15,7 +15,7 @@ public class MapperExpectedReturn {
 
     public ExpectedReturnEntity toEntity(ExpectedReturnRequestDTO dto, EquipmentCollaboratorEntity equipmentCollaborator) {
         return ExpectedReturnEntity.builder()
-                .expectedReturnDate(dto.getExpectedReturnDate())
+                .expectedReturnDate(dto.expectedReturnDate())
                 .equipmentCollaborator(equipmentCollaborator)
                 .build();
     }

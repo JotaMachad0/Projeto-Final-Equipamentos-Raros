@@ -33,10 +33,10 @@ public class ExpectedReturnService {
 
     public ExpectedReturnResponseDTO create(ExpectedReturnRequestDTO request) {
         EquipmentCollaboratorEntity equipmentCollaborator = equipmentCollaboratorRepository
-                .findById(request.getEquipmentCollaboratorId())
+                .findById(request.equipmentCollaboratorId())
                 .orElseThrow(() -> new NotFoundException(getMessage("equipment-collaborator.not-found")));
 
-        if (expectedReturnRepository.existsByEquipmentCollaboratorId(request.getEquipmentCollaboratorId())) {
+        if (expectedReturnRepository.existsByEquipmentCollaboratorId(request.equipmentCollaboratorId())) {
             throw new DataIntegrityViolationException(getMessage("expected-return.already-exists"));
         }
 
@@ -64,15 +64,15 @@ public class ExpectedReturnService {
                 .orElseThrow(() -> new NotFoundException(getMessage("expected-return.not-found")));
 
         EquipmentCollaboratorEntity equipmentCollaborator = equipmentCollaboratorRepository
-                .findById(request.getEquipmentCollaboratorId())
+                .findById(request.equipmentCollaboratorId())
                 .orElseThrow(() -> new NotFoundException(getMessage("equipment-collaborator.not-found")));
 
-        if (!existingEntity.getEquipmentCollaborator().getId().equals(request.getEquipmentCollaboratorId()) &&
-                expectedReturnRepository.existsByEquipmentCollaboratorId(request.getEquipmentCollaboratorId())) {
+        if (!existingEntity.getEquipmentCollaborator().getId().equals(request.equipmentCollaboratorId()) &&
+                expectedReturnRepository.existsByEquipmentCollaboratorId(request.equipmentCollaboratorId())) {
             throw new DataIntegrityViolationException(getMessage("expected-return.already-exists"));
         }
 
-        existingEntity.setExpectedReturnDate(request.getExpectedReturnDate());
+        existingEntity.setExpectedReturnDate(request.expectedReturnDate());
         existingEntity.setEquipmentCollaborator(equipmentCollaborator);
 
         var updatedEntity = expectedReturnRepository.save(existingEntity);

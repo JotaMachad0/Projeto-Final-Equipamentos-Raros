@@ -9,14 +9,14 @@ public class MapperEquipment {
 
     public EquipmentEntity toEntity(EquipmentRequestDTO dto) {
         return EquipmentEntity.builder()
-                .type(EquipmentType.valueOf(dto.getType().toUpperCase()))
-                .serialNumber(dto.getSerialNumber())
-                .brand(dto.getBrand())
-                .model(dto.getModel())
-                .specs(dto.getSpecs())
-                .acquisitionDate(dto.getAcquisitionDate())
-                .usageTimeMonths(dto.getUsageTimeMonths())
-                .status(dto.getStatus())
+                .type(EquipmentType.valueOf(dto.type().toUpperCase()))
+                .serialNumber(dto.serialNumber())
+                .brand(dto.brand())
+                .model(dto.model())
+                .specs(dto.specs())
+                .acquisitionDate(dto.acquisitionDate())
+                .usageTimeMonths(dto.usageTimeMonths())
+                .status(dto.status())
                 .build();
     }
 
@@ -35,14 +35,14 @@ public class MapperEquipment {
     }
 
     public EquipmentEntity toUpdateEquipment(EquipmentEntity entity, EquipmentRequestDTO request) {
-        entity.setType(EquipmentType.valueOf(request.getType().toUpperCase()));
-        entity.setSerialNumber(request.getSerialNumber());
-        entity.setBrand(request.getBrand());
-        entity.setModel(request.getModel());
-        entity.setSpecs(request.getSpecs());
-        entity.setAcquisitionDate(request.getAcquisitionDate());
-        entity.setUsageTimeMonths(request.getUsageTimeMonths());
-        entity.setStatus(request.getStatus());
+        entity.setType(EquipmentType.valueOf(request.type().toUpperCase()));
+        entity.setSerialNumber(request.serialNumber());
+        entity.setBrand(request.brand());
+        entity.setModel(request.model());
+        entity.setSpecs(request.specs());
+        entity.setAcquisitionDate(request.acquisitionDate());
+        entity.setUsageTimeMonths(request.usageTimeMonths());
+        entity.setStatus(request.status());
         return entity;
     }
 
