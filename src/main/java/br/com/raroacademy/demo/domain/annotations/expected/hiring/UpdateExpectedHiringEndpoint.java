@@ -16,9 +16,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Operation(summary = "Update expected hiring",
-        description = "Endpoint responsible for updating the expected hiring.",
+        description = "Endpoint responsible for updating an expected hiring.",
         parameters = {
-                @Parameter(name = "id", example = "1", description = "ID da previsão de contratação")
+                @Parameter(name = "id", example = "1", description = "Expected hiring ID")
         }
 )
 @RequestMapping(method = RequestMethod.PUT, path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface StockRepository extends JpaRepository<StockEntity, Long> {
-
     StockEntity findByEquipmentType(EquipmentType equipmentType);
+
+    boolean existsByEquipmentType(EquipmentType equipmentType);
 }

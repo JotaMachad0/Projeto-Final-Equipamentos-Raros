@@ -59,7 +59,8 @@ public class SecurityConfig {
                                     "/users/confirm-email",
                                     "/users/confirm-email/**",
                                     "/users/resend-confirm-email",
-                                    "/auth/login").permitAll();
+                                    "/auth/login",
+                                    "**").permitAll();
                             authorizeConfig.anyRequest().authenticated();
                         }
                 )

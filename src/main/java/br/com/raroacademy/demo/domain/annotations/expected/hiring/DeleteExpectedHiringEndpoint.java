@@ -13,9 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Operation(summary = "Delete expected hiring",
-        description = "Endpoint responsible for deleting a expected hiring",
+        description = "Endpoint responsible for deleting an expected hiring",
         parameters = {
-                @Parameter(name = "id", example = "1", description = "ID da previsão de contratação")
+                @Parameter(name = "id", example = "1", description = "Expected hiring ID")
         }
 )
 @RequestMapping(method = RequestMethod.DELETE, path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

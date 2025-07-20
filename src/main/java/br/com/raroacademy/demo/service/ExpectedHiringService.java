@@ -5,7 +5,7 @@ import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringRequest
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.ExpectedHiringResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.expected.hirings.MapperExpectedHiring;
 import br.com.raroacademy.demo.domain.entities.ExpectedHiringEntity;
-import br.com.raroacademy.demo.domain.enums.Status;
+import br.com.raroacademy.demo.domain.enums.ExpectedHiringStatus;
 import br.com.raroacademy.demo.exception.ExpectedHiringAlreadyExistsException;
 import br.com.raroacademy.demo.exception.InvalidStatusException;
 import br.com.raroacademy.demo.exception.NotFoundException;
@@ -38,14 +38,16 @@ public class ExpectedHiringService {
         if (existing.isPresent()) {
             ExpectedHiringEntity e = existing.get();
 
-            String localizedStatus = i18nUtil.getMessage("expected.hiring.status." + e.getStatus().name());
+            String localizedStatus = i18nUtil.getMessage(
+                    "expected.hiring.status." + e.getExpectedHiringStatus().name()
+            );
             String message = i18nUtil.getMessage(
-                    "expected.hiring.already.exists",
-                    e.getId(), localizedStatus, e.getEquipmentRequirements()
+                    "expected.hiring.already.exists", e.getId(), localizedStatus, e.getEquipmentRequirements()
             );
 
             throw new ExpectedHiringAlreadyExistsException(message);
         }
+
         var expectedHiring = mapperExpectedHiring.toExpectedHiring(request);
         var saved = expectedHiringRepository.save(expectedHiring);
         return mapperExpectedHiring.toExpectedHiringResponseDTO(saved);
@@ -72,12 +74,13 @@ public class ExpectedHiringService {
 
         if (duplicate.isPresent()) {
             var d = duplicate.get();
-            String localizedStatus = i18nUtil.getMessage("expected.hiring.status." + d.getStatus().name());
+            String localizedStatus = i18nUtil.getMessage(
+                    "expected.hiring.status." + d.getExpectedHiringStatus().name()
+            );
             throw new ExpectedHiringAlreadyExistsException(
                     i18nUtil.getMessage(
                             "expected.hiring.already.exists",
-                            d.getId(), localizedStatus, d.getEquipmentRequirements()
-                    )
+                            d.getId(), localizedStatus, d.getEquipmentRequirements())
             );
         }
 
@@ -100,7 +103,7 @@ public class ExpectedHiringService {
         expectedHiringRepository.delete(expectedHiring);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ExpectedHiringResponseDTO> getAllExpectedHirings() {
         var expectedHiringList = expectedHiringRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 
@@ -114,27 +117,35 @@ public class ExpectedHiringService {
         var entity = expectedHiringRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18nUtil.getMessage("expected.hiring.not.found")));
 
-        if (entity.getStatus() != Status.Criada) {
+        if (entity.getExpectedHiringStatus() != ExpectedHiringStatus.CREATED) {
             throw new InvalidStatusException(i18nUtil.getMessage("expected.hiring.invalid.status"));
         }
 
-        entity.setStatus(Status.Processada);
+        entity.setExpectedHiringStatus(ExpectedHiringStatus.PROCESSED);
         expectedHiringRepository.save(entity);
     }
 
-    @Transactional
     private void updateStatusIfExpired(ExpectedHiringEntity entity) {
         var today = LocalDate.now();
-        Status newStatus = null;
+        ExpectedHiringStatus newExpectedHiringStatus = null;
 
-        if (entity.getStatus() == Status.Criada && entity.getExpectedHireDate().isBefore(today)) {
-            newStatus = Status.Vencida;
-        } else if (entity.getStatus() == Status.Processada && entity.getExpectedHireDate().isBefore(today)) {
-            newStatus = Status.Concluída;
+        switch (entity.getExpectedHiringStatus()) {
+            case CREATED -> {
+                if (entity.getExpectedHireDate().isBefore(today)) {
+                    newExpectedHiringStatus = ExpectedHiringStatus.EXPIRED;
+                }
+            }
+            case PROCESSED -> {
+                if (entity.getExpectedHireDate().isBefore(today)) {
+                    newExpectedHiringStatus = ExpectedHiringStatus.CONCLUDED;
+                }
+            }
+            default -> {
+            }
         }
 
-        if (newStatus != null) {
-            entity.setStatus(newStatus);
+        if (newExpectedHiringStatus != null) {
+            entity.setExpectedHiringStatus(newExpectedHiringStatus);
             expectedHiringRepository.save(entity);
         }
     }

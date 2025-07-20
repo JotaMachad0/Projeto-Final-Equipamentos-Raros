@@ -16,6 +16,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RestControllerAdvice
 @AllArgsConstructor
@@ -59,10 +64,33 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleInvalidFormatException(InvalidFormatException ex,
                                                                      HttpServletRequest request) {
         log.error("Api error - ", ex);
+
+        String key = "invalid.format.default";
+        String message = null;
+
+        if (ex.getTargetType() != null) {
+            Class<?> type = ex.getTargetType();
+
+            if (type.isEnum()) {
+                List<String> enumValues = Arrays.stream(type.getEnumConstants())
+                        .map(Object::toString)
+                        .sorted()
+                        .toList();
+
+
+                String valuesStr = String.join(", ", enumValues);
+
+                message = i18n.getMessage("invalid.format.enum", new Object[]{valuesStr});
+            } else {
+                String typeName = type.getSimpleName().toLowerCase();
+                key = "invalid.format." + typeName;
+                message = i18n.getMessage(key);
+            }
+        }
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, i18n.getMessage("invalid.date.format")));
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, message));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -116,6 +144,15 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessageKey()));
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorMessage> handleBusinessException(BusinessException ex, HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
     @ExceptionHandler(CodeException.class)
     public ResponseEntity<ErrorMessage> handleCodeException(CodeException ex, HttpServletRequest request) {
         log.error("Api error - ", ex);
@@ -145,13 +182,21 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNAUTHORIZED, i18n.getMessage("error.authentication")));
     }
 
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorMessage> handleGenericException(Exception ex,
+//                                                               HttpServletRequest request) {
+//        log.error("Unexpected error - ", ex);
+//        return ResponseEntity
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("error.unexpected")));
+//    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleGenericException(Exception ex,
-                                                               HttpServletRequest request) {
-        log.error("Unexpected error - ", ex);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("error.unexpected")));
+    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
+        log.error("Erro inesperado: ", ex);
+        Map<String, String> body = new HashMap<>();
+        body.put("error", "Erro inesperado: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

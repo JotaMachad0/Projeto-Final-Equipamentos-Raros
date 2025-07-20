@@ -2,9 +2,9 @@ package br.com.raroacademy.demo.controller;
 
 import br.com.raroacademy.demo.commons.annotations.ApiController;
 import br.com.raroacademy.demo.commons.annotations.OpenApiController;
-import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.EquipmentCollaboratorRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.EquipmentCollaboratorResponseDTO;
-import br.com.raroacademy.demo.domain.annotations.equipmentCollaborator.*;
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorResponseDTO;
+import br.com.raroacademy.demo.domain.annotations.equipment.collaborator.*;
 import br.com.raroacademy.demo.service.EquipmentCollaboratorService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

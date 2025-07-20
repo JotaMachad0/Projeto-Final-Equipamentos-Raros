@@ -2,23 +2,13 @@ package br.com.raroacademy.demo.domain.DTO.stock;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-@Schema(name = "StockRequestDTO", description = "DTO for creating stock parameters")
-public class StockRequestDTO {
+@Schema(name = "StockRequestDTO", description = "Data required for updating a stock.")
+public record StockRequestDTO (
+    @Min(value = 0)
+    @Schema(description = "Minimum stock")
+    Integer minStock,
 
-    @NotNull
-    @Schema(description = "Equipment ID", example = "1")
-    private Long equipmentId;
-
-    @NotNull
-    @Schema(description = "Average restock time (in days)", example = "7")
-    private Integer avgRestockTimeDays;
-
-    @NotNull
-    @Schema(description = "Average stock consumption time (in days)", example = "15")
-    private Integer avgStockConsumptionTimeDays;
+    @Schema(description = "Security stock")
+    Integer securityStock) {
 }
