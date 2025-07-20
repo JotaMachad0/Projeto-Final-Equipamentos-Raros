@@ -1,6 +1,5 @@
 package br.com.raroacademy.demo.domain.annotations.collaborator;
 
-
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse200;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;

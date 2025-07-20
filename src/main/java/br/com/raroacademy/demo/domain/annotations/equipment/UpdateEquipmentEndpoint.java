@@ -1,6 +1,5 @@
 package br.com.raroacademy.demo.domain.annotations.equipment;
 
-
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse200;
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse404;
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse409;

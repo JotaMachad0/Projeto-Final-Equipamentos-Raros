@@ -4,7 +4,7 @@ public enum EquipmentType {
     ANDROID_PHONE,
     ANDROID_PHONE_CHARGER,
     COMPUTER,
-    HEADPHONE,
+    EARPHONE,
     HDMI_CABLE,
     IPHONE,
     IPHONE_CHARGER,

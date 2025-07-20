@@ -2,33 +2,31 @@ package br.com.raroacademy.demo.domain.DTO.equipment.collaborator;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
-public class EquipmentCollaboratorRequestDTO {
+@Builder
+public record EquipmentCollaboratorRequestDTO (
 
     @NotNull
     @Schema(example = "1")
-    private Long collaboratorId;
+    Long collaboratorId,
 
     @NotNull
     @Schema(example = "1")
-    private Long equipmentId;
+    Long equipmentId,
 
     @NotNull
     @Schema(example = "2024-07-18")
-    private LocalDate deliveryDate;
+    LocalDate deliveryDate,
 
     @Schema(example = "2025-07-17")
-    private LocalDate returnDate;
+    LocalDate returnDate,
 
     @Schema(example = "Delivered")
-    private String deliveryStatus;
+    String deliveryStatus,
 
     @Schema(example = "All accessories have been delivered")
-    private String notes;
+    String notes) {
 }

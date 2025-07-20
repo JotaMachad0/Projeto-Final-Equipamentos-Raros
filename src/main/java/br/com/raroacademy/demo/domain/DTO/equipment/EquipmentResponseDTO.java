@@ -10,30 +10,30 @@ import java.time.LocalDate;
 @Schema(name = "EquipmentResponseDTO", description = "DTO de resposta com informações do equipamento")
 public record EquipmentResponseDTO (
 
-    @Schema(description = "ID do equipamento", example = "1")
+    @Schema(description = "Equipment ID", example = "1")
     Long id,
 
-    @Schema(description = "Tipo do equipamento", example = "Notebook")
+    @Schema(description = "Equipment type", example = "NOTEBOOK_CHARGER")
     String type,
 
-    @Schema(description = "Número de série único", example = "SN-123456789")
+    @Schema(description = "Unique serial number", example = "SN-123456789")
     String serialNumber,
 
-    @Schema(description = "Marca do equipamento", example = "Dell")
+    @Schema(description = "Equipment brand", example = "Dell")
     String brand,
 
-    @Schema(description = "Modelo do equipamento", example = "Inspiron 15 3000")
+    @Schema(description = "Equipment model", example = "Inspiron 15 3000")
     String model,
 
-    @Schema(description = "Especificações adicionais", example = "8GB RAM, SSD 256GB")
+    @Schema(description = "Additional specifications", example = "8GB RAM, SSD 256GB")
     String specs,
 
-    @Schema(description = "Data de aquisição", example = "2024-01-15")
+    @Schema(description = "Acquisition date", example = "2024-01-15")
     LocalDate acquisitionDate,
 
-    @Schema(description = "Tempo de uso em meses", example = "12")
+    @Schema(description = "Usage time in months", example = "12")
     Integer usageTimeMonths,
 
-    @Schema(description = "Status atual do equipamento", example = "EM_USO")
+    @Schema(description = "Current status of the equipment", example = "IN_USE")
     EquipmentStatus status) {
 }

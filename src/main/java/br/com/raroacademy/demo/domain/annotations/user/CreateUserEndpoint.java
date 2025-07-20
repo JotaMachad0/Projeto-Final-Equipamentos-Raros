@@ -1,6 +1,5 @@
 package br.com.raroacademy.demo.domain.annotations.user;
 
-
 import br.com.raroacademy.demo.commons.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;

@@ -51,10 +51,10 @@ public class EquipmentCollaboratorService {
     @Transactional
     public EquipmentCollaboratorResponseDTO create(EquipmentCollaboratorRequestDTO request) {
 
-        var collaborator = collaboratorRepository.findById(request.getCollaboratorId())
+        var collaborator = collaboratorRepository.findById(request.collaboratorId())
                 .orElseThrow(() -> new NotFoundException(getMessage("collaborator.not-found")));
 
-        var equipment = equipmentRepository.findById(request.getEquipmentId())
+        var equipment = equipmentRepository.findById(request.equipmentId())
                 .orElseThrow(() -> new NotFoundException(getMessage("equipment.not-found")));
 
 
@@ -104,10 +104,10 @@ public class EquipmentCollaboratorService {
         var existingEntity = equipmentCollaboratorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(getMessage("equipment-collaborator.not-found")));
 
-        boolean isReturning = existingEntity.getReturnDate() == null && request.getReturnDate() != null;
+        boolean isReturning = existingEntity.getReturnDate() == null && request.returnDate() != null;
 
         if (isReturning) {
-            LocalDate returnDate = request.getReturnDate();
+            LocalDate returnDate = request.returnDate();
 
             if (returnDate.isAfter(LocalDate.now())) {
                 throw new DataIntegrityViolationException(getMessage("return.date.future"));
@@ -121,19 +121,19 @@ public class EquipmentCollaboratorService {
             equipmentRepository.save(equipmentToReturn);
         }
 
-        var collaborator = collaboratorRepository.findById(request.getCollaboratorId())
+        var collaborator = collaboratorRepository.findById(request.collaboratorId())
                 .orElseThrow(() -> new NotFoundException(getMessage("collaborator.not-found")));
-        var equipment = equipmentRepository.findById(request.getEquipmentId())
+        var equipment = equipmentRepository.findById(request.equipmentId())
                 .orElseThrow(() -> new NotFoundException(getMessage("equipment.not-found")));
 
         existingEntity.setCollaborator(collaborator);
         if (!isReturning) {
             existingEntity.setEquipment(equipment);
         }
-        existingEntity.setDeliveryDate(request.getDeliveryDate());
-        existingEntity.setReturnDate(request.getReturnDate());
-        existingEntity.setDeliveryStatus(request.getDeliveryStatus());
-        existingEntity.setNotes(request.getNotes());
+        existingEntity.setDeliveryDate(request.deliveryDate());
+        existingEntity.setReturnDate(request.returnDate());
+        existingEntity.setDeliveryStatus(request.deliveryStatus());
+        existingEntity.setNotes(request.notes());
 
         var updatedEntity = equipmentCollaboratorRepository.save(existingEntity);
         return mapperEquipmentCollaborator.mapToResponseDTO(updatedEntity);
