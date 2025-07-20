@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @Table(name = "expected_hirings")
 public class ExpectedHiringEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

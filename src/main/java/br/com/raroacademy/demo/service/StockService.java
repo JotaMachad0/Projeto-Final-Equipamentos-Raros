@@ -2,15 +2,23 @@ package br.com.raroacademy.demo.service;
 
 import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.stock.MapperStock;
+import br.com.raroacademy.demo.domain.DTO.stock.StockRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.stock.StockResponseDTO;
-import br.com.raroacademy.demo.domain.DTO.stock.UpdateStockRequestDTO;
+import br.com.raroacademy.demo.domain.entities.StockEntity;
 import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import br.com.raroacademy.demo.domain.enums.EquipmentType;
+import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentRepository;
 import br.com.raroacademy.demo.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StockService {
@@ -18,26 +26,42 @@ public class StockService {
     private final StockRepository stockRepository;
     private final EquipmentRepository equipmentRepository;
     private final I18nUtil i18n;
+    private final MapperStock mapperStock;
+    private final StockAlertService stockAlertService;
 
-    public StockResponseDTO updateByEquipmentType(EquipmentType equipmentType, UpdateStockRequestDTO request) {
-        var stock = stockRepository.findByEquipmentType(equipmentType);
-        if (stock == null) {
-            throw new IllegalStateException(i18n.getMessage("stock.not.found.for.type", equipmentType.name()));
+    @Transactional
+    public StockResponseDTO updateByEquipmentType(EquipmentType equipmentType, StockRequestDTO request) {
+        var existing = stockRepository.findByEquipmentType(equipmentType);
+        if (existing == null) {
+            throw new NotFoundException(i18n.getMessage("stock.not.found.for.type", equipmentType.name()));
         }
 
-        stock.setMinStock(request.getMinStock());
-        stock.setSecurityStock(request.getSecurityStock());
-        stock.setAvgRestockTimeDays(request.getAvgRestockTimeDays());
-        stock.setAvgStockConsumptionTimeDays(request.getAvgStockConsumptionTimeDays());
+        var original = StockEntity.builder()
+                .id(existing.getId())
+                .equipmentType(existing.getEquipmentType())
+                .minStock(existing.getMinStock())
+                .securityStock(existing.getSecurityStock())
+                .currentStock(existing.getCurrentStock())
+                .avgRestockTimeDays(existing.getAvgRestockTimeDays())
+                .avgStockConsumptionTimeDays(existing.getAvgStockConsumptionTimeDays())
+                .avgDefectiveRate(existing.getAvgDefectiveRate())
+                .build();
 
+        var updated = mapperStock.toApplyUpdates(existing, request);
         var totalEquipments = equipmentRepository.countByType(equipmentType);
         var defectiveEquipments = equipmentRepository.countByTypeAndStatus(equipmentType, EquipmentStatus.DEFECTIVE);
-
         var avgDefectiveRate = totalEquipments > 0 ? (float) defectiveEquipments / totalEquipments : 0.0f;
-        stock.setAvgDefectiveRate(avgDefectiveRate);
+        updated.setAvgDefectiveRate(avgDefectiveRate);
 
-        var updated = stockRepository.save(stock);
-        return MapperStock.toResponseDTO(updated);
+        if (updated.equals(original)) {
+            String translatedLabel = i18n.getMessage("equipmenttype." + equipmentType.name().toLowerCase());
+            log.info(i18n.getMessage("stock.unchanged", translatedLabel));
+            return mapperStock.toResponseDTO(existing);
+        }
+
+        var saved = stockRepository.save(updated);
+        stockAlertService.checkAndCreateAlert(saved);
+        return mapperStock.toResponseDTO(saved);
     }
 
     public StockResponseDTO findByEquipmentType(EquipmentType equipmentType) {
@@ -45,7 +69,7 @@ public class StockService {
         if (stock == null) {
             throw new IllegalStateException(i18n.getMessage("stock.not.found.for.type", equipmentType.name()));
         }
-        return MapperStock.toResponseDTO(stock);
+        return mapperStock.toResponseDTO(stock);
     }
 
     public void incrementStock(EquipmentType equipmentType) {
@@ -67,5 +91,14 @@ public class StockService {
             throw new IllegalStateException(i18n.getMessage("stock.negative.value"));
         }
         stockRepository.save(stock);
+        stockAlertService.checkAndCreateAlert(stock);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StockResponseDTO> getAllStocks() {
+        var stockList = stockRepository.findAll(
+                Sort.by(Sort.Direction.ASC, "equipmentType")
+        );
+        return mapperStock.toStockList(stockList);
     }
 }

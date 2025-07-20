@@ -26,7 +26,7 @@ public class StockAlertScheduler {
         for (StockAlertEntity alert : alerts) {
             try {
                 emailStockAlertService.sendStockAlertEmail(alert);
-                log.info("Alerta reenviado para o estoque: {}", alert.getEquipmentStock().getEquipmentType());
+                log.info("Alerta reenviado para o estoque: {}", alert.getStock().getEquipmentType());
             } catch (Exception e) {
                 log.error("Erro ao reenviar e-mail do alerta de estoque", e);
             }

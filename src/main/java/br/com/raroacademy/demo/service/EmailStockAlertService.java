@@ -24,7 +24,7 @@ public class EmailStockAlertService {
     public void sendStockAlertEmail(StockAlertEntity alert) throws Exception {
         List<UserEntity> confirmedUsers = userRepository.findAllByEmailConfirmedTrue();
         String equipmentName = i18nUtil.getMessage(
-                "equipmenttype." + alert.getEquipmentStock().getEquipmentType().name().toLowerCase()
+                "equipmenttype." + alert.getStock().getEquipmentType().name().toLowerCase()
         );
         String subject = MessageFormat.format(i18nUtil.getMessage("stock.alert.email.subject"), equipmentName);
         String htmlContent = emailBuilder.buildHtmlContent(alert);

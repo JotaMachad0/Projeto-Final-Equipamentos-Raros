@@ -19,20 +19,20 @@ public class StockAlertEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "{equipment.stock.required}")
+    @NotNull(message = "{stock.required}")
     @ManyToOne(optional = false)
-    @JoinColumn(name = "equipment_stock_id", nullable = false)
-    private EquipmentStockEntity equipmentStock;
+    @JoinColumn(name = "stock_id", nullable = false)
+    private StockEntity stock;
 
-    @NotNull(message = "{minimum.stock.required}")
-    @Min(value = 0, message = "{minimum.stock.negative}")
-    @Column(name = "minimum_stock", nullable = false)
-    private Integer minimumStock;
-
-    @NotNull(message = "{security.stock.required}")
-    @Min(value = 0, message = "{security.stock.negative}")
-    @Column(name = "security_stock", nullable = false)
-    private Integer securityStock;
+//    @NotNull(message = "{minimum.stock.required}")
+//    @Min(value = 0, message = "{minimum.stock.negative}")
+//    @Column(name = "minimum_stock", nullable = false)
+//    private Integer minimumStock;
+//
+//    @NotNull(message = "{security.stock.required}")
+//    @Min(value = 0, message = "{security.stock.negative}")
+//    @Column(name = "security_stock", nullable = false)
+//    private Integer securityStock;
 
     @NotNull
     @Column(name = "alert_sent_at", nullable = false)
@@ -40,16 +40,15 @@ public class StockAlertEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "stock_alert_status", nullable = false)
+    @Column(name = "stock_alert_status", nullable = false, length = 10)
     private StockAlertStatus stockAlertStatus;
 
     @Builder
-    public StockAlertEntity(Long id, EquipmentStockEntity equipmentStock, Integer minimumStock,
-                            Integer securityStock, Timestamp alertSentAt, StockAlertStatus stockAlertStatus) {
+    public StockAlertEntity(Long id, StockEntity stock, Timestamp alertSentAt, StockAlertStatus stockAlertStatus) {
         this.id = id;
-        this.equipmentStock = equipmentStock;
-        this.minimumStock = minimumStock;
-        this.securityStock = securityStock;
+        this.stock = stock;
+//        this.minimumStock = minimumStock;
+//        this.securityStock = securityStock;
         this.alertSentAt = alertSentAt;
         this.stockAlertStatus = stockAlertStatus;
     }

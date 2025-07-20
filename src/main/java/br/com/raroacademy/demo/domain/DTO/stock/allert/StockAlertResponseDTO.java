@@ -19,10 +19,7 @@ public record StockAlertResponseDTO(
         @Schema(example = "15", description = "Current stock.")
         Integer currentStock,
 
-        @Schema(example = "5", description = "Minimum stock.")
-        Integer minimumStock,
-
-        @Schema(example = "10", description = "Security stock.")
+        @Schema(example = "20", description = "Security stock.")
         Integer securityStock,
 
         @Schema(example = "2025-12-31T12:30:00", description = "Time and date the alert was sent.")
