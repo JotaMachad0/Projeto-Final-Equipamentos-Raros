@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Operation(summary = "Create expected hiring",
-        description = "Endpoint responsible for adding new expected hiring."
+        description = "Endpoint responsible for creating a new expected hiring."
 )
 @RequestMapping(method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
 @OpenApiResponse200

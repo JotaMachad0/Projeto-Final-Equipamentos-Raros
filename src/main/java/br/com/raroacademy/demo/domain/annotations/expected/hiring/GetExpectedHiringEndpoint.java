@@ -14,9 +14,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Operation(summary = "Get expected hiring",
-        description = "Endpoint responsible for searching for only one expected hiring",
+        description = "Endpoint responsible for searching for a single expected hiring",
         parameters = {
-                @Parameter(name = "id", example = "1", description = "ID da previsão de contratação")
+                @Parameter(name = "id", example = "1", description = "Expected hiring ID")
         }
 )
 @RequestMapping(method = RequestMethod.GET, path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

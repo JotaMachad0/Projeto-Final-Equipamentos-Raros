@@ -1,7 +1,7 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.ExpectedHiringStatus;
 import br.com.raroacademy.demo.domain.enums.Region;
-import br.com.raroacademy.demo.domain.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @Table(name = "expected_hirings")
 public class ExpectedHiringEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,21 +28,21 @@ public class ExpectedHiringEntity {
     private String equipmentRequirements;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "region", nullable = false)
+    @Column(name = "region", nullable = false, length = 12)
     private Region region;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private Status status;
+    @Column(name = "status", nullable = false, length = 10)
+    private ExpectedHiringStatus expectedHiringStatus;
 
     @Builder
-    public ExpectedHiringEntity(Long id, LocalDate expectedHireDate, String position,
-                                String equipmentRequirements, Region region, Status status) {
+    public ExpectedHiringEntity(Long id, LocalDate expectedHireDate, String position, String equipmentRequirements,
+                                Region region, ExpectedHiringStatus expectedHiringStatus) {
         this.id = id;
         this.expectedHireDate = expectedHireDate;
         this.position = position;
         this.equipmentRequirements = equipmentRequirements;
         this.region = region;
-        this.status = status;
+        this.expectedHiringStatus = expectedHiringStatus;
     }
 }

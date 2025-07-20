@@ -44,8 +44,8 @@ public class EquipmentService {
         var existingEquipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
 
-        if (!existingEquipment.getSerialNumber().equals(request.getSerialNumber()) &&
-                equipmentRepository.existsBySerialNumber(request.getSerialNumber())) {
+        if (!existingEquipment.getSerialNumber().equals(request.serialNumber()) &&
+                equipmentRepository.existsBySerialNumber(request.serialNumber())) {
             throw new DataIntegrityViolationException(i18n.getMessage("equipment.serialNumber.already.exists"));
         }
 

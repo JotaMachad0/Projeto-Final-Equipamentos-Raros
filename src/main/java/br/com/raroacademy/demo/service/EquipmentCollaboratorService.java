@@ -2,9 +2,10 @@ package br.com.raroacademy.demo.service;
 
 import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
 import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
-import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.EquipmentCollaboratorRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.EquipmentCollaboratorResponseDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentCollaborator.MapperEquipmentCollaborator;
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.MapperEquipmentCollaborator;
+
 import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
 import br.com.raroacademy.demo.exception.NotFoundException;

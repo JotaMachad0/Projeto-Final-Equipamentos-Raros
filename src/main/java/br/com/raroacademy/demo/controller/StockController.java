@@ -2,48 +2,47 @@ package br.com.raroacademy.demo.controller;
 
 import br.com.raroacademy.demo.commons.annotations.ApiController;
 import br.com.raroacademy.demo.commons.annotations.OpenApiController;
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
+import br.com.raroacademy.demo.domain.DTO.stock.StockRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.stock.StockResponseDTO;
+import br.com.raroacademy.demo.domain.annotations.stock.*;
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.service.StockService;
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@OpenApiController(name = "Stock Parameters")
-@ApiController(path = "/stock-parameters")
-@AllArgsConstructor
+import java.util.List;
+
+@Slf4j
+@RequiredArgsConstructor
+@OpenApiController(name = "Stock")
+@ApiController(path = "/stock")
 public class StockController {
 
-    private final StockService service;
+    private final StockService stockService;
+    private final I18nUtil i18n;
 
-//    @CreateStockParameterEndpoint
-//    public ResponseEntity<StockParameterResponseDTO> createStockParameter(
-//            @Valid @RequestBody StockParameterRequestDTO request
-//    ) {
-//        var response = service.create(request);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//    }
-//
-//    @GetAllStockParametersEndpoint
-//    public ResponseEntity<List<StockParameterResponseDTO>> getAllStockParameters() {
-//        var list = service.findAll();
-//        return ResponseEntity.ok(list);
-//    }
-//
-//    @GetStockParameterByIdEndpoint
-//    public ResponseEntity<StockParameterResponseDTO> getById(@PathVariable Long id) {
-//        var response = service.findById(id);
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @UpdateStockParameterEndpoint
-//    public ResponseEntity<StockParameterResponseDTO> update(
-//            @PathVariable Long id,
-//            @Valid @RequestBody StockParameterRequestDTO request
-//    ) {
-//        var response = service.update(id, request);
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @DeleteStockParameterEndpoint
-//    public ResponseEntity<Void> delete(@PathVariable Long id) {
-//        service.delete(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @GetAllStocksEndpoint
+    public ResponseEntity<List<StockResponseDTO>> getAll() {
+        log.info("Buscando todos os estoques");
+        return ResponseEntity.ok(stockService.getAllStocks());
+    }
+
+    @GetStockByEquipmentTypeEndpoint
+    public ResponseEntity<StockResponseDTO> getByType(@PathVariable EquipmentType equipmentType) {
+        log.info("Buscando estoque do tipo: {}", equipmentType);
+        return ResponseEntity.ok(stockService.findByEquipmentType(equipmentType));
+    }
+
+    @UpdateStockByEquipmentTypeEndpoint
+    public ResponseEntity<StockResponseDTO> update(
+            @PathVariable("equipmentType") EquipmentType equipmentType,
+            @Valid @RequestBody StockRequestDTO request
+    ) {
+        log.info("Atualizando estoque do tipo: {}", equipmentType);
+        return ResponseEntity.ok(stockService.updateByEquipmentType(equipmentType, request));
+    }
 }

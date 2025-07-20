@@ -5,6 +5,9 @@ import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesRe
 import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.MapperEquipmentPurchases;
 import br.com.raroacademy.demo.domain.entities.EquipmentPurchasesEntity;
 import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.MapperEquipmentPurchases;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentPurchasesRepository;
 import jakarta.validation.Valid;

@@ -3,9 +3,9 @@ package br.com.raroacademy.demo.controller;
 import br.com.raroacademy.demo.commons.annotations.ApiController;
 import br.com.raroacademy.demo.commons.annotations.OpenApiController;
 
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesResponseDTO;
-import br.com.raroacademy.demo.domain.annotations.equipment_purchase.*;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesResponseDTO;
+import br.com.raroacademy.demo.domain.annotations.equipment.purchase.*;
 import br.com.raroacademy.demo.service.EquipmentPurchasesService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

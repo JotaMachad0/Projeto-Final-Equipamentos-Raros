@@ -59,7 +59,7 @@ public class ExpectedHiringController {
     }
 
     @StartExpectedHiringEndpoint
-    public ResponseEntity<?> startHiring(@PathVariable Long id) {
+    public ResponseEntity<String> startHiring(@PathVariable Long id) {
         expectedHiringService.markAsProcessed(id);
         return ResponseEntity.ok(i18nUtil.getMessage("expected.hiring.status.update"));
     }
