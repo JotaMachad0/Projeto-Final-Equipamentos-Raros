@@ -35,7 +35,6 @@ public record EquipmentRequestDTO (
     @Schema(description = "Tempo de uso em meses", example = "12")
     Integer usageTimeMonths,
 
-    @NotBlank
     @Schema(description = "Status atual do equipamento", example = "EM_USO")
     EquipmentStatus status) {
 }

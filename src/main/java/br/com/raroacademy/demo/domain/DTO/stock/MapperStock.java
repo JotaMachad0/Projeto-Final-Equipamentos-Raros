@@ -25,9 +25,12 @@ public class MapperStock {
         return StockEntity.builder()
                 .id(existing.getId())
                 .equipmentType(existing.getEquipmentType())
+                .currentStock(existing.getCurrentStock())
                 .securityStock(request.securityStock())
                 .minStock(request.minStock())
-                .currentStock(request.currentStock())
+                .avgRestockTimeDays(existing.getAvgRestockTimeDays())
+                .avgStockConsumptionTimeDays(existing.getAvgStockConsumptionTimeDays())
+                .avgDefectiveRate(existing.getAvgDefectiveRate())
                 .build();
     }
 
