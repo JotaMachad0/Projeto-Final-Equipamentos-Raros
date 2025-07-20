@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.DTO.expectedReturn;
+package br.com.raroacademy.demo.domain.DTO.expected.returns;
 
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;

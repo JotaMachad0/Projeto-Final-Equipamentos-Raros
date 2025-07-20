@@ -26,6 +26,6 @@ public record ExpectedHiringResponseDTO(
         @Schema(example = "CENTRO_OESTE", description = "Region of origin.")
         Region region,
 
-        @Schema(example = "PROCESSADO", description = "Expected hiring status.")
+        @Schema(example = "PROCESSED", description = "Expected hiring status.")
         ExpectedHiringStatus expectedHiringStatus) {
 }
