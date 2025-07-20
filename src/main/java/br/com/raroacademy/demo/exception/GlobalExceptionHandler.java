@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -182,21 +180,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNAUTHORIZED, i18n.getMessage("error.authentication")));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorMessage> handleGenericException(Exception ex,
-//                                                               HttpServletRequest request) {
-//        log.error("Unexpected error - ", ex);
-//        return ResponseEntity
-//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("error.unexpected")));
-//    }
-
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
-        log.error("Erro inesperado: ", ex);
-        Map<String, String> body = new HashMap<>();
-        body.put("error", "Erro inesperado: " + ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    public ResponseEntity<ErrorMessage> handleGenericException(Exception ex,
+                                                               HttpServletRequest request) {
+        log.error("Unexpected error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("error.unexpected")));
     }
 }

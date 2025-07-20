@@ -59,16 +59,15 @@ public class SecurityConfig {
                                     "/users/confirm-email",
                                     "/users/confirm-email/**",
                                     "/users/resend-confirm-email",
-                                    "/auth/login",
-                                    "**").permitAll();
+                                    "/auth/login").permitAll();
                             authorizeConfig.anyRequest().authenticated();
                         }
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptionHandling -> 
-                    exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .csrf(AbstractHttpConfigurer::disable);
 

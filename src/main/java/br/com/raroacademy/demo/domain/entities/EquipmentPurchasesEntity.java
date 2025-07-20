@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,14 +34,19 @@ public class EquipmentPurchasesEntity {
 
     @Column(name = "supplier", nullable = false, length = 100)
     private String supplier;
+    
+    @Column(name = "status", length = 20)
+    @Enumerated(EnumType.STRING)
+    private PurchaseStatus status;
 
     @Builder
-    public EquipmentPurchasesEntity(Long id, String equipmentType, Integer quantity, LocalDate orderDate, LocalDate receiptDate, String supplier) {
+    public EquipmentPurchasesEntity(Long id, String equipmentType, Integer quantity, LocalDate orderDate, LocalDate receiptDate, String supplier, PurchaseStatus status) {
         this.id = id;
         this.equipmentType = equipmentType;
         this.quantity = quantity;
         this.orderDate = orderDate;
         this.receiptDate = receiptDate;
         this.supplier = supplier;
+        this.status = status;
     }
 }
