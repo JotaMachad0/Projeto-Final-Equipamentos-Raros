@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -52,6 +53,9 @@ public class CollaboratorServiceTest {
 
     @Mock
     private ViaCepClient viaCepClient;
+    
+    @Mock
+    private ViaCepService viaCepService;
 
     @Mock
     private MessageSource messageSource;
@@ -91,16 +95,18 @@ public class CollaboratorServiceTest {
                 .contractEndDate(LocalDate.of(2024, 1, 1))
                 .build();
 
-        collaboratorRequestDTO = new CollaboratorRequestDTO();
-        collaboratorRequestDTO.setName("Test Collaborator");
-        collaboratorRequestDTO.setCpf("123.456.789-00");
-        collaboratorRequestDTO.setEmail("collaborator@example.com");
-        collaboratorRequestDTO.setPhone("1234567890");
-        collaboratorRequestDTO.setContractStartDate(LocalDate.of(2023, 1, 1));
-        collaboratorRequestDTO.setContractEndDate(LocalDate.of(2024, 1, 1));
-        collaboratorRequestDTO.setCep("12345-678");
-        collaboratorRequestDTO.setNumber("123");
-        collaboratorRequestDTO.setComplement("Test Complement");
+        collaboratorRequestDTO = CollaboratorRequestDTO.builder()
+                .name("Test Collaborator")
+                .cpf("123.456.789-00")
+                .email("collaborator@example.com")
+                .phone("1234567890")
+                .addressId(null)
+                .contractStartDate(LocalDate.of(2023, 1, 1))
+                .contractEndDate(LocalDate.of(2024, 1, 1))
+                .cep("12345-678")
+                .number("123")
+                .complement("Test Complement")
+                .build();
 
         addressResponseDTO = AddressResponseDTO.builder()
                 .id(1L)
@@ -147,9 +153,13 @@ public class CollaboratorServiceTest {
     @Test
     void save_Success() {
         // Arrange
-        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.getCpf())).thenReturn(false);
-        when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.getEmail())).thenReturn(false);
-        when(viaCepClient.buscarEnderecoPorCep(collaboratorRequestDTO.getCep())).thenReturn(viaCepResponseDTO);
+        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.cpf())).thenReturn(false);
+        when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.email())).thenReturn(false);
+        
+        // Mock the async ViaCep service
+        CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(viaCepResponseDTO);
+        when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
+        
         when(mapperAddress.toEntity(eq(collaboratorRequestDTO), any(ViaCepResponseDTO.class))).thenReturn(addressEntity);
         when(addressRepository.save(addressEntity)).thenReturn(addressEntity);
         when(mapperCollaborator.toEntity(collaboratorRequestDTO, addressEntity.getId())).thenReturn(collaboratorEntity);
@@ -163,9 +173,9 @@ public class CollaboratorServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(collaboratorResponseDTO, result);
-        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.getCpf());
-        verify(collaboratorRepository).existsByEmail(collaboratorRequestDTO.getEmail());
-        verify(viaCepClient).buscarEnderecoPorCep(collaboratorRequestDTO.getCep());
+        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.cpf());
+        verify(collaboratorRepository).existsByEmail(collaboratorRequestDTO.email());
+        verify(viaCepService).buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep());
         verify(mapperAddress).toEntity(eq(collaboratorRequestDTO), any(ViaCepResponseDTO.class));
         verify(addressRepository).save(addressEntity);
         verify(mapperCollaborator).toEntity(collaboratorRequestDTO, addressEntity.getId());
@@ -177,7 +187,11 @@ public class CollaboratorServiceTest {
     @Test
     void save_CpfAlreadyExists() {
         // Arrange
-        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.getCpf())).thenReturn(true);
+        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.cpf())).thenReturn(true);
+        
+        // Mock the async ViaCep service - it's called before the CPF check
+        CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(viaCepResponseDTO);
+        when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
         // Act & Assert
         DataIntegrityViolationException exception = assertThrows(
@@ -185,9 +199,8 @@ public class CollaboratorServiceTest {
                 () -> collaboratorService.save(collaboratorRequestDTO)
         );
         assertEquals("CPF already exists", exception.getMessage());
-        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.getCpf());
+        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.cpf());
         verify(collaboratorRepository, never()).existsByEmail(anyString());
-        verify(viaCepClient, never()).buscarEnderecoPorCep(anyString());
         verify(addressRepository, never()).save(any());
         verify(collaboratorRepository, never()).save(any());
     }
@@ -195,8 +208,12 @@ public class CollaboratorServiceTest {
     @Test
     void save_EmailAlreadyExists() {
         // Arrange
-        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.getCpf())).thenReturn(false);
-        when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.getEmail())).thenReturn(true);
+        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.cpf())).thenReturn(false);
+        when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.email())).thenReturn(true);
+        
+        // Mock the async ViaCep service - it's called before the email check
+        CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(viaCepResponseDTO);
+        when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
         // Act & Assert
         DataIntegrityViolationException exception = assertThrows(
@@ -204,9 +221,8 @@ public class CollaboratorServiceTest {
                 () -> collaboratorService.save(collaboratorRequestDTO)
         );
         assertEquals("Email already exists", exception.getMessage());
-        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.getCpf());
-        verify(collaboratorRepository).existsByEmail(collaboratorRequestDTO.getEmail());
-        verify(viaCepClient, never()).buscarEnderecoPorCep(anyString());
+        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.cpf());
+        verify(collaboratorRepository).existsByEmail(collaboratorRequestDTO.email());
         verify(addressRepository, never()).save(any());
         verify(collaboratorRepository, never()).save(any());
     }
@@ -214,13 +230,15 @@ public class CollaboratorServiceTest {
     @Test
     void save_InvalidCep() {
         // Arrange
-        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.getCpf())).thenReturn(false);
-        when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.getEmail())).thenReturn(false);
-
+        when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.cpf())).thenReturn(false);
+        when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.email())).thenReturn(false);
+        
         ViaCepResponseDTO invalidCepResponse = new ViaCepResponseDTO();
         invalidCepResponse.setCep(null);
-
-        when(viaCepClient.buscarEnderecoPorCep(collaboratorRequestDTO.getCep())).thenReturn(invalidCepResponse);
+        
+        // Mock the async ViaCep service with invalid response
+        CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(invalidCepResponse);
+        when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
         // Act & Assert
         InvalidCepException exception = assertThrows(
@@ -228,9 +246,9 @@ public class CollaboratorServiceTest {
                 () -> collaboratorService.save(collaboratorRequestDTO)
         );
         assertEquals("Invalid CEP", exception.getMessage());
-        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.getCpf());
-        verify(collaboratorRepository).existsByEmail(collaboratorRequestDTO.getEmail());
-        verify(viaCepClient).buscarEnderecoPorCep(collaboratorRequestDTO.getCep());
+        verify(collaboratorRepository).existsByCpf(collaboratorRequestDTO.cpf());
+        verify(collaboratorRepository).existsByEmail(collaboratorRequestDTO.email());
+        verify(viaCepService).buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep());
         verify(addressRepository, never()).save(any());
         verify(collaboratorRepository, never()).save(any());
     }
@@ -317,7 +335,7 @@ public class CollaboratorServiceTest {
         // Arrange
         when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaboratorEntity));
         when(addressRepository.findById(collaboratorEntity.getAddressId())).thenReturn(Optional.of(addressEntity));
-        when(viaCepClient.buscarEnderecoPorCep(collaboratorRequestDTO.getCep())).thenReturn(viaCepResponseDTO);
+        when(viaCepClient.buscarEnderecoPorCep(collaboratorRequestDTO.cep())).thenReturn(viaCepResponseDTO);
         when(addressRepository.save(addressEntity)).thenReturn(addressEntity);
         when(collaboratorRepository.save(collaboratorEntity)).thenReturn(collaboratorEntity);
         when(mapperAddress.toDTO(addressEntity)).thenReturn(addressResponseDTO);
@@ -331,7 +349,7 @@ public class CollaboratorServiceTest {
         assertEquals(collaboratorResponseDTO, result);
         verify(collaboratorRepository).findById(1L);
         verify(addressRepository).findById(collaboratorEntity.getAddressId());
-        verify(viaCepClient).buscarEnderecoPorCep(collaboratorRequestDTO.getCep());
+        verify(viaCepClient).buscarEnderecoPorCep(collaboratorRequestDTO.cep());
         verify(addressRepository).save(addressEntity);
         verify(collaboratorRepository).save(collaboratorEntity);
         verify(mapperAddress).toDTO(addressEntity);
@@ -342,14 +360,14 @@ public class CollaboratorServiceTest {
         assertEquals(viaCepResponseDTO.getNeighborhood(), addressEntity.getNeighborhood());
         assertEquals(viaCepResponseDTO.getCity(), addressEntity.getCity());
         assertEquals(viaCepResponseDTO.getState(), addressEntity.getState());
-        assertEquals(collaboratorRequestDTO.getNumber(), addressEntity.getNumber());
-        assertEquals(collaboratorRequestDTO.getComplement(), addressEntity.getComplement());
+        assertEquals(collaboratorRequestDTO.number(), addressEntity.getNumber());
+        assertEquals(collaboratorRequestDTO.complement(), addressEntity.getComplement());
 
-        assertEquals(collaboratorRequestDTO.getName(), collaboratorEntity.getName());
-        assertEquals(collaboratorRequestDTO.getEmail(), collaboratorEntity.getEmail());
-        assertEquals(collaboratorRequestDTO.getPhone(), collaboratorEntity.getPhone());
-        assertEquals(collaboratorRequestDTO.getContractStartDate(), collaboratorEntity.getContractStartDate());
-        assertEquals(collaboratorRequestDTO.getContractEndDate(), collaboratorEntity.getContractEndDate());
+        assertEquals(collaboratorRequestDTO.name(), collaboratorEntity.getName());
+        assertEquals(collaboratorRequestDTO.email(), collaboratorEntity.getEmail());
+        assertEquals(collaboratorRequestDTO.phone(), collaboratorEntity.getPhone());
+        assertEquals(collaboratorRequestDTO.contractStartDate(), collaboratorEntity.getContractStartDate());
+        assertEquals(collaboratorRequestDTO.contractEndDate(), collaboratorEntity.getContractEndDate());
     }
 
     @Test
@@ -398,7 +416,7 @@ public class CollaboratorServiceTest {
         ViaCepResponseDTO invalidCepResponse = new ViaCepResponseDTO();
         invalidCepResponse.setCep(null);
 
-        when(viaCepClient.buscarEnderecoPorCep(collaboratorRequestDTO.getCep())).thenReturn(invalidCepResponse);
+        when(viaCepClient.buscarEnderecoPorCep(collaboratorRequestDTO.cep())).thenReturn(invalidCepResponse);
 
         // Act & Assert
         InvalidCepException exception = assertThrows(
@@ -408,7 +426,7 @@ public class CollaboratorServiceTest {
         assertEquals("Invalid CEP", exception.getMessage());
         verify(collaboratorRepository).findById(1L);
         verify(addressRepository).findById(collaboratorEntity.getAddressId());
-        verify(viaCepClient).buscarEnderecoPorCep(collaboratorRequestDTO.getCep());
+        verify(viaCepClient).buscarEnderecoPorCep(collaboratorRequestDTO.cep());
         verify(addressRepository, never()).save(any());
         verify(collaboratorRepository, never()).save(any());
     }
