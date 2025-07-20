@@ -74,13 +74,10 @@ public class ExpectedHiringService {
 
         if (duplicate.isPresent()) {
             var d = duplicate.get();
-            String localizedStatus = i18nUtil.getMessage(
-                    "expected.hiring.status." + d.getExpectedHiringStatus().name()
-            );
             throw new ExpectedHiringAlreadyExistsException(
                     i18nUtil.getMessage(
                             "expected.hiring.already.exists",
-                            d.getId(), localizedStatus, d.getEquipmentRequirements())
+                            d.getId())
             );
         }
 

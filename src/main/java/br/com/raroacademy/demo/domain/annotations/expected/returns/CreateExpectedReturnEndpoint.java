@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.annotations.expectedReturn;
+package br.com.raroacademy.demo.domain.annotations.expected.returns;
 
 import br.com.raroacademy.demo.commons.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;

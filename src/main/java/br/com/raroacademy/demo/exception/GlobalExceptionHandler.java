@@ -9,13 +9,17 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -182,21 +186,32 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNAUTHORIZED, i18n.getMessage("error.authentication")));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorMessage> handleGenericException(Exception ex,
-//                                                               HttpServletRequest request) {
-//        log.error("Unexpected error - ", ex);
-//        return ResponseEntity
-//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("error.unexpected")));
-//    }
-
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
-        log.error("Erro inesperado: ", ex);
-        Map<String, String> body = new HashMap<>();
-        body.put("error", "Erro inesperado: " + ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    public ResponseEntity<ErrorMessage> handleGenericException(Exception ex,
+                                                               HttpServletRequest request) {
+        log.error("Unexpected error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, i18n.getMessage("error.unexpected")));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorMessage> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                     HttpServletRequest request) {
+        log.warn("Api error - ", ex);
+
+        Throwable rootCause = ex.getMostSpecificCause();
+        if (rootCause instanceof DateTimeParseException) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, i18n.getMessage("invalid.format.localdate")));
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, i18n.getMessage("invalid.format")));
     }
 }

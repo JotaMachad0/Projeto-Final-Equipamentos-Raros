@@ -1,8 +1,8 @@
 package br.com.raroacademy.demo.service;
 
-import br.com.raroacademy.demo.domain.DTO.expectedReturn.ExpectedReturnRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.expectedReturn.ExpectedReturnResponseDTO;
-import br.com.raroacademy.demo.domain.DTO.expectedReturn.MapperExpectedReturn;
+import br.com.raroacademy.demo.domain.DTO.expected.returns.ExpectedReturnRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.expected.returns.ExpectedReturnResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.expected.returns.MapperExpectedReturn;
 import br.com.raroacademy.demo.domain.entities.EquipmentCollaboratorEntity;
 import br.com.raroacademy.demo.domain.entities.ExpectedReturnEntity;
 import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
