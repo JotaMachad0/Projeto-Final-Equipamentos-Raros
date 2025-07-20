@@ -18,7 +18,7 @@ public class StockAlertScheduler {
     private final StockAlertRepository stockAlertRepository;
     private final EmailStockAlertService emailStockAlertService;
 
-    @Scheduled(cron = "0 0 13 * * *")
+    @Scheduled(cron = "0 0 13 * * MON")
     public void sendReminderEmails() {
         List<StockAlertEntity> alerts = stockAlertRepository
                 .findByStockAlertStatus(StockAlertStatus.CREATED);
