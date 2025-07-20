@@ -8,6 +8,7 @@ import br.com.raroacademy.demo.exception.CodeException;
 import br.com.raroacademy.demo.exception.InvalidArgumentException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +45,9 @@ public class UserServiceTest {
 
     @Mock
     private CodeService codesService;
+    
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
@@ -93,6 +97,12 @@ public class UserServiceTest {
         when(i18n.getMessage("code.invalid")).thenReturn("Invalid code");
         when(i18n.getMessage("code.expired")).thenReturn("Code expired");
         when(i18n.getMessage("code.already.used")).thenReturn("Code already used");
+        
+        // Setup passwordEncoder mock
+        when(passwordEncoder.encode(anyString())).thenAnswer(invocation -> {
+            String rawPassword = invocation.getArgument(0);
+            return "encoded_" + rawPassword;
+        });
     }
 
     @Test
@@ -328,8 +338,9 @@ public class UserServiceTest {
         // Assert
         verify(userRepository).findByEmail(changePasswordRequestDTO.email());
         verify(codesService).verifyAndConfirmCode(changePasswordRequestDTO.code(), userEntity);
+        verify(passwordEncoder).encode(changePasswordRequestDTO.newPassword());
         verify(userRepository).save(userEntity);
-        assertEquals(changePasswordRequestDTO.newPassword(), userEntity.getPassword());
+        assertEquals("encoded_" + changePasswordRequestDTO.newPassword(), userEntity.getPassword());
     }
     
     @Test

@@ -25,7 +25,7 @@ public class AddressService {
     private MapperAddress mapperAddress;
 
     public AddressResponseDTO save(CollaboratorRequestDTO dto) {
-        ViaCepResponseDTO viaCep = viaCepClient.buscarEnderecoPorCep(dto.getCep());
+        ViaCepResponseDTO viaCep = viaCepClient.buscarEnderecoPorCep(dto.cep());
         AddressEntity entity = mapperAddress.toEntity(dto, viaCep);
         AddressEntity saved = repository.save(entity);
         return mapperAddress.toDTO(saved);

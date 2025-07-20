@@ -43,12 +43,12 @@ public class CollaboratorService {
 
     public CollaboratorResponseDTO save(CollaboratorRequestDTO request) {
 
-        CompletableFuture<ViaCepResponseDTO> viaCepFuture = viaCepService.buscarEnderecoPorCepAsync(request.getCep());
+        CompletableFuture<ViaCepResponseDTO> viaCepFuture = viaCepService.buscarEnderecoPorCepAsync(request.cep());
 
-        if (collaboratorRepository.existsByCpf(request.getCpf())) {
+        if (collaboratorRepository.existsByCpf(request.cpf())) {
             throw new DataIntegrityViolationException(getMessage("collaborator.cpf.already-exists"));
         }
-        if (collaboratorRepository.existsByEmail(request.getEmail())) {
+        if (collaboratorRepository.existsByEmail(request.email())) {
             throw new DataIntegrityViolationException(getMessage("collaborator.email.already-exists"));
         }
 
@@ -101,7 +101,7 @@ public class CollaboratorService {
         AddressEntity address = addressRepository.findById(existing.getAddressId())
                 .orElseThrow(() -> new NotFoundException(getMessage("address.not-found")));
 
-        var viaCep = viaCepClient.buscarEnderecoPorCep(dto.getCep());
+        var viaCep = viaCepClient.buscarEnderecoPorCep(dto.cep());
         if (viaCep.getCep() == null) {
             throw new InvalidCepException(getMessage("address.cep.invalid"));
         }
@@ -111,16 +111,16 @@ public class CollaboratorService {
         address.setNeighborhood(viaCep.getNeighborhood());
         address.setCity(viaCep.getCity());
         address.setState(viaCep.getState());
-        address.setNumber(dto.getNumber());
-        address.setComplement(dto.getComplement());
+        address.setNumber(dto.number());
+        address.setComplement(dto.complement());
 
         addressRepository.save(address);
 
-        existing.setName(dto.getName());
-        existing.setEmail(dto.getEmail());
-        existing.setPhone(dto.getPhone());
-        existing.setContractStartDate(dto.getContractStartDate());
-        existing.setContractEndDate(dto.getContractEndDate());
+        existing.setName(dto.name());
+        existing.setEmail(dto.email());
+        existing.setPhone(dto.phone());
+        existing.setContractStartDate(dto.contractStartDate());
+        existing.setContractEndDate(dto.contractEndDate());
 
         CollaboratorEntity updated = collaboratorRepository.save(existing);
         return mapperCollaborator.toResponse(updated, mapperAddress.toDTO(address));

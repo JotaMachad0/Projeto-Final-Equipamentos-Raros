@@ -1,13 +1,10 @@
 package br.com.raroacademy.demo.service;
 
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesResponseDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.MapperEquipmentPurchases;
-import br.com.raroacademy.demo.domain.entities.EquipmentPurchasesEntity;
-import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.purchase.MapperEquipmentPurchases;
+import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentPurchasesRepository;
 import jakarta.validation.Valid;
@@ -23,26 +20,21 @@ public class EquipmentPurchasesService {
 
     private final EquipmentPurchasesRepository equipmentPurchasesRepository;
     private final MapperEquipmentPurchases mapper;
+    private final I18nUtil i18n;
 
     @Transactional
     public EquipmentPurchasesResponseDTO create(@Valid EquipmentPurchasesRequestDTO request) {
-        var requestWithStatus = new EquipmentPurchasesRequestDTO(
-            request.equipmentType(),
-            request.quantity(),
-            request.orderDate(),
-            request.supplier(),
-            request.receiptDate(),
-            PurchaseStatus.PURCHASED
-        );
-        
-        var entity = mapper.toEntity(requestWithStatus);
+
+
+        var entity = mapper.toEntity(request);
         var savedEntity = equipmentPurchasesRepository.save(entity);
         return mapper.toResponseDTO(savedEntity);
     }
 
     public EquipmentPurchasesResponseDTO getById(Long id) {
         var entity = equipmentPurchasesRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Purchase not found with id: " + id));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("purchase.not.found")));
+
         return mapper.toResponseDTO(entity);
     }
 
@@ -54,7 +46,7 @@ public class EquipmentPurchasesService {
     @Transactional
     public EquipmentPurchasesResponseDTO update(Long id, @Valid EquipmentPurchasesRequestDTO request) {
         var existingEntity = equipmentPurchasesRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Purchase not found with id: " + id));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("purchase.not.found")));
 
         mapper.updateEntityFromDTO(existingEntity, request);
         var updatedEntity = equipmentPurchasesRepository.save(existingEntity);
@@ -64,17 +56,11 @@ public class EquipmentPurchasesService {
 
     @Transactional
     public EquipmentPurchasesResponseDTO registerInStock(Long id) {
-        EquipmentPurchasesEntity purchase = equipmentPurchasesRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Purchase not found with id: " + id));
-
-        if (PurchaseStatus.REGISTERED.equals(purchase.getStatus())) {
-            throw new IllegalStateException("Purchase has already been registered in stock");
-        }
+        var purchase = equipmentPurchasesRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("purchase.not.found")));
 
         purchase.setStatus(PurchaseStatus.REGISTERED);
-
-        EquipmentPurchasesEntity updatedPurchase = equipmentPurchasesRepository.save(purchase);
-        
+        var updatedPurchase = equipmentPurchasesRepository.save(purchase);
         return mapper.toResponseDTO(updatedPurchase);
     }
 }

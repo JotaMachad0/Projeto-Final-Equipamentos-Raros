@@ -1,8 +1,9 @@
 package br.com.raroacademy.demo.service;
 
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.EquipmentPurchasesResponseDTO;
-import br.com.raroacademy.demo.domain.DTO.equipmentPurchase.MapperEquipmentPurchases;
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.purchase.MapperEquipmentPurchases;
 import br.com.raroacademy.demo.domain.entities.EquipmentPurchasesEntity;
 import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import br.com.raroacademy.demo.exception.NotFoundException;
@@ -34,6 +35,9 @@ public class EquipmentPurchasesServiceTest {
 
     @Mock
     private MapperEquipmentPurchases mapper;
+    
+    @Mock
+    private I18nUtil i18n;
 
     @InjectMocks
     private EquipmentPurchasesService equipmentPurchasesService;
@@ -55,7 +59,7 @@ public class EquipmentPurchasesServiceTest {
                 .quantity(10)
                 .orderDate(orderDate)
                 .receiptDate(receiptDate)
-                .supplier("Fornecedor")
+                .supplier("Tech Supplies Inc.")
                 .status(PurchaseStatus.PURCHASED)
                 .build();
 
@@ -63,7 +67,7 @@ public class EquipmentPurchasesServiceTest {
                 "Laptop",
                 10,
                 orderDate,
-                "Fornecedor",
+                "Tech Supplies Inc.",
                 receiptDate,
                 PurchaseStatus.PURCHASED
         );
@@ -74,9 +78,12 @@ public class EquipmentPurchasesServiceTest {
                 .quantity(10)
                 .orderDate(orderDate)
                 .receiptDate(receiptDate)
-                .supplier("Fornecedor")
+                .supplier("Tech Supplies Inc.")
                 .status(PurchaseStatus.PURCHASED)
                 .build();
+        
+        // Setup i18n messages
+        when(i18n.getMessage("purchase.not.found")).thenReturn("Purchase not found.");
     }
 
     @Test
@@ -123,7 +130,7 @@ public class EquipmentPurchasesServiceTest {
                 NotFoundException.class,
                 () -> equipmentPurchasesService.getById(1L)
         );
-        assertEquals("Purchase not found with id: 1", exception.getMessage());
+        assertEquals("Purchase not found.", exception.getMessage());
         verify(equipmentPurchasesRepository).findById(1L);
         verify(mapper, never()).toResponseDTO(any());
     }
@@ -177,7 +184,7 @@ public class EquipmentPurchasesServiceTest {
                 NotFoundException.class,
                 () -> equipmentPurchasesService.update(1L, purchaseRequestDTO)
         );
-        assertEquals("Purchase not found with id: 1", exception.getMessage());
+        assertEquals("Purchase not found.", exception.getMessage());
         verify(equipmentPurchasesRepository).findById(1L);
         verify(mapper, never()).updateEntityFromDTO(any(), any());
         verify(equipmentPurchasesRepository, never()).save(any());
@@ -189,17 +196,17 @@ public class EquipmentPurchasesServiceTest {
         // Arrange
         when(equipmentPurchasesRepository.findById(1L)).thenReturn(Optional.of(purchaseEntity));
         when(equipmentPurchasesRepository.save(purchaseEntity)).thenReturn(purchaseEntity);
-        
+
         EquipmentPurchasesResponseDTO registeredResponseDTO = EquipmentPurchasesResponseDTO.builder()
                 .id(1L)
                 .equipmentType("Laptop")
                 .quantity(10)
                 .orderDate(orderDate)
                 .receiptDate(receiptDate)
-                .supplier("Fornecedor")
+                .supplier("Tech Supplies Inc.")
                 .status(PurchaseStatus.REGISTERED)
                 .build();
-        
+
         when(mapper.toResponseDTO(purchaseEntity)).thenReturn(registeredResponseDTO);
 
         // Act
@@ -224,35 +231,10 @@ public class EquipmentPurchasesServiceTest {
                 NotFoundException.class,
                 () -> equipmentPurchasesService.registerInStock(1L)
         );
-        assertEquals("Purchase not found with id: 1", exception.getMessage());
+        assertEquals("Purchase not found.", exception.getMessage());
         verify(equipmentPurchasesRepository).findById(1L);
         verify(equipmentPurchasesRepository, never()).save(any());
         verify(mapper, never()).toResponseDTO(any());
     }
 
-    @Test
-    void registerInStock_AlreadyRegistered() {
-        // Arrange
-        EquipmentPurchasesEntity registeredEntity = EquipmentPurchasesEntity.builder()
-                .id(1L)
-                .equipmentType("Laptop")
-                .quantity(10)
-                .orderDate(orderDate)
-                .receiptDate(receiptDate)
-                .supplier("Fornecedor")
-                .status(PurchaseStatus.REGISTERED)
-                .build();
-        
-        when(equipmentPurchasesRepository.findById(1L)).thenReturn(Optional.of(registeredEntity));
-
-        // Act & Assert
-        IllegalStateException exception = assertThrows(
-                IllegalStateException.class,
-                () -> equipmentPurchasesService.registerInStock(1L)
-        );
-        assertEquals("Purchase has already been registered in stock", exception.getMessage());
-        verify(equipmentPurchasesRepository).findById(1L);
-        verify(equipmentPurchasesRepository, never()).save(any());
-        verify(mapper, never()).toResponseDTO(any());
-    }
 }

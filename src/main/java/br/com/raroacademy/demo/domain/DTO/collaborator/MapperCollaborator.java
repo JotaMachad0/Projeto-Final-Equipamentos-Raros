@@ -9,13 +9,13 @@ public class MapperCollaborator {
 
     public CollaboratorEntity toEntity(CollaboratorRequestDTO dto, Long addressId) {
         return CollaboratorEntity.builder()
-                .name(dto.getName())
-                .cpf(dto.getCpf())
-                .email(dto.getEmail())
-                .phone(dto.getPhone())
+                .name(dto.name())
+                .cpf(dto.cpf())
+                .email(dto.email())
+                .phone(dto.phone())
                 .addressId(addressId)
-                .contractStartDate(dto.getContractStartDate())
-                .contractEndDate(dto.getContractEndDate())
+                .contractStartDate(dto.contractStartDate())
+                .contractEndDate(dto.contractEndDate())
                 .build();
     }
 
