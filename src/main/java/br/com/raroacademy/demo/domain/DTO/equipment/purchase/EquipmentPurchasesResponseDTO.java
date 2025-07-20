@@ -26,7 +26,7 @@ public record EquipmentPurchasesResponseDTO(
         @Schema(description = "Receipt Date.", example = "2025-07-29")
         LocalDate receiptDate,
         
-        @Schema(description = "Purchase status.", example = "purchased")
+        @Schema(description = "Purchase status.", example = "PURCHASED")
         PurchaseStatus status
 ) {
 }

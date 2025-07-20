@@ -1,6 +1,5 @@
 package br.com.raroacademy.demo.domain.annotations.equipment;
 
-
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse204;
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse404;
 import io.swagger.v3.oas.annotations.Operation;

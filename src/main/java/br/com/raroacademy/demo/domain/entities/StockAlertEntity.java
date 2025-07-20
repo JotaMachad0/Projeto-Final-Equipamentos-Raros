@@ -2,7 +2,6 @@ package br.com.raroacademy.demo.domain.entities;
 
 import br.com.raroacademy.demo.domain.enums.StockAlertStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

@@ -22,10 +22,10 @@ public class MapperEquipmentCollaborator {
         return EquipmentCollaboratorEntity.builder()
                 .collaborator(collaborator)
                 .equipment(equipment)
-                .deliveryDate(dto.getDeliveryDate())
-                .returnDate(dto.getReturnDate())
-                .deliveryStatus(dto.getDeliveryStatus())
-                .notes(dto.getNotes())
+                .deliveryDate(dto.deliveryDate())
+                .returnDate(dto.returnDate())
+                .deliveryStatus(dto.deliveryStatus())
+                .notes(dto.notes())
                 .build();
     }
 

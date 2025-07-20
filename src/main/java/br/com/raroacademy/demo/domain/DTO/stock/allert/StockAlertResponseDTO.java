@@ -25,6 +25,6 @@ public record StockAlertResponseDTO(
         @Schema(example = "2025-12-31T12:30:00", description = "Time and date the alert was sent.")
         Timestamp alertSentAt,
 
-        @Schema(example = "PROCESSADO", description = "Stock alert status.")
+        @Schema(example = "PROCESSED", description = "Stock alert status.")
         StockAlertStatus stockAlertStatus) {
 }
