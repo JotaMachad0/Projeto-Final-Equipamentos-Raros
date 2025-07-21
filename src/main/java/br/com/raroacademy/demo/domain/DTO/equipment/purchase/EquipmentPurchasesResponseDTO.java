@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.DTO.equipment.purchase;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -11,8 +12,8 @@ public record EquipmentPurchasesResponseDTO(
         @Schema(example = "1")
         Long id,
 
-        @Schema(example = "Laptop")
-        String equipmentType,
+        @Schema(example = "NOTEBOOK")
+        EquipmentType equipmentType,
 
         @Schema(example = "10")
         Integer quantity,

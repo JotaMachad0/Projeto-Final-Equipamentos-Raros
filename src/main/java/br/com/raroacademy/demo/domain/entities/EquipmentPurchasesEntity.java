@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.domain.entities;
 
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -21,7 +22,7 @@ public class EquipmentPurchasesEntity {
     private Long id;
 
     @Column(name = "equipment_type", nullable = false, length = 100)
-    private String equipmentType;
+    private EquipmentType equipmentType;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
@@ -40,7 +41,8 @@ public class EquipmentPurchasesEntity {
     private PurchaseStatus status;
 
     @Builder
-    public EquipmentPurchasesEntity(Long id, String equipmentType, Integer quantity, LocalDate orderDate, LocalDate receiptDate, String supplier, PurchaseStatus status) {
+    public EquipmentPurchasesEntity(Long id, EquipmentType equipmentType, Integer quantity, LocalDate orderDate,
+                                    LocalDate receiptDate, String supplier, PurchaseStatus status) {
         this.id = id;
         this.equipmentType = equipmentType;
         this.quantity = quantity;

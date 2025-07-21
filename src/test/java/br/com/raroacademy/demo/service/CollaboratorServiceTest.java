@@ -156,7 +156,7 @@ public class CollaboratorServiceTest {
         when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.cpf())).thenReturn(false);
         when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.email())).thenReturn(false);
         
-        // Mock the async ViaCep service
+
         CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(viaCepResponseDTO);
         when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
         
@@ -189,7 +189,7 @@ public class CollaboratorServiceTest {
         // Arrange
         when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.cpf())).thenReturn(true);
         
-        // Mock the async ViaCep service - it's called before the CPF check
+
         CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(viaCepResponseDTO);
         when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
@@ -211,7 +211,7 @@ public class CollaboratorServiceTest {
         when(collaboratorRepository.existsByCpf(collaboratorRequestDTO.cpf())).thenReturn(false);
         when(collaboratorRepository.existsByEmail(collaboratorRequestDTO.email())).thenReturn(true);
         
-        // Mock the async ViaCep service - it's called before the email check
+
         CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(viaCepResponseDTO);
         when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
@@ -236,7 +236,7 @@ public class CollaboratorServiceTest {
         ViaCepResponseDTO invalidCepResponse = new ViaCepResponseDTO();
         invalidCepResponse.setCep(null);
         
-        // Mock the async ViaCep service with invalid response
+
         CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(invalidCepResponse);
         when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 

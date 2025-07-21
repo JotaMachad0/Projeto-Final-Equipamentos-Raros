@@ -13,5 +13,5 @@ public enum EquipmentType {
     MONITOR,
     MOUSE,
     NOTEBOOK,
-    NOTEBOOK_CHARGER;
+    NOTEBOOK_CHARGER
 }
