@@ -78,6 +78,7 @@ public class EquipmentReturnService {
 
         if (request.equipmentCurrentStatus() == EquipmentStatus.DEFECTIVE) {
             equipmentService.updateEquipmentStatus(equipment.getId(), EquipmentStatus.DEFECTIVE);
+            stockService.calculateStock(equipment.getType());
         } else {
             equipmentService.updateEquipmentStatus(equipment.getId(), EquipmentStatus.AVAILABLE);
             stockService.incrementStock(equipment.getType());
