@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.service;
 
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.entities.StockAlertEntity;
 import br.com.raroacademy.demo.domain.enums.StockAlertStatus;
 import br.com.raroacademy.demo.repository.StockAlertRepository;
@@ -17,6 +18,7 @@ public class StockAlertScheduler {
 
     private final StockAlertRepository stockAlertRepository;
     private final EmailStockAlertService emailStockAlertService;
+    private final I18nUtil i18nUtil;
 
     @Scheduled(cron = "0 0 13 * * MON")
     public void sendReminderEmails() {
@@ -26,9 +28,9 @@ public class StockAlertScheduler {
         for (StockAlertEntity alert : alerts) {
             try {
                 emailStockAlertService.sendStockAlertEmail(alert);
-                log.info("Alerta reenviado para o estoque: {}", alert.getStock().getEquipmentType());
+                log.info(i18nUtil.getMessage("stock.alert.email.sent"), alert.getStock().getEquipmentType());
             } catch (Exception e) {
-                log.error("Erro ao reenviar e-mail do alerta de estoque", e);
+                log.error("stock.alert.email.error", e);
             }
         }
     }
