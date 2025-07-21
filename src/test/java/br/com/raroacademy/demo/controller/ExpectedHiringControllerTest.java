@@ -70,7 +70,7 @@ public class ExpectedHiringControllerTest {
         when(expectedHiringService.getExpectedHiringById(anyLong())).thenReturn(responseDTO);
         when(expectedHiringService.update(anyLong(), any(ExpectedHiringRequestDTO.class))).thenReturn(responseDTO);
         when(expectedHiringService.getAllExpectedHirings()).thenReturn(responseDTOList);
-        when(i18nUtil.getMessage("expected.hiring.status.update")).thenReturn("Expected hiring status updated successfully");
+        when(i18nUtil.getMessage("expected.hiring.status.update")).thenReturn("Status updated to PROCESSED.");
     }
 
     @Test
@@ -101,14 +101,14 @@ public class ExpectedHiringControllerTest {
     void getExpectedHiring_NotFound() {
         // Arrange
         when(expectedHiringService.getExpectedHiringById(anyLong()))
-                .thenThrow(new NotFoundException("Expected hiring not found"));
+                .thenThrow(new NotFoundException("Expected hiring not found."));
 
         // Act & Assert
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> expectedHiringController.getExpectedHiring(1L)
         );
-        assertEquals("Expected hiring not found", exception.getMessage());
+        assertEquals("Expected hiring not found.", exception.getMessage());
         verify(expectedHiringService).getExpectedHiringById(1L);
     }
 
@@ -128,14 +128,14 @@ public class ExpectedHiringControllerTest {
     void updateExpectedHiring_NotFound() {
         // Arrange
         when(expectedHiringService.update(anyLong(), any(ExpectedHiringRequestDTO.class)))
-                .thenThrow(new NotFoundException("Expected hiring not found"));
+                .thenThrow(new NotFoundException("Expected hiring not found."));
 
         // Act & Assert
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> expectedHiringController.updateExpectedHiring(1L, requestDTO)
         );
-        assertEquals("Expected hiring not found", exception.getMessage());
+        assertEquals("Expected hiring not found.", exception.getMessage());
         verify(expectedHiringService).update(1L, requestDTO);
     }
 
@@ -154,7 +154,7 @@ public class ExpectedHiringControllerTest {
     @Test
     void deleteExpectedHiring_NotFound() {
         // Arrange
-        doThrow(new NotFoundException("Expected hiring not found"))
+        doThrow(new NotFoundException("Expected hiring not found."))
                 .when(expectedHiringService).delete(anyLong());
 
         // Act & Assert
@@ -162,7 +162,7 @@ public class ExpectedHiringControllerTest {
                 NotFoundException.class,
                 () -> expectedHiringController.deleteExpectedHiring(1L)
         );
-        assertEquals("Expected hiring not found", exception.getMessage());
+        assertEquals("Expected hiring not found.", exception.getMessage());
         verify(expectedHiringService).delete(1L);
     }
 
@@ -186,7 +186,7 @@ public class ExpectedHiringControllerTest {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Expected hiring status updated successfully", response.getBody());
+        assertEquals("Status updated to PROCESSED.", response.getBody());
         verify(expectedHiringService).markAsProcessed(1L);
         verify(i18nUtil).getMessage("expected.hiring.status.update");
     }
@@ -194,7 +194,7 @@ public class ExpectedHiringControllerTest {
     @Test
     void startHiring_NotFound() {
         // Arrange
-        doThrow(new NotFoundException("Expected hiring not found"))
+        doThrow(new NotFoundException("Expected hiring not found."))
                 .when(expectedHiringService).markAsProcessed(anyLong());
 
         // Act & Assert
@@ -202,7 +202,7 @@ public class ExpectedHiringControllerTest {
                 NotFoundException.class,
                 () -> expectedHiringController.startHiring(1L)
         );
-        assertEquals("Expected hiring not found", exception.getMessage());
+        assertEquals("Expected hiring not found.", exception.getMessage());
         verify(expectedHiringService).markAsProcessed(1L);
     }
 }
