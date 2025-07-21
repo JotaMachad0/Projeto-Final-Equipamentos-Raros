@@ -5,6 +5,7 @@ import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
+import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentRepository;
 import jakarta.validation.Valid;
@@ -68,5 +69,13 @@ public class EquipmentService {
                 .stream()
                 .map(mapperEquipment::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateEquipmentStatus(Long equipmentId, EquipmentStatus newStatus) {
+        EquipmentEntity equipment = equipmentRepository.findById(equipmentId)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("equipment.not.found")));
+        equipment.setStatus(newStatus);
+        equipmentRepository.save(equipment);
     }
 }

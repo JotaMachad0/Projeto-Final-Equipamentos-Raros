@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Schema(name = "EquipmentRequestDTO", description = "DTO para criação de equipamento")
 public record EquipmentRequestDTO (
     @NotBlank
-    @Schema(description = "Equipment type", example = "NOTEBOOK_CHARGER")
+    @Schema(description = "Equipment type", example = "NOTEBOOK")
     String type,
 
     @NotBlank
@@ -28,13 +28,13 @@ public record EquipmentRequestDTO (
     String specs,
 
     @NotNull
-    @Schema(description = "Acquisition date", example = "2024-01-15")
+    @Schema(description = "Acquisition date", example = "2025-07-21")
     LocalDate acquisitionDate,
 
     @NotNull
-    @Schema(description = "Usage time in months", example = "12")
+    @Schema(description = "Usage time in months", example = "0")
     Integer usageTimeMonths,
 
-    @Schema(description = "Current status of the equipment", example = "IN_USE")
+    @Schema(description = "Current status of the equipment", example = "AVAILABLE")
     EquipmentStatus status) {
 }

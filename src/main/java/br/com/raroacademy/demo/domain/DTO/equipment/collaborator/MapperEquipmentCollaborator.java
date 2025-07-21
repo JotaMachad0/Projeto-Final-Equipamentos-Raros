@@ -29,13 +29,25 @@ public class MapperEquipmentCollaborator {
                 .build();
     }
 
+    public EquipmentCollaboratorEntity toEntity(NewCollaboratorEquipmentLinkRequestDTO dto,
+                                                CollaboratorEntity collaborator,
+                                                EquipmentEntity equipment) {
+        return EquipmentCollaboratorEntity.builder()
+                .collaborator(collaborator)
+                .equipment(equipment)
+                .deliveryDate(dto.shipmentDate())
+                .deliveryStatus(dto.shipmentStatus())
+                .notes(dto.notes())
+                .build();
+    }
+
     public EquipmentCollaboratorResponseDTO toResponse(EquipmentCollaboratorEntity entity,
                                                        CollaboratorSummaryDTO collaborator,
                                                        EquipmentSummaryDTO equipment) {
         return EquipmentCollaboratorResponseDTO.builder()
                 .id(entity.getId())
-                .deliveryDate(entity.getDeliveryDate())
-                .previsionDeliveryDate(entity.getPrevisionDeliveryDate())
+                .shipmentDate(entity.getDeliveryDate())
+                .estimatedDeliveryDate(entity.getPrevisionDeliveryDate())
                 .returnDate(entity.getReturnDate())
                 .deliveryStatus(entity.getDeliveryStatus())
                 .notes(entity.getNotes())
