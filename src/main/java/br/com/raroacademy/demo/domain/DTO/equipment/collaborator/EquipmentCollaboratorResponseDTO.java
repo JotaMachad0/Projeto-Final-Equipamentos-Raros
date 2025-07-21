@@ -14,12 +14,12 @@ public record EquipmentCollaboratorResponseDTO (
     @Schema(example = "1")
     Long id,
 
-    @Schema(description = "Date the equipment was delivered", example = "2025-07-17")
-    LocalDate deliveryDate,
+    @Schema(description = "Date the equipment was shipped", example = "2025-07-17")
+    LocalDate shipmentDate,
 
-    @Schema(description = "Forecast for when the equipment will be delivered based on collaborator's region", example = "2025-07-22")
-    @JsonProperty("prevision_delivery_date")
-    LocalDate previsionDeliveryDate,
+    @Schema(description = "Estimated delivery date based on the collaborator's region", example = "2025-07-22")
+    @JsonProperty("estimated_delivery_date")
+    LocalDate estimatedDeliveryDate,
 
     @Schema(description = "Date the equipment was returned", example = "2026-07-16")
     LocalDate returnDate,

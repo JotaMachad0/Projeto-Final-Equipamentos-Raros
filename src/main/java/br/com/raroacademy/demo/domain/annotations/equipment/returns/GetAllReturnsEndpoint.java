@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.annotations.expected.returns;
+package br.com.raroacademy.demo.domain.annotations.equipment.returns;
 
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse200;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,11 +11,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Operation(summary = "Get all expected returns",
-        description = "Endpoint responsible for searching for all expected return records.")
-@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-@OpenApiResponse200
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GetAllExpectedReturnEndpoint {
+@Operation(
+        summary = "List all equipment returns",
+        description = "Endpoint responsible for retrieving a list of all return records."
+)
+@RequestMapping(
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
+@OpenApiResponse200
+public @interface GetAllReturnsEndpoint {
 }

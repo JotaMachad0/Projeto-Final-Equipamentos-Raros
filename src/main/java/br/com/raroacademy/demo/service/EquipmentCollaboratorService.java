@@ -1,13 +1,15 @@
 package br.com.raroacademy.demo.service;
 
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
 import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.MapperEquipmentCollaborator;
 
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.NewCollaboratorEquipmentLinkRequestDTO;
 import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
-import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
+import br.com.raroacademy.demo.exception.DataIntegrityException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
@@ -42,6 +44,7 @@ public class EquipmentCollaboratorService {
     private final DeliveryTimeService deliveryTimeService;
 
     private final MessageSource messageSource;
+    private final I18nUtil i18n;
 
     private String getMessage(String code) {
         Locale locale = LocaleContextHolder.getLocale();
@@ -49,17 +52,20 @@ public class EquipmentCollaboratorService {
     }
 
     @Transactional
-    public EquipmentCollaboratorResponseDTO create(EquipmentCollaboratorRequestDTO request) {
+    public EquipmentCollaboratorResponseDTO create(NewCollaboratorEquipmentLinkRequestDTO request) {
 
         var collaborator = collaboratorRepository.findById(request.collaboratorId())
-                .orElseThrow(() -> new NotFoundException(getMessage("collaborator.not-found")));
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("collaborator.not-found")));
 
         var equipment = equipmentRepository.findById(request.equipmentId())
                 .orElseThrow(() -> new NotFoundException(getMessage("equipment.not-found")));
 
 
+        if(collaborator.getContractEndDate() != null)
+            throw new DataIntegrityException(i18n.getMessage(("collaborator.dismissed")));
+
         if (equipment.getStatus() != EquipmentStatus.AVAILABLE) {
-            throw new DataIntegrityViolationException(getMessage("equipment.unavailable.status")
+            throw new DataIntegrityException(i18n.getMessage("equipment.unavailable.status")
             );
         }
 
@@ -110,7 +116,7 @@ public class EquipmentCollaboratorService {
             LocalDate returnDate = request.returnDate();
 
             if (returnDate.isAfter(LocalDate.now())) {
-                throw new DataIntegrityViolationException(getMessage("return.date.future"));
+                throw new DataIntegrityException(getMessage("return.date.future"));
             }
 
             var equipmentToReturn = existingEntity.getEquipment();
@@ -144,5 +150,13 @@ public class EquipmentCollaboratorService {
             throw new NotFoundException(getMessage("equipment-collaborator.not-found"));
         }
         equipmentCollaboratorRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void finalizeLoan(Long equipmentCollaboratorId) {
+        if (!equipmentCollaboratorRepository.existsById(equipmentCollaboratorId)) {
+            throw new NotFoundException(getMessage("equipment-collaborator.not-found"));
+        }
+        equipmentCollaboratorRepository.deleteById(equipmentCollaboratorId);
     }
 }
