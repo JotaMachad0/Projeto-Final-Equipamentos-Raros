@@ -236,7 +236,7 @@ public class CollaboratorServiceTest {
         ViaCepResponseDTO invalidCepResponse = new ViaCepResponseDTO();
         invalidCepResponse.setCep(null);
         
-        // Mock the async ViaCep service with invalid response
+
         CompletableFuture<ViaCepResponseDTO> future = CompletableFuture.completedFuture(invalidCepResponse);
         when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
