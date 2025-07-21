@@ -5,6 +5,7 @@ import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesR
 import br.com.raroacademy.demo.domain.DTO.equipment.purchase.EquipmentPurchasesResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.purchase.MapperEquipmentPurchases;
 import br.com.raroacademy.demo.domain.entities.EquipmentPurchasesEntity;
+import br.com.raroacademy.demo.domain.enums.EquipmentType;
 import br.com.raroacademy.demo.domain.enums.PurchaseStatus;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.EquipmentPurchasesRepository;
@@ -55,7 +56,7 @@ public class EquipmentPurchasesServiceTest {
 
         purchaseEntity = EquipmentPurchasesEntity.builder()
                 .id(1L)
-                .equipmentType("Laptop")
+                .equipmentType(EquipmentType.NOTEBOOK)
                 .quantity(10)
                 .orderDate(orderDate)
                 .receiptDate(receiptDate)
@@ -64,7 +65,7 @@ public class EquipmentPurchasesServiceTest {
                 .build();
 
         purchaseRequestDTO = new EquipmentPurchasesRequestDTO(
-                "Laptop",
+                EquipmentType.NOTEBOOK,
                 10,
                 orderDate,
                 "Tech Supplies Inc.",
@@ -74,7 +75,7 @@ public class EquipmentPurchasesServiceTest {
 
         purchaseResponseDTO = EquipmentPurchasesResponseDTO.builder()
                 .id(1L)
-                .equipmentType("Laptop")
+                .equipmentType(EquipmentType.NOTEBOOK)
                 .quantity(10)
                 .orderDate(orderDate)
                 .receiptDate(receiptDate)
@@ -199,7 +200,7 @@ public class EquipmentPurchasesServiceTest {
 
         EquipmentPurchasesResponseDTO registeredResponseDTO = EquipmentPurchasesResponseDTO.builder()
                 .id(1L)
-                .equipmentType("Laptop")
+                .equipmentType(EquipmentType.NOTEBOOK)
                 .quantity(10)
                 .orderDate(orderDate)
                 .receiptDate(receiptDate)

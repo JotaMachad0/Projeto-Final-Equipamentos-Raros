@@ -4,5 +4,5 @@ public enum ExpectedHiringStatus {
     CREATED,
     PROCESSED,
     CONCLUDED,
-    EXPIRED;
+    EXPIRED
 }
