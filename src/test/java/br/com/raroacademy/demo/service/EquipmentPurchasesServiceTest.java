@@ -83,7 +83,7 @@ public class EquipmentPurchasesServiceTest {
                 .status(PurchaseStatus.PURCHASED)
                 .build();
         
-        // Setup i18n messages
+
         when(i18n.getMessage("purchase.not.found")).thenReturn("Purchase not found.");
     }
 
