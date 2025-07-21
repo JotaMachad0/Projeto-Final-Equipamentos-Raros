@@ -1,4 +1,4 @@
-package br.com.raroacademy.demo.domain.annotations.expected.returns;
+package br.com.raroacademy.demo.domain.annotations.equipment.returns;
 
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse200;
 import br.com.raroacademy.demo.commons.annotations.OpenApiResponse404;

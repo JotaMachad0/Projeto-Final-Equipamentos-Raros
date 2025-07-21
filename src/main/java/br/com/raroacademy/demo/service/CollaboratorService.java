@@ -1,18 +1,19 @@
 package br.com.raroacademy.demo.service;
 
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.address.MapperAddress;
-import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorRequestDTO;
-import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorResponseDTO;
-import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
+import br.com.raroacademy.demo.domain.DTO.collaborator.*;
 import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
+import br.com.raroacademy.demo.domain.entities.EquipmentCollaboratorEntity;
 import br.com.raroacademy.demo.exception.InvalidCepException;
 import br.com.raroacademy.demo.exception.NotFoundException;
-import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
+import br.com.raroacademy.demo.exception.DataIntegrityException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
 import br.com.raroacademy.demo.client.ViaCepClient;
+import br.com.raroacademy.demo.repository.EquipmentCollaboratorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -35,6 +36,8 @@ public class CollaboratorService {
     private final ViaCepClient viaCepClient;
     private final ViaCepService viaCepService;
     private final MessageSource messageSource;
+    private final EquipmentCollaboratorRepository equipmentCollaboratorRepository;
+    private final I18nUtil i18n;
 
     private String getMessage(String code) {
         Locale locale = LocaleContextHolder.getLocale();
@@ -46,10 +49,10 @@ public class CollaboratorService {
         CompletableFuture<ViaCepResponseDTO> viaCepFuture = viaCepService.buscarEnderecoPorCepAsync(request.cep());
 
         if (collaboratorRepository.existsByCpf(request.cpf())) {
-            throw new DataIntegrityViolationException(getMessage("collaborator.cpf.already-exists"));
+            throw new DataIntegrityException(i18n.getMessage("collaborator.cpf.already-exists"));
         }
         if (collaboratorRepository.existsByEmail(request.email())) {
-            throw new DataIntegrityViolationException(getMessage("collaborator.email.already-exists"));
+            throw new DataIntegrityException(i18n.getMessage("collaborator.email.already-exists"));
         }
 
         ViaCepResponseDTO viaCep;
@@ -131,6 +134,33 @@ public class CollaboratorService {
             throw new NotFoundException(getMessage("collaborator.not-found"));
         }
         collaboratorRepository.deleteById(id);
+    }
+
+    public DismissalResponseDTO dismiss(Long id, DismissalRequestDTO dto) {
+        CollaboratorEntity collaborator = collaboratorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(i18n.getMessage("collaborator.not-found")));
+
+        collaborator.setContractEndDate(dto.dismissalDate());
+        CollaboratorEntity updatedCollaborator = collaboratorRepository.save(collaborator);
+
+        List<EquipmentCollaboratorEntity> activeLoansEntities =
+                equipmentCollaboratorRepository.findByCollaboratorIdAndReturnDateIsNull(id);
+
+        List<DismissalResponseDTO.ActiveLoanDTO> activeLoansDTO = activeLoansEntities.stream()
+                .map(loan -> new DismissalResponseDTO.ActiveLoanDTO(
+                        loan.getId(),
+                        loan.getEquipment().getId(),
+                        loan.getEquipment().getType().toString(),
+                        loan.getDeliveryDate()
+                )).collect(Collectors.toList());
+
+        return new DismissalResponseDTO(
+                updatedCollaborator.getId(),
+                updatedCollaborator.getName(),
+                updatedCollaborator.getEmail(),
+                updatedCollaborator.getContractEndDate(),
+                activeLoansDTO
+        );
     }
 
 }

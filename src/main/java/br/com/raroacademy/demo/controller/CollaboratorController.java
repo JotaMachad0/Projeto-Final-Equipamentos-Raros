@@ -4,6 +4,8 @@ import br.com.raroacademy.demo.commons.annotations.ApiController;
 import br.com.raroacademy.demo.commons.annotations.OpenApiController;
 import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.collaborator.DismissalRequestDTO;
+import br.com.raroacademy.demo.domain.DTO.collaborator.DismissalResponseDTO;
 import br.com.raroacademy.demo.service.CollaboratorService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -45,5 +47,13 @@ public class CollaboratorController {
     public ResponseEntity<Void> deleteCollaborator(@PathVariable Long id) {
         collaboratorService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @TerminateCollaboratorEndpoint
+    @PatchMapping("/{id}/dismiss")
+    public ResponseEntity<DismissalResponseDTO> dismissCollaborator(
+            @PathVariable Long id,
+            @RequestBody @Valid DismissalRequestDTO dto) {
+        return ResponseEntity.ok(collaboratorService.dismiss(id, dto));
     }
 }

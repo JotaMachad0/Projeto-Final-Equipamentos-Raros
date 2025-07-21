@@ -63,7 +63,7 @@ public class StockService {
         stockAlertService.checkAndCreateAlert(saved);
         return mapperStock.toResponseDTO(saved);
     }
-
+    @Transactional
     public StockResponseDTO findByEquipmentType(EquipmentType equipmentType) {
         var stock = stockRepository.findByEquipmentType(equipmentType);
         if (stock == null) {
@@ -71,16 +71,22 @@ public class StockService {
         }
         return mapperStock.toResponseDTO(stock);
     }
-
+    @Transactional
     public void incrementStock(EquipmentType equipmentType) {
         var stock = stockRepository.findByEquipmentType(equipmentType);
         if (stock == null) {
             throw new IllegalStateException(i18n.getMessage("stock.not.found.for.type", equipmentType.name()));
         }
         stock.setCurrentStock(stock.getCurrentStock() + 1);
+
+        var totalEquipments = equipmentRepository.countByType(equipmentType);
+        var defectiveEquipments = equipmentRepository.countByTypeAndStatus(equipmentType, EquipmentStatus.DEFECTIVE);
+        var avgDefectiveRate = totalEquipments > 0 ? (float) defectiveEquipments / totalEquipments : 0.0f;
+        stock.setAvgDefectiveRate(avgDefectiveRate);
+
         stockRepository.save(stock);
     }
-
+    @Transactional
     public void decrementStock(EquipmentType equipmentType) {
         var stock = stockRepository.findByEquipmentType(equipmentType);
         if (stock == null) {
@@ -90,8 +96,27 @@ public class StockService {
         if (stock.getCurrentStock() < 0) {
             throw new IllegalStateException(i18n.getMessage("stock.negative.value"));
         }
+
+        var totalEquipments = equipmentRepository.countByType(equipmentType);
+        var defectiveEquipments = equipmentRepository.countByTypeAndStatus(equipmentType, EquipmentStatus.DEFECTIVE);
+        var avgDefectiveRate = totalEquipments > 0 ? (float) defectiveEquipments / totalEquipments : 0.0f;
+        stock.setAvgDefectiveRate(avgDefectiveRate);
+
         stockRepository.save(stock);
         stockAlertService.checkAndCreateAlert(stock);
+    }
+    @Transactional
+    public void calculateStock(EquipmentType equipmentType) {
+        var stock = stockRepository.findByEquipmentType(equipmentType);
+        if (stock == null) {
+            throw new IllegalStateException(i18n.getMessage("stock.not.found.for.type", equipmentType.name()));
+        }
+        var totalEquipments = equipmentRepository.countByType(equipmentType);
+        var defectiveEquipments = equipmentRepository.countByTypeAndStatus(equipmentType, EquipmentStatus.DEFECTIVE);
+        var avgDefectiveRate = totalEquipments > 0 ? (float) defectiveEquipments / totalEquipments : 0.0f;
+        stock.setAvgDefectiveRate(avgDefectiveRate);
+
+        stockRepository.save(stock);
     }
 
     @Transactional(readOnly = true)

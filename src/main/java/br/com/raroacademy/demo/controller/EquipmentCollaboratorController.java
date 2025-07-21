@@ -4,6 +4,7 @@ import br.com.raroacademy.demo.commons.annotations.ApiController;
 import br.com.raroacademy.demo.commons.annotations.OpenApiController;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorResponseDTO;
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.NewCollaboratorEquipmentLinkRequestDTO;
 import br.com.raroacademy.demo.domain.annotations.equipment.collaborator.*;
 import br.com.raroacademy.demo.service.EquipmentCollaboratorService;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public class EquipmentCollaboratorController {
     private final EquipmentCollaboratorService equipmentCollaboratorService;
 
     @CreateEquipmentCollaboratorEndpoint
-    public ResponseEntity<EquipmentCollaboratorResponseDTO> create(@RequestBody @Valid EquipmentCollaboratorRequestDTO dto) {
+    public ResponseEntity<EquipmentCollaboratorResponseDTO> create(@RequestBody @Valid NewCollaboratorEquipmentLinkRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(equipmentCollaboratorService.create(dto));
     }
 

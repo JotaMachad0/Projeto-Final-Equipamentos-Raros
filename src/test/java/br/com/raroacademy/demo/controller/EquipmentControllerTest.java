@@ -90,11 +90,11 @@ public class EquipmentControllerTest {
     void create_DuplicateSerialNumber() {
         // Arrange
         when(equipmentService.create(any(EquipmentRequestDTO.class)))
-                .thenThrow(new br.com.raroacademy.demo.exception.DataIntegrityViolationException("Serial number already exists"));
+                .thenThrow(new br.com.raroacademy.demo.exception.DataIntegrityException("Serial number already exists"));
 
         // Act & Assert
-        br.com.raroacademy.demo.exception.DataIntegrityViolationException exception = assertThrows(
-                br.com.raroacademy.demo.exception.DataIntegrityViolationException.class,
+        br.com.raroacademy.demo.exception.DataIntegrityException exception = assertThrows(
+                br.com.raroacademy.demo.exception.DataIntegrityException.class,
                 () -> equipmentController.create(requestDTO)
         );
         assertEquals("Serial number already exists", exception.getMessage());
@@ -171,11 +171,11 @@ public class EquipmentControllerTest {
     void updateEquipment_DuplicateSerialNumber() {
         // Arrange
         when(equipmentService.update(anyLong(), any(EquipmentRequestDTO.class)))
-                .thenThrow(new br.com.raroacademy.demo.exception.DataIntegrityViolationException("Serial number already exists"));
+                .thenThrow(new br.com.raroacademy.demo.exception.DataIntegrityException("Serial number already exists"));
 
         // Act & Assert
-        br.com.raroacademy.demo.exception.DataIntegrityViolationException exception = assertThrows(
-                br.com.raroacademy.demo.exception.DataIntegrityViolationException.class,
+        br.com.raroacademy.demo.exception.DataIntegrityException exception = assertThrows(
+                br.com.raroacademy.demo.exception.DataIntegrityException.class,
                 () -> equipmentController.updateEquipment(1L, requestDTO)
         );
         assertEquals("Serial number already exists", exception.getMessage());

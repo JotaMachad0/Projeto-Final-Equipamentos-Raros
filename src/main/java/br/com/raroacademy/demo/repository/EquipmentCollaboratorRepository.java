@@ -15,4 +15,6 @@ public interface EquipmentCollaboratorRepository extends JpaRepository<Equipment
     List<EquipmentCollaboratorEntity> findUnavailableEquipments(
             @Param("equipmentId") Long equipmentId,
             @Param("deliveryDate") LocalDate deliveryDate);
+
+    List<EquipmentCollaboratorEntity> findByCollaboratorIdAndReturnDateIsNull(Long id);
 }
