@@ -102,6 +102,16 @@ public class GlobalExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
     }
+    @ExceptionHandler(DataIntegrityException.class)
+    public ResponseEntity<ErrorMessage> handleDataIntegrityException(DataIntegrityException ex,
+                                                                              HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
+    }
+
 
     @ExceptionHandler(InvalidCepException.class)
     public ResponseEntity<ErrorMessage> handleInvalidCepException(InvalidCepException ex,

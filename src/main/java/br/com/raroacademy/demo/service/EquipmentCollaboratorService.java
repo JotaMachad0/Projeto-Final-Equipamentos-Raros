@@ -9,7 +9,7 @@ import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.MapperEquipment
 
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.NewCollaboratorEquipmentLinkRequestDTO;
 import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
-import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
+import br.com.raroacademy.demo.exception.DataIntegrityException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
@@ -62,10 +62,10 @@ public class EquipmentCollaboratorService {
 
 
         if(collaborator.getContractEndDate() != null)
-            throw new DataIntegrityViolationException(i18n.getMessage(("collaborator.dismissed")));
+            throw new DataIntegrityException(i18n.getMessage(("collaborator.dismissed")));
 
         if (equipment.getStatus() != EquipmentStatus.AVAILABLE) {
-            throw new DataIntegrityViolationException(getMessage("equipment.unavailable.status")
+            throw new DataIntegrityException(i18n.getMessage("equipment.unavailable.status")
             );
         }
 
@@ -116,7 +116,7 @@ public class EquipmentCollaboratorService {
             LocalDate returnDate = request.returnDate();
 
             if (returnDate.isAfter(LocalDate.now())) {
-                throw new DataIntegrityViolationException(getMessage("return.date.future"));
+                throw new DataIntegrityException(getMessage("return.date.future"));
             }
 
             var equipmentToReturn = existingEntity.getEquipment();

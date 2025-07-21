@@ -9,7 +9,7 @@ import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
 import br.com.raroacademy.demo.domain.entities.EquipmentCollaboratorEntity;
 import br.com.raroacademy.demo.exception.InvalidCepException;
 import br.com.raroacademy.demo.exception.NotFoundException;
-import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
+import br.com.raroacademy.demo.exception.DataIntegrityException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
 import br.com.raroacademy.demo.client.ViaCepClient;
@@ -49,10 +49,10 @@ public class CollaboratorService {
         CompletableFuture<ViaCepResponseDTO> viaCepFuture = viaCepService.buscarEnderecoPorCepAsync(request.cep());
 
         if (collaboratorRepository.existsByCpf(request.cpf())) {
-            throw new DataIntegrityViolationException(i18n.getMessage("collaborator.cpf.already-exists"));
+            throw new DataIntegrityException(i18n.getMessage("collaborator.cpf.already-exists"));
         }
         if (collaboratorRepository.existsByEmail(request.email())) {
-            throw new DataIntegrityViolationException(i18n.getMessage("collaborator.email.already-exists"));
+            throw new DataIntegrityException(i18n.getMessage("collaborator.email.already-exists"));
         }
 
         ViaCepResponseDTO viaCep;

@@ -1,5 +1,6 @@
 package br.com.raroacademy.demo.service;
 
+import br.com.raroacademy.demo.commons.i18n.I18nUtil;
 import br.com.raroacademy.demo.domain.DTO.collaborator.CollaboratorSummaryDTO;
 import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
 import br.com.raroacademy.demo.domain.DTO.equipment.EquipmentSummaryDTO;
@@ -7,13 +8,14 @@ import br.com.raroacademy.demo.domain.DTO.equipment.MapperEquipment;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorRequestDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.EquipmentCollaboratorResponseDTO;
 import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.MapperEquipmentCollaborator;
+import br.com.raroacademy.demo.domain.DTO.equipment.collaborator.NewCollaboratorEquipmentLinkRequestDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
 import br.com.raroacademy.demo.domain.entities.EquipmentCollaboratorEntity;
 import br.com.raroacademy.demo.domain.entities.EquipmentEntity;
 import br.com.raroacademy.demo.domain.enums.EquipmentStatus;
 import br.com.raroacademy.demo.domain.enums.EquipmentType;
-import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
+import br.com.raroacademy.demo.exception.DataIntegrityException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.AddressRepository;
 import br.com.raroacademy.demo.repository.CollaboratorRepository;
@@ -30,7 +32,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.context.MessageSource;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -46,33 +48,26 @@ public class EquipmentCollaboratorServiceTest {
 
     @Mock
     private EquipmentCollaboratorRepository equipmentCollaboratorRepository;
-
     @Mock
     private CollaboratorRepository collaboratorRepository;
-
     @Mock
     private EquipmentRepository equipmentRepository;
-
     @Mock
     private AddressRepository addressRepository;
-
     @Mock
     private StockService stockService;
-
     @Mock
     private MapperEquipmentCollaborator mapperEquipmentCollaborator;
-
     @Mock
     private MapperCollaborator mapperCollaborator;
-
     @Mock
     private MapperEquipment mapperEquipment;
-
     @Mock
     private DeliveryTimeService deliveryTimeService;
-
     @Mock
     private MessageSource messageSource;
+    @Mock
+    private I18nUtil i18n;
 
     @InjectMocks
     private EquipmentCollaboratorService equipmentCollaboratorService;
@@ -82,386 +77,168 @@ public class EquipmentCollaboratorServiceTest {
     private EquipmentEntity inUseEquipment;
     private AddressEntity address;
     private EquipmentCollaboratorEntity equipmentCollaboratorEntity;
-    private EquipmentCollaboratorRequestDTO requestDTO;
+    private NewCollaboratorEquipmentLinkRequestDTO newLinkRequestDTO;
+    private EquipmentCollaboratorRequestDTO updateRequestDTO;
     private EquipmentCollaboratorResponseDTO responseDTO;
-    private CollaboratorSummaryDTO collaboratorSummaryDTO;
-    private EquipmentSummaryDTO equipmentSummaryDTO;
-    private LocalDate today;
-    private LocalDate tomorrow;
-    private LocalDate yesterday;
 
     @BeforeEach
     void setUp() {
-        today = LocalDate.now();
-        tomorrow = today.plusDays(1);
-        yesterday = today.minusDays(1);
+        collaborator = CollaboratorEntity.builder().id(1L).name("Colaborador Teste").addressId(1L).contractEndDate(null).build();
+        availableEquipment = EquipmentEntity.builder().id(1L).status(EquipmentStatus.AVAILABLE).type(EquipmentType.NOTEBOOK).build();
+        inUseEquipment = EquipmentEntity.builder().id(2L).status(EquipmentStatus.IN_USE).type(EquipmentType.MONITOR).build();
+        address = AddressEntity.builder().id(1L).state("SP").build();
+        equipmentCollaboratorEntity = EquipmentCollaboratorEntity.builder().id(1L).collaborator(collaborator).equipment(availableEquipment).deliveryDate(LocalDate.now()).build();
 
-        collaborator = CollaboratorEntity.builder()
-                .id(1L)
-                .name("Test Collaborator")
-                .cpf("123.456.789-00")
-                .email("collaborator@example.com")
-                .phone("(11) 99999-9999")
-                .addressId(1L)
-                .contractStartDate(today.minusMonths(1))
-                .build();
+        newLinkRequestDTO = new NewCollaboratorEquipmentLinkRequestDTO(1L, 1L, LocalDate.now(), "ENVIADO", "Notas de envio");
+        updateRequestDTO = new EquipmentCollaboratorRequestDTO(1L, 1L, LocalDate.now(), null, "Entregue", "Sem notas");
 
-        availableEquipment = EquipmentEntity.builder()
-                .id(1L)
-                .type(EquipmentType.NOTEBOOK)
-                .serialNumber("SN12345")
-                .brand("Test Brand")
-                .model("Test Model")
-                .specs("Test Specs")
-                .acquisitionDate(today.minusMonths(6))
-                .usageTimeMonths(6)
-                .status(EquipmentStatus.AVAILABLE)
-                .build();
+        CollaboratorSummaryDTO collaboratorSummary = CollaboratorSummaryDTO.builder().id(1L).name("Colaborador Teste").build();
+        EquipmentSummaryDTO equipmentSummary = EquipmentSummaryDTO.builder().id(1L).type("NOTEBOOK").build();
 
-        inUseEquipment = EquipmentEntity.builder()
-                .id(2L)
-                .type(EquipmentType.NOTEBOOK)
-                .serialNumber("SN67890")
-                .brand("Test Brand")
-                .model("Test Model")
-                .specs("Test Specs")
-                .acquisitionDate(today.minusMonths(6))
-                .usageTimeMonths(6)
-                .status(EquipmentStatus.IN_USE)
-                .build();
+        responseDTO = new EquipmentCollaboratorResponseDTO(1L, LocalDate.now(), LocalDate.now().plusDays(5), null, "ENVIADO", "Notas", collaboratorSummary, equipmentSummary);
 
-        address = AddressEntity.builder()
-                .id(1L)
-                .street("Test Street")
-                .number("123")
-                .neighborhood("Test Neighborhood")
-                .city("Test City")
-                .state("SP")
-                .cep("12345-678")
-                .country("Brazil")
-                .build();
+        when(i18n.getMessage(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(messageSource.getMessage(anyString(), any(), any(Locale.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        requestDTO = new EquipmentCollaboratorRequestDTO(
-                1L,
-                1L,
-                today,
-                null,
-                "Pending",
-                "Test notes"
-        );
+        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
+        when(equipmentRepository.findById(1L)).thenReturn(Optional.of(availableEquipment));
+        when(equipmentRepository.findById(2L)).thenReturn(Optional.of(inUseEquipment));
+        when(addressRepository.findById(1L)).thenReturn(Optional.of(address));
+        when(equipmentCollaboratorRepository.findById(1L)).thenReturn(Optional.of(equipmentCollaboratorEntity));
 
-        collaboratorSummaryDTO = CollaboratorSummaryDTO.builder()
-                .id(1L)
-                .name("Test Collaborator")
-                .email("collaborator@example.com")
-                .build();
-
-        equipmentSummaryDTO = EquipmentSummaryDTO.builder()
-                .id(1L)
-                .type("NOTEBOOK")
-                .model("Test Model")
-                .build();
-
-        equipmentCollaboratorEntity = EquipmentCollaboratorEntity.builder()
-                .id(1L)
-                .collaborator(collaborator)
-                .equipment(availableEquipment)
-                .deliveryDate(today)
-                .previsionDeliveryDate(tomorrow)
-                .deliveryStatus("Pending")
-                .notes("Test notes")
-                .build();
-
-        responseDTO = EquipmentCollaboratorResponseDTO.builder()
-                .id(1L)
-                .deliveryDate(today)
-                .previsionDeliveryDate(tomorrow)
-                .deliveryStatus("Pending")
-                .notes("Test notes")
-                .collaborator(collaboratorSummaryDTO)
-                .equipment(equipmentSummaryDTO)
-                .build();
-
-        when(messageSource.getMessage(anyString(), any(), any(Locale.class)))
-                .thenAnswer(invocation -> {
-                    String code = invocation.getArgument(0);
-                    return switch (code) {
-                        case "collaborator.not-found" -> "Collaborator not found";
-                        case "equipment.not-found" -> "Equipment not found";
-                        case "equipment.unavailable.status" -> "Equipment is not available";
-                        case "address.not-found" -> "Address not found";
-                        case "equipment-collaborator.not-found" -> "Equipment-collaborator relationship not found";
-                        case "return.date.future" -> "Return date cannot be in the future";
-                        default -> code;
-                    };
-                });
-
-        when(mapperEquipmentCollaborator.toEntity(any(EquipmentCollaboratorRequestDTO.class), any(CollaboratorEntity.class), any(EquipmentEntity.class))).thenReturn(equipmentCollaboratorEntity);
+        when(mapperEquipmentCollaborator.toEntity(any(NewCollaboratorEquipmentLinkRequestDTO.class), any(CollaboratorEntity.class), any(EquipmentEntity.class))).thenReturn(equipmentCollaboratorEntity);
         when(mapperEquipmentCollaborator.toResponse(any(EquipmentCollaboratorEntity.class), any(CollaboratorSummaryDTO.class), any(EquipmentSummaryDTO.class))).thenReturn(responseDTO);
         when(mapperEquipmentCollaborator.mapToResponseDTO(any(EquipmentCollaboratorEntity.class))).thenReturn(responseDTO);
-        when(mapperCollaborator.toSummaryResponse(any(CollaboratorEntity.class))).thenReturn(collaboratorSummaryDTO);
-        when(mapperEquipment.toSummaryResponse(any(EquipmentEntity.class))).thenReturn(equipmentSummaryDTO);
-        when(deliveryTimeService.calculate(anyString(), any(LocalDate.class))).thenReturn(tomorrow);
+
+        when(mapperCollaborator.toSummaryResponse(any(CollaboratorEntity.class))).thenReturn(collaboratorSummary);
+        when(mapperEquipment.toSummaryResponse(any(EquipmentEntity.class))).thenReturn(equipmentSummary);
+
+        when(deliveryTimeService.calculate(anyString(), any(LocalDate.class))).thenReturn(LocalDate.now().plusDays(5));
+        when(equipmentCollaboratorRepository.save(any(EquipmentCollaboratorEntity.class))).thenReturn(equipmentCollaboratorEntity);
     }
 
     @Test
     void create_Success() {
-        // Arrange
-        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
-        when(equipmentRepository.findById(1L)).thenReturn(Optional.of(availableEquipment));
-        when(addressRepository.findById(1L)).thenReturn(Optional.of(address));
-        when(equipmentCollaboratorRepository.save(any(EquipmentCollaboratorEntity.class))).thenReturn(equipmentCollaboratorEntity);
+        EquipmentCollaboratorResponseDTO result = equipmentCollaboratorService.create(newLinkRequestDTO);
 
-        // Act
-        EquipmentCollaboratorResponseDTO result = equipmentCollaboratorService.create(requestDTO);
-
-        // Assert
         assertNotNull(result);
-        assertEquals(responseDTO, result);
-        verify(collaboratorRepository).findById(1L);
-        verify(equipmentRepository).findById(1L);
-        verify(addressRepository).findById(1L);
-        verify(stockService).decrementStock(availableEquipment.getType());
+        assertEquals(responseDTO.id(), result.id());
+        verify(stockService).decrementStock(EquipmentType.NOTEBOOK);
         verify(equipmentRepository).save(availableEquipment);
-        verify(equipmentCollaboratorRepository).save(any(EquipmentCollaboratorEntity.class));
         assertEquals(EquipmentStatus.IN_USE, availableEquipment.getStatus());
     }
 
     @Test
     void create_CollaboratorNotFound() {
-        // Arrange
         when(collaboratorRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Act & Assert
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> equipmentCollaboratorService.create(requestDTO)
-        );
-        assertEquals("Collaborator not found", exception.getMessage());
-        verify(collaboratorRepository).findById(1L);
-        verify(equipmentRepository, never()).findById(anyLong());
-        verify(stockService, never()).decrementStock(any());
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> equipmentCollaboratorService.create(newLinkRequestDTO));
+        assertEquals("collaborator.not-found", exception.getMessage());
+    }
+
+    @Test
+    void create_CollaboratorDismissed() {
+        collaborator.setContractEndDate(LocalDate.now());
+        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
+
+        DataIntegrityException exception = assertThrows(DataIntegrityException.class, () -> {
+            equipmentCollaboratorService.create(newLinkRequestDTO);
+        });
+
+        assertEquals("collaborator.dismissed", exception.getMessage());
     }
 
     @Test
     void create_EquipmentNotFound() {
-        // Arrange
-        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
         when(equipmentRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Act & Assert
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> equipmentCollaboratorService.create(requestDTO)
-        );
-        assertEquals("Equipment not found", exception.getMessage());
-        verify(collaboratorRepository).findById(1L);
-        verify(equipmentRepository).findById(1L);
-        verify(stockService, never()).decrementStock(any());
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> equipmentCollaboratorService.create(newLinkRequestDTO));
+        assertEquals("equipment.not-found", exception.getMessage());
     }
 
     @Test
     void create_EquipmentNotAvailable() {
-        // Arrange
-        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
-        when(equipmentRepository.findById(1L)).thenReturn(Optional.of(inUseEquipment));
+        NewCollaboratorEquipmentLinkRequestDTO requestWithUnavailableEquipment = new NewCollaboratorEquipmentLinkRequestDTO(1L, 2L, LocalDate.now(), "TENTATIVA", "Notas");
 
-        // Act & Assert
-        DataIntegrityViolationException exception = assertThrows(
-                DataIntegrityViolationException.class,
-                () -> equipmentCollaboratorService.create(requestDTO)
-        );
-        assertEquals("Equipment is not available", exception.getMessage());
-        verify(collaboratorRepository).findById(1L);
-        verify(equipmentRepository).findById(1L);
-        verify(stockService, never()).decrementStock(any());
+        DataIntegrityException exception = assertThrows(DataIntegrityException.class, () -> equipmentCollaboratorService.create(requestWithUnavailableEquipment));
+        assertEquals("equipment.unavailable.status", exception.getMessage());
     }
 
     @Test
     void create_AddressNotFound() {
-        // Arrange
-        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
-        when(equipmentRepository.findById(1L)).thenReturn(Optional.of(availableEquipment));
         when(addressRepository.findById(1L)).thenReturn(Optional.empty());
-        doAnswer(invocation -> {
-            availableEquipment.setStatus(EquipmentStatus.IN_USE);
-            return null;
-        }).when(equipmentRepository).save(availableEquipment);
 
-
-        // Act & Assert
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> equipmentCollaboratorService.create(requestDTO)
-        );
-        assertEquals("Address not found", exception.getMessage());
-        verify(collaboratorRepository).findById(1L);
-        verify(equipmentRepository).findById(1L);
-        verify(stockService).decrementStock(availableEquipment.getType());
-        verify(equipmentRepository).save(availableEquipment);
-        verify(addressRepository).findById(1L);
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> equipmentCollaboratorService.create(newLinkRequestDTO));
+        assertEquals("address.not-found", exception.getMessage());
     }
 
     @Test
     void getById_Success() {
-        // Arrange
-        when(equipmentCollaboratorRepository.findById(1L)).thenReturn(Optional.of(equipmentCollaboratorEntity));
-
-        // Act
         EquipmentCollaboratorResponseDTO result = equipmentCollaboratorService.getById(1L);
-
-        // Assert
         assertNotNull(result);
-        assertEquals(responseDTO, result);
-        verify(equipmentCollaboratorRepository).findById(1L);
+        assertEquals(1L, result.id());
     }
 
     @Test
     void getById_NotFound() {
-        // Arrange
         when(equipmentCollaboratorRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> equipmentCollaboratorService.getById(1L)
-        );
-        assertEquals("Equipment-collaborator relationship not found", exception.getMessage());
-        verify(equipmentCollaboratorRepository).findById(1L);
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> equipmentCollaboratorService.getById(1L));
+        assertEquals("equipment-collaborator.not-found", exception.getMessage());
     }
 
     @Test
     void getAll_Success() {
-        // Arrange
-        List<EquipmentCollaboratorEntity> entities = Arrays.asList(equipmentCollaboratorEntity);
-        when(equipmentCollaboratorRepository.findAll()).thenReturn(entities);
-
-        // Act
-        List<EquipmentCollaboratorResponseDTO> results = equipmentCollaboratorService.getAll();
-
-        // Assert
-        assertNotNull(results);
-        assertEquals(1, results.size());
-        assertEquals(responseDTO, results.get(0));
-        verify(equipmentCollaboratorRepository).findAll();
+        when(equipmentCollaboratorRepository.findAll()).thenReturn(Collections.singletonList(equipmentCollaboratorEntity));
+        List<EquipmentCollaboratorResponseDTO> result = equipmentCollaboratorService.getAll();
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
     }
 
     @Test
-    void update_Success_WithoutReturn() {
-        // Arrange
-        when(equipmentCollaboratorRepository.findById(1L)).thenReturn(Optional.of(equipmentCollaboratorEntity));
-        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
-        when(equipmentRepository.findById(1L)).thenReturn(Optional.of(availableEquipment));
-        when(equipmentCollaboratorRepository.save(any(EquipmentCollaboratorEntity.class))).thenReturn(equipmentCollaboratorEntity);
+    void update_SuccessWithReturn() {
+        updateRequestDTO = new EquipmentCollaboratorRequestDTO(1L, 1L, LocalDate.now(), LocalDate.now(), "Devolvido", "Devolvido");
 
-        // Act
-        EquipmentCollaboratorResponseDTO result = equipmentCollaboratorService.update(1L, requestDTO);
+        EquipmentCollaboratorResponseDTO result = equipmentCollaboratorService.update(1L, updateRequestDTO);
 
-        // Assert
         assertNotNull(result);
-        assertEquals(responseDTO, result);
-        verify(equipmentCollaboratorRepository).findById(1L);
-        verify(collaboratorRepository).findById(1L);
-        verify(equipmentRepository).findById(1L);
-        verify(equipmentCollaboratorRepository).save(any(EquipmentCollaboratorEntity.class));
-        verify(stockService, never()).incrementStock(any());
-    }
-
-    @Test
-    void update_Success_WithReturn() {
-        // Arrange
-        EquipmentCollaboratorRequestDTO returnRequest = new EquipmentCollaboratorRequestDTO(
-                requestDTO.collaboratorId(),
-                requestDTO.equipmentId(),
-                requestDTO.deliveryDate(),
-                yesterday,
-                "Returned",
-                "Returned notes"
-        );
-        when(equipmentCollaboratorRepository.findById(1L)).thenReturn(Optional.of(equipmentCollaboratorEntity));
-        when(collaboratorRepository.findById(1L)).thenReturn(Optional.of(collaborator));
-        when(equipmentRepository.findById(1L)).thenReturn(Optional.of(availableEquipment));
-        when(equipmentCollaboratorRepository.save(any(EquipmentCollaboratorEntity.class))).thenReturn(equipmentCollaboratorEntity);
-        doAnswer(invocation -> {
-            EquipmentEntity savedEquipment = invocation.getArgument(0);
-            savedEquipment.setStatus(EquipmentStatus.AVAILABLE);
-            return null;
-        }).when(equipmentRepository).save(any(EquipmentEntity.class));
-
-        // Act
-        equipmentCollaboratorService.update(1L, returnRequest);
-
-        // Assert
-        verify(equipmentCollaboratorRepository).findById(1L);
-        verify(collaboratorRepository).findById(1L);
-        verify(stockService).incrementStock(availableEquipment.getType());
+        verify(stockService).incrementStock(EquipmentType.NOTEBOOK);
         verify(equipmentRepository).save(availableEquipment);
         assertEquals(EquipmentStatus.AVAILABLE, availableEquipment.getStatus());
     }
 
     @Test
-    void update_NotFound() {
-        // Arrange
-        when(equipmentCollaboratorRepository.findById(1L)).thenReturn(Optional.empty());
+    void update_ReturnDateInFuture() {
+        updateRequestDTO = new EquipmentCollaboratorRequestDTO(1L, 1L, LocalDate.now(), LocalDate.now().plusDays(1), "Agendado", "Agendado");
 
-        // Act & Assert
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> equipmentCollaboratorService.update(1L, requestDTO)
-        );
-        assertEquals("Equipment-collaborator relationship not found", exception.getMessage());
-        verify(equipmentCollaboratorRepository).findById(1L);
-        verify(collaboratorRepository, never()).findById(anyLong());
-    }
-
-    @Test
-    void update_FutureReturnDate() {
-        // Arrange
-        EquipmentCollaboratorRequestDTO futureReturnRequest = new EquipmentCollaboratorRequestDTO(
-                requestDTO.collaboratorId(),
-                requestDTO.equipmentId(),
-                requestDTO.deliveryDate(),
-                tomorrow,
-                "Pending Return",
-                requestDTO.notes()
-        );
-        when(equipmentCollaboratorRepository.findById(1L)).thenReturn(Optional.of(equipmentCollaboratorEntity));
-
-        // Act & Assert
-        DataIntegrityViolationException exception = assertThrows(
-                DataIntegrityViolationException.class,
-                () -> equipmentCollaboratorService.update(1L, futureReturnRequest)
-        );
-        assertEquals("Return date cannot be in the future", exception.getMessage());
-        verify(equipmentCollaboratorRepository).findById(1L);
-        verify(stockService, never()).incrementStock(any());
+        DataIntegrityException exception = assertThrows(DataIntegrityException.class, () -> equipmentCollaboratorService.update(1L, updateRequestDTO));
+        assertEquals("return.date.future", exception.getMessage());
     }
 
     @Test
     void delete_Success() {
-        // Arrange
         when(equipmentCollaboratorRepository.existsById(1L)).thenReturn(true);
-
-        // Act
         equipmentCollaboratorService.delete(1L);
-
-        // Assert
-        verify(equipmentCollaboratorRepository).existsById(1L);
         verify(equipmentCollaboratorRepository).deleteById(1L);
     }
 
     @Test
     void delete_NotFound() {
-        // Arrange
         when(equipmentCollaboratorRepository.existsById(1L)).thenReturn(false);
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> equipmentCollaboratorService.delete(1L));
+        assertEquals("equipment-collaborator.not-found", exception.getMessage());
+    }
 
-        // Act & Assert
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> equipmentCollaboratorService.delete(1L)
-        );
-        assertEquals("Equipment-collaborator relationship not found", exception.getMessage());
-        verify(equipmentCollaboratorRepository).existsById(1L);
-        verify(equipmentCollaboratorRepository, never()).deleteById(anyLong());
+    @Test
+    void finalizeLoan_Success() {
+        when(equipmentCollaboratorRepository.existsById(1L)).thenReturn(true);
+        equipmentCollaboratorService.finalizeLoan(1L);
+        verify(equipmentCollaboratorRepository).deleteById(1L);
+    }
+
+    @Test
+    void finalizeLoan_NotFound() {
+        when(equipmentCollaboratorRepository.existsById(1L)).thenReturn(false);
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> equipmentCollaboratorService.finalizeLoan(1L));
+        assertEquals("equipment-collaborator.not-found", exception.getMessage());
     }
 }

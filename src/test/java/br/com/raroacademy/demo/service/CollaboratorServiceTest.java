@@ -9,7 +9,7 @@ import br.com.raroacademy.demo.domain.DTO.collaborator.MapperCollaborator;
 import br.com.raroacademy.demo.domain.DTO.viaCep.ViaCepResponseDTO;
 import br.com.raroacademy.demo.domain.entities.AddressEntity;
 import br.com.raroacademy.demo.domain.entities.CollaboratorEntity;
-import br.com.raroacademy.demo.exception.DataIntegrityViolationException;
+import br.com.raroacademy.demo.exception.DataIntegrityException;
 import br.com.raroacademy.demo.exception.InvalidCepException;
 import br.com.raroacademy.demo.exception.NotFoundException;
 import br.com.raroacademy.demo.repository.AddressRepository;
@@ -194,8 +194,8 @@ public class CollaboratorServiceTest {
         when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
         // Act & Assert
-        DataIntegrityViolationException exception = assertThrows(
-                DataIntegrityViolationException.class,
+        DataIntegrityException exception = assertThrows(
+                DataIntegrityException.class,
                 () -> collaboratorService.save(collaboratorRequestDTO)
         );
         assertEquals("CPF already exists", exception.getMessage());
@@ -216,8 +216,8 @@ public class CollaboratorServiceTest {
         when(viaCepService.buscarEnderecoPorCepAsync(collaboratorRequestDTO.cep())).thenReturn(future);
 
         // Act & Assert
-        DataIntegrityViolationException exception = assertThrows(
-                DataIntegrityViolationException.class,
+        DataIntegrityException exception = assertThrows(
+                DataIntegrityException.class,
                 () -> collaboratorService.save(collaboratorRequestDTO)
         );
         assertEquals("Email already exists", exception.getMessage());
