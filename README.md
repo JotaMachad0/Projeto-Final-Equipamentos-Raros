@@ -1,92 +1,236 @@
-# Projeto Final Equipamentos Raros
+<div align="center">
+<h1>Equipamentos Raros</h1>
+</div>
+
+<div align="center">
+<p><i>"Gerenciando equipamentos com eficiência e precisão"</i></p>
+</div>
+
+# Índice
+- [Apresentação do Projeto](#Apresentação-do-projeto)
+- [Design da Aplicação, Tecnologias e Abordagens utilizadas](#Design-da-aplicação-tecnologias-e-abordagens-utilizadas)
+- [Glossário](#Glossário)
+- [Contextos Delimitados](#Contextos-delimitados)
+- [Modelagem](#modelagem)
+    - [Diagrama Entidade-Relacionamento](#Diagrama-entidade-relacionamento)
+- [Camadas da Aplicação](#Camadas-da-aplicação)
+    - [Controller](#Controller)
+    - [Service](#Service)
+    - [Repository](#Repository)
+    - [Domain](#Domain)
+    - [Exception](#Exception)
+    - [Configuration](#Configuration)
+- [Controllers](#Controllers)
+- [Features](#Features)
+- [Desafios e Proximos Passos](#Desafios-e-proximos-passos)
+- [Requisitos](#requisitos)
+- [Get Started](#Get-started)
+- [Fluxo Execução](#fluxo-de-execução-para-testar-a-aplicação-com-um-todo)
+- [Desenvolvedores](#Desenvolvedores)
+
+# Apresentação do Projeto
+O objetivo do presente projeto é desenvolver um sistema de gerenciamento de equipamentos para a Raro Academy. O sistema permite o controle de estoque, alocação de equipamentos para colaboradores, monitoramento de prazos de entrega e devolução, além de alertas de estoque baixo.
+
+A solução foi desenvolvida para atender às necessidades da Raro Academy de gerenciar eficientemente seus equipamentos, garantindo que todos os colaboradores tenham acesso aos recursos necessários para realizar seu trabalho, enquanto mantém um controle preciso do inventário.
+
+# Design da Aplicação, Tecnologias e Abordagens utilizadas
+O design escolhido para a arquitetura do software foi baseado nos princípios de Clean Architecture e Domain-Driven Design (DDD). A aplicação foi estruturada em camadas bem definidas, com separação clara de responsabilidades.
+
+As principais tecnologias utilizadas no projeto incluem:
+- **Spring Boot**: Framework para desenvolvimento de aplicações Java
+- **Spring Data JPA**: Para persistência de dados
+- **Spring Security**: Para autenticação e autorização
+- **Feign Client**: Para integração com APIs externas
+- **PostgreSQL**: Banco de dados relacional
+- **Lombok**: Para redução de código boilerplate
+- **Spring Scheduling**: Para tarefas agendadas
+- **Spring Async**: Para processamento assíncrono
+
+A aplicação segue os princípios SOLID e utiliza padrões de projeto como Repository, Service, DTO, Builder e Factory para garantir um código limpo, testável e de fácil manutenção.
+
+# Glossário
+- **Equipamento**: Dispositivo eletrônico (notebook, monitor, etc.) gerenciado pelo sistema.
+- **Colaborador**: Funcionário da empresa que pode receber equipamentos.
+- **Estoque**: Quantidade disponível de cada tipo de equipamento.
+- **Alerta de Estoque**: Notificação gerada quando o estoque de um tipo de equipamento está baixo.
+- **Compra de Equipamento**: Registro de aquisição de novos equipamentos.
+- **Previsão de Contratação**: Planejamento para futuras contratações que necessitarão de equipamentos.
+- **Previsão de Devolução**: Data esperada para devolução de equipamentos por colaboradores.
+- **Entrega de Equipamento**: Processo de atribuir um equipamento a um colaborador.
+- **Devolução de Equipamento**: Processo de receber um equipamento de volta de um colaborador.
+- **Usuário**: Pessoa com acesso ao sistema, podendo ter diferentes níveis de permissão.
+
+# Contextos Delimitados
+- **Gestão de Equipamentos**
+    - Cadastro, atualização e remoção de equipamentos
+    - Controle de status dos equipamentos (disponível, em uso, em manutenção)
+    - Registro de especificações técnicas
+
+- **Gestão de Colaboradores**
+    - Cadastro, atualização e remoção de colaboradores
+    - Controle de contratos (início e término)
+    - Gerenciamento de endereços
+
+- **Controle de Estoque**
+    - Monitoramento de níveis de estoque por tipo de equipamento
+    - Geração de alertas para estoque baixo
+    - Envio de notificações por email
+
+- **Alocação de Equipamentos**
+    - Atribuição de equipamentos a colaboradores
+    - Cálculo de prazos de entrega
+    - Registro de devoluções
+    - Acompanhamento de equipamentos em uso
+
+- **Planejamento**
+    - Previsão de contratações futuras
+    - Previsão de devoluções
+    - Planejamento de compras
+
+- **Autenticação e Autorização**
+    - Gerenciamento de usuários
+    - Controle de acesso
+    - Verificação de códigos
+
+# Modelagens
+## Diagrama Entidade-Relacionamento
+O diagrama entidade-relacionamento representa as principais entidades do sistema e seus relacionamentos:
 
 
+![Diagrama ER](./images/Diagrama.jpg)
 
-## Getting started
+- **Equipment**: Representa os equipamentos com atributos como tipo, número de série, marca, modelo, especificações, data de aquisição, tempo de uso e status.
+- **Collaborator**: Representa os colaboradores com atributos como nome, CPF, email, telefone, endereço e datas de contrato.
+- **EquipmentCollaborator**: Relacionamento entre equipamentos e colaboradores, registrando datas de entrega, previsão de entrega, devolução e status.
+- **Stock**: Controle de estoque por tipo de equipamento.
+- **StockAlert**: Alertas gerados quando o estoque está abaixo do limite.
+- **EquipmentPurchases**: Registro de compras de equipamentos.
+- **ExpectedHiring**: Previsão de contratações futuras.
+- **ExpectedReturn**: Previsão de devoluções de equipamentos.
+- **User**: Usuários do sistema.
+- **Code**: Códigos de verificação para usuários.
+- **Address**: Endereços dos colaboradores.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+# Camadas da Aplicação
+## Controller
+Camada responsável por receber as requisições HTTP, validar os dados de entrada e delegar o processamento para a camada de serviço. Implementa os endpoints da API REST.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Service
+Camada que contém a lógica de negócio da aplicação. Implementa as regras de negócio, valida as operações e coordena o acesso aos dados através dos repositórios.
 
-## Add your files
+## Repository
+Camada responsável pela persistência dos dados. Utiliza o Spring Data JPA para interagir com o banco de dados.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Domain
+Camada que contém as entidades do domínio, DTOs, enums e outras classes que representam o modelo de negócio.
+
+## Exception
+Camada que define exceções personalizadas para tratamento de erros específicos da aplicação.
+
+## Configuration
+Camada que contém as configurações da aplicação, como segurança, agendamento de tarefas e beans personalizados.
+
+# Controllers
+- **AuthController**: Gerencia autenticação e autorização (/auth)
+- **UserController**: Gerencia usuários do sistema (/users)
+- **CollaboratorController**: Gerencia colaboradores (/collaborators)
+- **EquipmentController**: Gerencia equipamentos (/equipments)
+- **EquipmentCollaboratorController**: Gerencia a relação entre equipamentos e colaboradores (/equipments-collaborators)
+- **StockController**: Gerencia o estoque de equipamentos (/stock)
+- **StockAlertController**: Gerencia alertas de estoque baixo (/stock-alerts)
+- **EquipmentPurchasesController**: Gerencia compras de equipamentos (/equipment-purchases)
+- **ExpectedHiringController**: Gerencia previsões de contratações (/expected-hirings)
+- **ExpectedReturnController**: Gerencia previsões de devoluções (/expected-returns)
+
+# Features
+- [x] Cadastro e gerenciamento de equipamentos
+- [x] Cadastro e gerenciamento de colaboradores
+- [x] Controle de estoque de equipamentos
+- [x] Alertas de estoque baixo com notificação por email
+- [x] Atribuição de equipamentos a colaboradores
+- [x] Cálculo de prazos de entrega baseado na localização
+- [x] Registro de devoluções de equipamentos
+- [x] Previsão de contratações futuras
+- [x] Previsão de devoluções de equipamentos
+- [x] Autenticação e autorização de usuários
+- [x] Integração com ViaCEP para validação de endereços
+
+# Desafios e Proximos Passos
+- [ ] Implementação de dashboard para visualização de métricas
+- [ ] Integração com sistemas de inventário
+- [ ] Aplicativo mobile para facilitar o processo de entrega e devolução
+- [ ] Implementação de QR Code para identificação rápida de equipamentos
+- [ ] Sistema de manutenção preventiva baseado no tempo de uso dos equipamentos
+
+# Requisitos
+- Java 17+
+- PostgreSQL
+- Dcoker
+
+# Get Started
+
+```bash
+# Clone este repositório:
+git clone https://git.raroacademy.com.br/arthur.leite/projeto-final-equipamentos-raros.git
+```
+```bash 
+# Entre na pasta do projeto ou abra a mesma usando o Intellij
+cd projeto-final-equipamentos-raros
+```  
+```bash 
+# Configurações para rodar o banco via docker
+#crie o arquivo .env com as informações para seu banco
+  POSTGRES_USER=postgres
+  POSTGRES_PASSWORD=12345
+  POSTGRES_DB=bd-raro
+# Execute o docker compose para subir o banco via docker
+docker docker-compose up -d
+```  
+```bash 
+# Antes de executar a aplicação configure as variáveis de ambiente do intellij
+siga o passo a passo:
+```
+![Diagrama ER](./images/1-clicar.png)
+![Diagrama ER](./images/2-clicar-edit.png)
+```bash
+# variáveis
+POSTGRES_USER=postgres;POSTGRES_PASSWORD=12345;POSTGRES_DB=bd-raro;EMAIL_USERNAME=bc3b602d07dc99;EMAIL_PASSWORD=daf0cc35b40b0c;EMAIL_HOST=sandbox.smtp.mailtrap.io
+``` 
+![Diagrama ER](./images/3-add-variaveis.png)
+![Diagrama ER](./images/4-clicar-apply.png)
 
 ```
-cd existing_repo
-git remote add origin https://git.raroacademy.com.br/arthur.leite/projeto-final-equipamentos-raros.git
-git branch -M main
-git push -uf origin main
+# Observações finais
+depois de subir o banco via docker e configurar as variaveis de ambiente do intellij a aplicação estará pronto para
+ser startada.
+``` 
+# Fluxo de execução para testar a aplicação com um todo
+
+Depois da aplicação estiver executando corretamente, será criado um usuario Super Admin feito atraves de um insert
+no banco de dados com intuito de ajudar quem for testar a aplicação, esse usario terá os seguintes login e senha
+para ser usado no endpoint de auth no swagger: http://localhost:8080/swagger-ui/index.html
+
+
 ```
+{
+  "email": "admin@raroacademy.com.br",
+  "password": "admin123"
+}
+``` 
 
-## Integrate with your tools
+![Diagrama ER](./images/_Fluxograma%20Equipamentos%20Raro.svg)
 
-- [ ] [Set up project integrations](https://git.raroacademy.com.br/arthur.leite/projeto-final-equipamentos-raros/-/settings/integrations)
+# Desenvolvedores
 
-## Collaborate with your team
+| Nome           | Git                                                     |
+|----------------|---------------------------------------------------------|
+| Arthur Leite   | [Perfil](https://git.raroacademy.com.br/arthur.leite)   |
+| Elias Santos   | [Perfil](https://git.raroacademy.com.br/elias.santos)   |
+| João Machado   | [Perfil](https://git.raroacademy.com.br/joao.Machado)   |
+| Kefer Linhares | [Perfil](https://git.raroacademy.com.br/kefer.linhares) |
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Desenvolvido pela equipe 4spring como projeto final do curso de Java.
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+<div style="text-align: center;">
+  <img src="images/four-spring.png" width="300" />
+</div>
