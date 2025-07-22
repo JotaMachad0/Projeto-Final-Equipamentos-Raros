@@ -175,7 +175,7 @@ git clone https://git.raroacademy.com.br/arthur.leite/projeto-final-equipamentos
 ```
 ```bash 
 # Entre na pasta do projeto ou abra a mesma usando o Intellij
-cd cd projeto-final-equipamentos-raros
+cd projeto-final-equipamentos-raros
 ```  
 ```bash 
 # Configurações para rodar o banco via docker
