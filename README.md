@@ -226,7 +226,7 @@ para ser usado no endpoint de auth no swagger: http://localhost:8080/swagger-ui/
 |----------------|---------------------------------------------------------|
 | Arthur Leite   | [Perfil](https://git.raroacademy.com.br/arthur.leite)   |
 | Elias Santos   | [Perfil](https://git.raroacademy.com.br/elias.santos)   |
-| João Machado   | [Perfil](https://git.raroacademy.com.br/joao.Machado)   |
+| João Machado   | [Perfil](https://github.com/JotaMachad0)   |
 | Kefer Linhares | [Perfil](https://git.raroacademy.com.br/kefer.linhares) |
 
 Desenvolvido pela equipe 4spring como projeto final do curso de Java.
